@@ -18,9 +18,12 @@ export class VerifyComponent {
   isResending = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
+  countdown = signal(20);
+  canResend = signal(false);
   
   verificationForm: FormGroup;
   email: string = '';
+  private countdownTimerId: any = null;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,6 +37,7 @@ export class VerifyComponent {
 
     // Récupérer l'email depuis les paramètres de route ou le localStorage
     this.email = this.route.snapshot.queryParams['email'] || localStorage.getItem('pendingVerificationEmail') || '';
+    this.startCountdown();
   }
 
   getInputClasses(fieldName: string): string {
@@ -81,20 +85,9 @@ export class VerifyComponent {
       this.authService.verify(verificationData).subscribe({
         next: (response) => {
           this.isLoading.set(false);
-          this.successMessage.set('Compte vérifié avec succès !');
-          
-          // Nettoyer le localStorage
+          // Nettoyer et rediriger immédiatement vers la page d'authentification
           localStorage.removeItem('pendingVerificationEmail');
-          
-          // Stocker les informations de connexion
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('refreshToken', response.refreshToken);
-          localStorage.setItem('userInfo', JSON.stringify(response.userInfo));
-          
-          // Redirection vers la page de connexion après 2 secondes
-          setTimeout(() => {
-            this.router.navigate(['/auth/login'], { replaceUrl: true });
-          }, 2000);
+          this.router.navigate(['/auth/login'], { replaceUrl: true });
         },
         error: (error) => {
           this.isLoading.set(false);
@@ -114,11 +107,11 @@ export class VerifyComponent {
     if (this.email) {
       this.isResending.set(true);
       this.errorMessage.set('');
-      
       this.authService.resendVerification({ email: this.email }).subscribe({
-        next: (response) => {
+        next: () => {
           this.isResending.set(false);
           this.successMessage.set('Nouveau code envoyé à votre email');
+          this.restartCountdown();
         },
         error: (error) => {
           this.isResending.set(false);
@@ -127,5 +120,36 @@ export class VerifyComponent {
         }
       });
     }
+  }
+
+  private startCountdown(): void {
+    this.clearCountdown();
+    this.canResend.set(false);
+    this.countdown.set(20);
+    this.countdownTimerId = setInterval(() => {
+      const value = this.countdown();
+      if (value > 1) {
+        this.countdown.set(value - 1);
+      } else {
+        this.clearCountdown();
+        this.countdown.set(0);
+        this.canResend.set(true);
+      }
+    }, 1000);
+  }
+
+  private restartCountdown(): void {
+    this.startCountdown();
+  }
+
+  private clearCountdown(): void {
+    if (this.countdownTimerId) {
+      clearInterval(this.countdownTimerId);
+      this.countdownTimerId = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.clearCountdown();
   }
 }
