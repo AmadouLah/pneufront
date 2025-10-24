@@ -1,0 +1,84 @@
+/* Styles responsifs pour le sidebar */
+
+/* Styles pour les écrans de bureau (lg et plus) */
+@media (min-width: 1024px) {
+  aside {
+    transform: translateX(0) !important;
+  }
+}
+
+/* Styles pour les tablettes */
+@media (max-width: 1023px) {
+  aside {
+    width: 18rem;
+  }
+}
+
+/* Styles pour les mobiles */
+@media (max-width: 767px) {
+  aside {
+    width: 16rem;
+  }
+  
+  /* Ajustement des éléments du menu sur mobile */
+  aside ul li a {
+    padding: 0.75rem 0.75rem;
+  }
+  
+  aside .text-xs {
+    font-size: 0.65rem;
+  }
+  
+  aside .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  /* Ajustement des badges */
+  aside .badge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.3rem;
+  }
+  
+  /* Ajustement des icônes */
+  aside svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  
+  aside .p-2 {
+    padding: 0.4rem;
+  }
+}
+
+/* Animation pour l'overlay */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fixed.inset-0.bg-black.bg-opacity-50 {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animation pour le sidebar */
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+aside {
+  will-change: transform;
+}
+
+aside.translate-x-0 {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+aside.-translate-x-full {
+  animation: slideOut 0.3s ease-in-out;
+}

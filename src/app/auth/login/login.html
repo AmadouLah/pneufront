@@ -1,0 +1,291 @@
+<!-- Page de connexion simple comme dans l'image -->
+<div class="min-h-screen bg-black flex items-center justify-center p-4">
+  <!-- Conteneur principal -->
+  <div class="w-full max-w-md">
+    <!-- Carte de connexion -->
+    <div class="bg-gray-800 rounded-2xl shadow-2xl p-8">
+      <!-- En-tête avec logo et titre -->
+      <div class="text-center mb-8">
+        <!-- Logo -->
+        <div class="flex justify-center mb-4">
+          <div
+            class="w-16 h-16 bg-white rounded-lg shadow-lg flex items-center justify-center"
+          >
+            <img src="/img/logoPneuMali.png" alt="PneuMali" class="w-12 h-12" />
+          </div>
+        </div>
+        <div class="text-white text-sm font-medium mb-2">PNEUMALI</div>
+
+        <!-- Titre principal -->
+        <h1 class="text-3xl font-bold text-green-500 mb-2">PneuMali</h1>
+        <p class="text-gray-300 text-sm mb-6">Plateforme de gestion de pneus</p>
+
+        <!-- Séparateur avec "Connexion" -->
+        <div class="flex items-center mb-6">
+          <div class="flex-1 h-px bg-green-500"></div>
+          <span class="px-4 text-green-500 text-sm font-medium">Connexion</span>
+          <div class="flex-1 h-px bg-gray-600"></div>
+        </div>
+      </div>
+
+      <!-- Message d'erreur -->
+      @if (errorMessage()) {
+      <div class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+          <svg
+            class="w-5 h-5 text-red-400 mr-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span class="text-red-400 text-sm font-medium"
+            >{{ errorMessage() }}</span
+          >
+        </div>
+      </div>
+      }
+
+      <!-- Formulaire de connexion -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Champ Identifiant -->
+        <div class="space-y-2">
+          <label class="text-gray-300 text-sm font-medium flex items-center">
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+            Identifiant
+          </label>
+          <div class="relative">
+            <input
+              type="text"
+              formControlName="identifiant"
+              placeholder="Votre email"
+              [class]="getInputClasses('identifiant')"
+            />
+            <svg
+              class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+          </div>
+          @if (hasFieldError('identifiant')) {
+          <p class="text-red-400 text-xs font-medium">
+            {{ getFieldError('identifiant') }}
+          </p>
+          }
+        </div>
+
+        <!-- Champ Mot de passe -->
+        <div class="space-y-2">
+          <label class="text-gray-300 text-sm font-medium flex items-center">
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+            Mot de passe
+          </label>
+          <div class="relative">
+            <input
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="motDePasse"
+              placeholder="Votre mot de passe"
+              [class]="getInputClasses('motDePasse')"
+            />
+            <svg
+              class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
+            <button
+              type="button"
+              (click)="togglePasswordVisibility()"
+              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors duration-200"
+            >
+              @if (showPassword()) {
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                />
+              </svg>
+              } @else {
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+              }
+            </button>
+          </div>
+          @if (hasFieldError('motDePasse')) {
+          <p class="text-red-400 text-xs font-medium">
+            {{ getFieldError('motDePasse') }}
+          </p>
+          }
+        </div>
+
+        <!-- Options supplémentaires -->
+        <div class="flex items-center text-sm">
+          <label class="flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              class="w-4 h-4 text-green-500 bg-gray-700 border-gray-600 rounded focus:ring-green-500 focus:ring-2"
+            />
+            <span class="ml-2 text-gray-300">Se souvenir de moi</span>
+          </label>
+        </div>
+
+        <!-- Bouton de connexion -->
+        <button
+          type="submit"
+          [disabled]="isLoading()"
+          class="w-full bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+        >
+          @if (isLoading()) {
+          <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span>Connexion en cours...</span>
+          } @else {
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+            />
+          </svg>
+          <span>Se connecter</span>
+          }
+        </button>
+      </form>
+
+      <!-- Séparateur -->
+      <div class="flex items-center my-6">
+        <div class="flex-1 h-px bg-gray-600"></div>
+        <span class="px-4 text-gray-400 text-xs font-medium">OU</span>
+        <div class="flex-1 h-px bg-gray-600"></div>
+      </div>
+
+      <!-- Liens de navigation -->
+      <div class="text-center space-y-2">
+        <p class="text-gray-400 text-sm">
+          Pas encore de compte ?
+          <a
+            routerLink="/auth/register"
+            class="text-green-500 hover:text-green-400 font-medium transition-colors"
+          >
+            S'inscrire
+          </a>
+        </p>
+        <p class="text-gray-400 text-sm">
+          Mot de passe oublié ?
+          <a
+            routerLink="/auth/forgot-password"
+            class="text-green-500 hover:text-green-400 font-medium transition-colors"
+          >
+            Réinitialiser
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-8">
+      <p class="text-xs text-gray-400">
+        © 2024 PneuMali - Plateforme de gestion de pneus
+      </p>
+      <div class="flex justify-center space-x-4 mt-2 text-xs">
+        <a href="#" class="text-gray-400 hover:text-gray-300 transition-colors"
+          >Aide</a
+        >
+        <a href="#" class="text-gray-400 hover:text-gray-300 transition-colors"
+          >Confidentialité</a
+        >
+        <a href="#" class="text-gray-400 hover:text-gray-300 transition-colors"
+          >Conditions</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

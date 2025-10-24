@@ -1,0 +1,39 @@
+/* Styles personnalisés pour la page d'inscription - Version simplifiée */
+
+/* Animation de chargement personnalisée */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .text-3xl {
+    font-size: 2rem !important;
+  }
+  
+  .w-16 {
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+}
+
+/* Amélioration de l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus visible pour l'accessibilité */
+.focus-visible:focus {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}

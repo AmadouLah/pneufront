@@ -1,59 +1,76 @@
-# Pneumalifront
+# PneuMali Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.7.
+## 🚀 Démarrage du projet
 
-## Development server
+### Prérequis
 
-To start a local development server, run:
+- Node.js (version 18+)
+- Backend Spring Boot démarré sur le port 9999
 
-```bash
-ng serve
+### Instructions de démarrage
+
+1. **Installer les dépendances** :
+
+   ```bash
+   npm install
+   ```
+
+2. **Démarrer le backend Spring Boot** (dans le dossier `pneumaliback`) :
+
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+3. **Démarrer le frontend** (dans le dossier `pneumalifront`) :
+
+   ```bash
+   npm start
+   ```
+
+4. **Accéder à l'application** :
+   - Frontend : http://localhost:4200
+   - Backend API : http://localhost:9999/api
+
+### 🔧 Configuration
+
+Le frontend communique directement avec le backend via l'URL configurée dans `src/app/environement.ts` :
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: "http://localhost:9999/api",
+};
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 📋 Scripts disponibles
 
-## Code scaffolding
+- `npm start` : Démarre le serveur de développement
+- `npm run build` : Compile l'application pour la production
+- `npm test` : Lance les tests unitaires
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 🔐 Guards de sécurité
 
-```bash
-ng generate component component-name
-```
+L'application utilise des guards pour protéger les routes :
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- **AuthGuard** : Protège les routes nécessitant une authentification
+- **LoginGuard** : Redirige les utilisateurs connectés depuis les pages d'auth
+- **AdminGuard** : Restreint l'accès aux administrateurs
 
-```bash
-ng generate --help
-```
+### 🚨 Résolution des problèmes
 
-## Building
+#### Erreur de connexion
 
-To build the project run:
+**Cause** : Le backend Spring Boot n'est pas démarré
 
-```bash
-ng build
-```
+**Solution** :
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+1. Dans le dossier `pneumaliback`, exécutez : `./mvnw spring-boot:run`
+2. Attendez que le message "Started PneumalibackApplication" apparaisse
+3. Redémarrez le frontend avec `npm start`
 
-## Running unit tests
+### 🔍 Vérification
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Pour vérifier que tout fonctionne :
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. Backend : http://localhost:9999/api/auth/login (doit retourner une erreur 405 - normal)
+2. Frontend : http://localhost:4200 (doit afficher la page de connexion)

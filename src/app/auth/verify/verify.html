@@ -1,0 +1,219 @@
+<!-- Page de vérification du code d'authentification -->
+<div class="min-h-screen bg-black flex items-center justify-center p-4">
+  <!-- Conteneur principal -->
+  <div class="w-full max-w-md">
+    <!-- Carte de vérification -->
+    <div class="bg-gray-800 rounded-2xl shadow-2xl p-8">
+      <!-- En-tête avec logo et titre -->
+      <div class="text-center mb-8">
+        <!-- Logo -->
+        <div class="flex justify-center mb-4">
+          <div
+            class="w-16 h-16 bg-white rounded-lg shadow-lg flex items-center justify-center"
+          >
+            <img src="/img/logoPneuMali.png" alt="PneuMali" class="w-12 h-12" />
+          </div>
+        </div>
+        <div class="text-white text-sm font-medium mb-2">PNEUMALI</div>
+
+        <!-- Titre principal -->
+        <h1 class="text-3xl font-bold text-green-500 mb-2">Vérification</h1>
+        <p class="text-gray-300 text-sm mb-6">
+          Vérifiez votre compte avec le code reçu
+        </p>
+
+        <!-- Séparateur -->
+        <div class="flex items-center mb-6">
+          <div class="flex-1 h-px bg-green-500"></div>
+          <span class="px-4 text-green-500 text-sm font-medium"
+            >Code de vérification</span
+          >
+          <div class="flex-1 h-px bg-gray-600"></div>
+        </div>
+      </div>
+
+      <!-- Message d'erreur -->
+      @if (errorMessage()) {
+      <div class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6">
+        <div class="flex items-center">
+          <svg
+            class="w-5 h-5 text-red-400 mr-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span class="text-red-400 text-sm font-medium"
+            >{{ errorMessage() }}</span
+          >
+        </div>
+      </div>
+      }
+
+      <!-- Message de succès -->
+      @if (successMessage()) {
+      <div
+        class="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mb-6"
+      >
+        <div class="flex items-center">
+          <svg
+            class="w-5 h-5 text-green-400 mr-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+          <span class="text-green-400 text-sm font-medium"
+            >{{ successMessage() }}</span
+          >
+        </div>
+      </div>
+      }
+
+      <!-- Formulaire de vérification -->
+      <form
+        [formGroup]="verificationForm"
+        (ngSubmit)="onSubmit()"
+        class="space-y-6"
+      >
+        <!-- Champ Code de vérification -->
+        <div class="space-y-2">
+          <label class="text-gray-300 text-sm font-medium flex items-center">
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              ></path>
+            </svg>
+            Code de vérification
+          </label>
+          <div class="relative">
+            <input
+              type="text"
+              formControlName="code"
+              placeholder="123456"
+              maxlength="6"
+              [class]="getInputClasses('code')"
+            />
+            <svg
+              class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              ></path>
+            </svg>
+          </div>
+          @if (hasFieldError('code')) {
+          <p class="text-red-400 text-xs font-medium">
+            {{ getFieldError('code') }}
+          </p>
+          }
+        </div>
+
+        <!-- Bouton de vérification -->
+        <button
+          type="submit"
+          [disabled]="isLoading()"
+          class="w-full bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+        >
+          @if (isLoading()) {
+          <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span>Vérification en cours...</span>
+          } @else {
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+          <span>Vérifier le code</span>
+          }
+        </button>
+      </form>
+
+      <!-- Séparateur -->
+      <div class="flex items-center my-6">
+        <div class="flex-1 h-px bg-gray-600"></div>
+        <span class="px-4 text-gray-400 text-xs font-medium">OU</span>
+        <div class="flex-1 h-px bg-gray-600"></div>
+      </div>
+
+      <!-- Liens de navigation -->
+      <div class="text-center space-y-2">
+        <p class="text-gray-400 text-sm">
+          Vous n'avez pas reçu le code ?
+          <button
+            (click)="resendCode()"
+            [disabled]="isResending()"
+            class="text-green-500 hover:text-green-400 font-medium transition-colors"
+          >
+            @if (isResending()) { Renvoi en cours... } @else { Renvoyer le code
+            }
+          </button>
+        </p>
+        <p class="text-gray-400 text-sm">
+          Retour à la connexion ?
+          <a
+            routerLink="/auth/login"
+            class="text-green-500 hover:text-green-400 font-medium transition-colors"
+          >
+            Se connecter
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-8">
+      <p class="text-xs text-gray-400">
+        © 2024 PneuMali - Plateforme de gestion de pneus
+      </p>
+    </div>
+  </div>
+</div>
