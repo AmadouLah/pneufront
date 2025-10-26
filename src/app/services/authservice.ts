@@ -23,16 +23,9 @@ export class Authservice {
 
   private handleError(error: HttpErrorResponse) {
     console.error('HTTP Error:', error);
-    
-    if (error.status === 0) {
-      return throwError(() => new Error('Impossible de se connecter au serveur. Vérifiez que le backend est démarré.'));
-    }
-    
-    if (error.error instanceof ErrorEvent) {
-      return throwError(() => new Error(`Erreur client: ${error.error.message}`));
-    }
-    
-    return throwError(() => new Error(`Erreur serveur: ${error.status} - ${error.message}`));
+    // Renvoyer la réponse brute pour permettre aux composants d'accéder à
+    // error.status et aux messages structurés: error.error.message / error.error.error
+    return throwError(() => error);
   }
 
   login(payload: LoginRequest): Observable<AuthResponse> {
