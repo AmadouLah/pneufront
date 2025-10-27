@@ -1,9 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Authservice } from '../../services/authservice';
+import { FormHelperService } from '../../shared/services/form-helper.service';
 import { VerificationRequest } from '../../shared/types/auth';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-verify',
@@ -12,8 +14,7 @@ import { VerificationRequest } from '../../shared/types/auth';
   templateUrl: './verify.html',
   styleUrls: ['./verify.css']
 })
-export class VerifyComponent {
-
+export class VerifyComponent implements OnDestroy {
   isLoading = signal(false);
   isResending = signal(false);
   errorMessage = signal('');
@@ -22,103 +23,138 @@ export class VerifyComponent {
   canResend = signal(false);
   
   verificationForm: FormGroup;
-  email: string = '';
+  email = signal('');
+  loginMode = signal<'magic' | '2fa'>('magic');
+  
   private countdownTimerId: any = null;
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: Authservice
+    private authService: Authservice,
+    private formHelper: FormHelperService
   ) {
     this.verificationForm = this.formBuilder.group({
-      code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
+      code: ['', FormHelperService.codeValidator]
     });
 
-    // Récupérer l'email depuis les paramètres de route ou le localStorage
-    this.email = this.route.snapshot.queryParams['email'] || localStorage.getItem('pendingVerificationEmail') || '';
+    // Récupérer l'email et le mode depuis les paramètres ou localStorage
+    const emailParam = this.route.snapshot.queryParams['email'] || localStorage.getItem('pendingVerificationEmail') || '';
+    this.email.set(emailParam);
+    
+    const mode = localStorage.getItem('loginMode') as 'magic' | '2fa' || 'magic';
+    this.loginMode.set(mode);
+    
+    if (!emailParam) {
+      this.router.navigate(['/auth/login'], { replaceUrl: true });
+      return;
+    }
+    
     this.startCountdown();
   }
 
   getInputClasses(fieldName: string): string {
-    const baseClasses = 'w-full px-4 py-3 pl-12 bg-gray-700/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200';
-    const errorClasses = this.hasFieldError(fieldName) ? 'border-red-500' : 'border-gray-600';
-    return `${baseClasses} ${errorClasses}`;
+    return this.formHelper.getInputClasses(fieldName, this.verificationForm);
   }
 
   getFieldError(fieldName: string): string {
-    const field = this.verificationForm.get(fieldName);
-    if (!field?.errors || !field.touched) return '';
-
-    const errorMessages = this.getErrorMessages(fieldName);
-    const errorKey = Object.keys(field.errors)[0];
-    return errorMessages[errorKey] || '';
+    return this.formHelper.getFieldError(fieldName, this.verificationForm);
   }
 
   hasFieldError(fieldName: string): boolean {
-    const field = this.verificationForm.get(fieldName);
-    return !!(field?.errors && field.touched);
+    return this.formHelper.hasFieldError(fieldName, this.verificationForm);
   }
 
-  private getErrorMessages(fieldName: string): Record<string, string> {
-    const errorMessages: Record<string, Record<string, string>> = {
-      code: {
-        required: 'Le code de vérification est obligatoire',
-        minlength: 'Le code doit contenir 6 chiffres',
-        maxlength: 'Le code doit contenir 6 chiffres'
-      }
-    };
-    return errorMessages[fieldName] || {};
-  }
-
+  /**
+   * Soumission du code de vérification
+   */
   onSubmit(): void {
-    if (this.verificationForm.valid && this.email) {
-      this.isLoading.set(true);
-      this.errorMessage.set('');
-      this.successMessage.set('');
-
-      const verificationData: VerificationRequest = {
-        email: this.email,
-        code: this.verificationForm.value.code
-      };
-
-      this.authService.verify(verificationData).subscribe({
-        next: (response) => {
-          this.isLoading.set(false);
-          // Nettoyer et rediriger immédiatement vers la page d'authentification
-          localStorage.removeItem('pendingVerificationEmail');
-          this.router.navigate(['/auth/login'], { replaceUrl: true });
-        },
-        error: (error) => {
-          this.isLoading.set(false);
-          console.error('Verification error details:', error);
-          const message = error?.error?.message || error?.message || 'Code de vérification invalide';
-          this.errorMessage.set(message);
-        }
-      });
-    } else {
-      Object.keys(this.verificationForm.controls).forEach(key => {
-        this.verificationForm.get(key)?.markAsTouched();
-      });
+    if (!this.verificationForm.valid || !this.email()) {
+      this.formHelper.markAllFieldsAsTouched(this.verificationForm);
+      return;
     }
+
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    const verificationData: VerificationRequest = {
+      email: this.email(),
+      code: this.verificationForm.value.code
+    };
+
+    // Choisir la bonne méthode selon le mode
+    const verifyMethod = this.loginMode() === 'magic' 
+      ? this.authService.magicVerify(verificationData)
+      : this.authService.verify(verificationData);
+
+    verifyMethod.subscribe({
+      next: (response) => {
+        this.isLoading.set(false);
+        this.authService.saveAuthData(response);
+        this.clearStoredAuthData();
+        this.redirectBasedOnRole(response.userInfo.role);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Code de vérification invalide'));
+      }
+    });
   }
 
+  /**
+   * Renvoi du code (cooldown 20s, max 3 fois)
+   */
   resendCode(): void {
-    if (this.email) {
-      this.isResending.set(true);
-      this.errorMessage.set('');
-      this.authService.resendVerification({ email: this.email }).subscribe({
-        next: () => {
-          this.isResending.set(false);
-          this.successMessage.set('Nouveau code envoyé à votre email');
-          this.restartCountdown();
-        },
-        error: (error) => {
-          this.isResending.set(false);
-          const message = error?.error?.message || error?.message || 'Erreur lors du renvoi du code';
-          this.errorMessage.set(message);
-        }
-      });
+    if (!this.email() || !this.canResend()) return;
+
+    this.isResending.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+
+    // Pour magic login, utiliser magicStart, sinon resendVerification
+    const resendMethod = this.loginMode() === 'magic'
+      ? this.authService.magicStart(this.email())
+      : this.authService.resendVerification({ email: this.email() });
+
+    resendMethod.subscribe({
+      next: () => {
+        this.isResending.set(false);
+        this.successMessage.set('Nouveau code envoyé à votre email');
+        this.restartCountdown();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isResending.set(false);
+        this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Erreur lors du renvoi du code'));
+      }
+    });
+  }
+
+  /**
+   * Retour à la page de connexion
+   */
+  backToLogin(): void {
+    this.authService.clearAuthData();
+    this.router.navigate(['/auth/login'], { replaceUrl: true });
+  }
+
+  /**
+   * Helper : Nettoie les données d'authentification stockées
+   */
+  private clearStoredAuthData(): void {
+    localStorage.removeItem('pendingVerificationEmail');
+    localStorage.removeItem('loginMode');
+  }
+
+  /**
+   * Helper : Redirige l'utilisateur selon son rôle
+   */
+  private redirectBasedOnRole(role: string): void {
+    if (role === 'ADMIN' || role === 'DEVELOPER') {
+      this.router.navigate(['/dashboard'], { replaceUrl: true });
+    } else {
+      this.router.navigate(['/'], { replaceUrl: true });
     }
   }
 

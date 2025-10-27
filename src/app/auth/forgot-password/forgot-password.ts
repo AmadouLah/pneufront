@@ -124,13 +124,12 @@ export class ForgotPasswordComponent {
         next: (response) => {
           this.isLoading.set(false);
           this.userEmail.set(this.forgotPasswordForm.value.email);
-          this.successMessage.set('Code de réinitialisation envoyé à votre email !');
+          this.successMessage.set(response.message || 'Code de réinitialisation envoyé à votre email !');
           this.currentStep.set(2);
         },
         error: (error) => {
           this.isLoading.set(false);
-          console.error('Forgot password error details:', error);
-          const message = error?.error?.message || error?.message || 'Erreur lors de l\'envoi du code';
+          const message = error?.error?.error || error?.error?.message || 'Erreur lors de l\'envoi du code';
           this.errorMessage.set(message);
         }
       });
@@ -157,15 +156,14 @@ export class ForgotPasswordComponent {
       this.authService.forgotPasswordConfirm(resetPasswordData).subscribe({
         next: (response) => {
           this.isLoading.set(false);
-          this.successMessage.set('Mot de passe réinitialisé avec succès ! Redirection vers la connexion...');
+          this.successMessage.set(response.message || 'Mot de passe réinitialisé avec succès ! Redirection...');
           setTimeout(() => {
             this.router.navigate(['/auth/login'], { replaceUrl: true });
-          }, 3000);
+          }, 2000);
         },
         error: (error) => {
           this.isLoading.set(false);
-          console.error('Reset password error details:', error);
-          const message = error?.error?.message || error?.message || 'Erreur lors de la réinitialisation';
+          const message = error?.error?.error || error?.error?.message || 'Erreur lors de la réinitialisation';
           this.errorMessage.set(message);
         }
       });

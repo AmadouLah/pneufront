@@ -4,11 +4,13 @@ import { loginGuard } from './guard/login-guard';
 import { adminGuard } from './guard/admin-guard';
 
 export const routes: Routes = [
+  // Home - Page d'accueil publique
   {
     path: '',
-    loadComponent: () => import('./auth/login/login').then(m => m.LoginComponent),
-    canActivate: [loginGuard]
+    loadComponent: () => import('./frontoffice/home/home').then(m => m.HomeComponent)
   },
+  
+  // Auth Routes
   {
     path: 'auth/login',
     loadComponent: () => import('./auth/login/login').then(m => m.LoginComponent),
@@ -29,6 +31,35 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/verify/verify').then(m => m.VerifyComponent),
     canActivate: [loginGuard]
   },
-  { path: 'login', redirectTo: '', pathMatch: 'full' },
-  { path: '**', redirectTo: '' },
+  
+  // Frontoffice Routes
+  {
+    path: 'frontoffice/contact',
+    loadComponent: () => import('./frontoffice/contact/contact').then(m => m.ContactComponent)
+  },
+  {
+    path: 'frontoffice/profil',
+    loadComponent: () => import('./frontoffice/profil/profil').then(m => m.ProfilComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'frontoffice/legal/terms',
+    loadComponent: () => import('./frontoffice/legal/terms/terms').then(m => m.TermsComponent)
+  },
+  {
+    path: 'frontoffice/legal/privacy',
+    loadComponent: () => import('./frontoffice/legal/privacy/privacy').then(m => m.PrivacyComponent)
+  },
+  {
+    path: 'frontoffice/legal/mentions',
+    loadComponent: () => import('./frontoffice/legal/mentions/mentions').then(m => m.MentionsComponent)
+  },
+  {
+    path: 'frontoffice/legal/delivery',
+    loadComponent: () => import('./frontoffice/legal/delivery/delivery').then(m => m.DeliveryComponent)
+  },
+  
+  // Redirections
+  { path: 'login', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '' }
 ];

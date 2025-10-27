@@ -1,0 +1,20 @@
+.link-hover {
+  position: relative;
+}
+
+.link-hover::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 50%;
+  background-color: hsl(var(--p));
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.link-hover:hover::after {
+  width: 100%;
+}
+

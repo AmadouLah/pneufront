@@ -6,6 +6,30 @@
     <div class="bg-gray-800 rounded-2xl shadow-2xl p-8">
       <!-- En-tête avec logo et titre -->
       <div class="text-center mb-8">
+        <!-- Bouton retour -->
+        <div class="flex justify-start mb-4">
+          <button
+            type="button"
+            (click)="backToLogin()"
+            class="flex items-center text-gray-400 hover:text-green-500 transition-colors text-sm"
+          >
+            <svg
+              class="w-4 h-4 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Retour
+          </button>
+        </div>
+
         <!-- Logo -->
         <div class="flex justify-center mb-4">
           <div
@@ -18,16 +42,19 @@
 
         <!-- Titre principal -->
         <h1 class="text-3xl font-bold text-green-500 mb-2">Vérification</h1>
-        <p class="text-gray-300 text-sm mb-6">
-          Vérifiez votre compte avec le code reçu
+        <p class="text-gray-300 text-sm mb-2">
+          {{ loginMode() === 'magic' ? 'Un code à 6 chiffres a été envoyé à' :
+          'Vérification supplémentaire requise pour' }}
         </p>
+        <p class="text-green-400 text-sm font-medium mb-6">{{ email() }}</p>
 
         <!-- Séparateur -->
         <div class="flex items-center mb-6">
           <div class="flex-1 h-px bg-green-500"></div>
-          <span class="px-4 text-green-500 text-sm font-medium"
-            >Code de vérification</span
-          >
+          <span class="px-4 text-green-500 text-sm font-medium">
+            {{ loginMode() === 'magic' ? 'Connexion sécurisée' :
+            'Authentification 2FA' }}
+          </span>
           <div class="flex-1 h-px bg-gray-600"></div>
         </div>
       </div>
@@ -138,9 +165,9 @@
         <!-- Compte à rebours de renvoi du code -->
         <div class="text-xs text-gray-400">
           @if (!canResend()) {
-            <span>Vous pourrez renvoyer un code dans {{ countdown() }}s</span>
+          <span>Vous pourrez renvoyer un code dans {{ countdown() }}s</span>
           } @else {
-            <span>Vous pouvez renvoyer un nouveau code.</span>
+          <span>Vous pouvez renvoyer un nouveau code.</span>
           }
         </div>
 
@@ -196,17 +223,17 @@
       <!-- Liens de navigation -->
       <div class="text-center space-y-2">
         <p class="text-gray-400 text-sm">
-          Vous n'avez pas reçu le code ?
-          @if (!canResend()) {
-            <span class="text-gray-300">Renvoyer dans {{ countdown() }}s</span>
+          Vous n'avez pas reçu le code ? @if (!canResend()) {
+          <span class="text-gray-300">Renvoyer dans {{ countdown() }}s</span>
           } @else {
-            <button
-              (click)="resendCode()"
-              [disabled]="isResending() || !canResend()"
-              class="text-green-500 hover:text-green-400 font-medium transition-colors"
-            >
-              @if (isResending()) { Renvoi en cours... } @else { Renvoyer le code }
-            </button>
+          <button
+            (click)="resendCode()"
+            [disabled]="isResending() || !canResend()"
+            class="text-green-500 hover:text-green-400 font-medium transition-colors"
+          >
+            @if (isResending()) { Renvoi en cours... } @else { Renvoyer le code
+            }
+          </button>
           }
         </p>
         <p class="text-gray-400 text-sm">

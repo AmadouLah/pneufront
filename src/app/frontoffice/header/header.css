@@ -1,0 +1,58 @@
+/* Header styles */
+header {
+  width: 100%;
+}
+
+header .container {
+  max-width: 1440px;
+}
+
+/* Navigation links */
+nav ul li a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.text-primary {
+  color: #00d9ff !important;
+}
+
+/* Dropdown hover effect */
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile menu animation */
+.transform {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Focus visible pour accessibilité */
+.focus-visible:focus {
+  outline: 2px solid #00d9ff;
+  outline-offset: 2px;
+}
+
+/* Badge animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .8;
+  }
+}
+
+/* Ensure full width coverage */
+.fixed {
+  left: 0;
+  right: 0;
+}
+

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Authservice } from '../../services/authservice';
-import { LoginRequest } from '../../shared/types/auth';
+import { FormHelperService } from '../../shared/services/form-helper.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -13,21 +14,26 @@ import { LoginRequest } from '../../shared/types/auth';
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
-
   isLoading = signal(false);
   showPassword = signal(false);
   errorMessage = signal('');
   
+  // Gestion des étapes de connexion
+  loginStep = signal<'email' | 'password'>('email');
+  loginMode = signal<'ADMIN_PASSWORD' | 'EMAIL_CODE' | null>(null);
+  
   loginForm: FormGroup;
+  email = signal('');
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: Authservice
+    private authService: Authservice,
+    private formHelper: FormHelperService
   ) {
     this.loginForm = this.formBuilder.group({
-      identifiant: ['', [Validators.required, Validators.email]],
-      motDePasse: ['', [Validators.required, Validators.minLength(3)]]
+      email: ['', FormHelperService.emailValidator],
+      password: ['']
     });
   }
 
@@ -36,71 +42,129 @@ export class LoginComponent {
   }
 
   getInputClasses(fieldName: string): string {
-    const baseClasses = 'w-full px-4 py-3 pl-12 bg-gray-700/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200';
-    const errorClasses = this.hasFieldError(fieldName) ? 'border-red-500' : 'border-gray-600';
-    const passwordClasses = fieldName === 'motDePasse' ? 'pr-12' : '';
-    return `${baseClasses} ${errorClasses} ${passwordClasses}`;
+    return this.formHelper.getInputClasses(fieldName, this.loginForm);
   }
 
   getFieldError(fieldName: string): string {
-    const field = this.loginForm.get(fieldName);
-    if (!field?.errors || !field.touched) return '';
-
-    const errorMessages = this.getErrorMessages(fieldName);
-    const errorKey = Object.keys(field.errors)[0];
-    return errorMessages[errorKey] || '';
+    return this.formHelper.getFieldError(fieldName, this.loginForm);
   }
 
   hasFieldError(fieldName: string): boolean {
-    const field = this.loginForm.get(fieldName);
-    return !!(field?.errors && field.touched);
+    return this.formHelper.hasFieldError(fieldName, this.loginForm);
   }
 
-  private getErrorMessages(fieldName: string): Record<string, string> {
-    const errorMessages: Record<string, Record<string, string>> = {
-      identifiant: {
-        required: "L'email est obligatoire",
-        email: "Format d'email invalide"
-      },
-      motDePasse: {
-        required: 'Le mot de passe est obligatoire',
-        minlength: 'Le mot de passe doit contenir au moins 3 caractères'
-      }
-    };
-    return errorMessages[fieldName] || {};
-  }
-
-  onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.isLoading.set(true);
-      this.errorMessage.set('');
-      const loginData: LoginRequest = {
-        email: this.loginForm.value.identifiant,
-        password: this.loginForm.value.motDePasse
-      };
-      this.authService.login(loginData).subscribe({
-        next: (response) => {
-          this.isLoading.set(false);
-          // Stocker le token et les informations utilisateur
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('refreshToken', response.refreshToken);
-          localStorage.setItem('userInfo', JSON.stringify(response.userInfo));
-          // Redirection vers la page d'accueil après connexion réussie
-          this.router.navigate(['/dashboard'], { replaceUrl: true });
-        },
-        error: (error) => {
-          this.isLoading.set(false);
-          console.error('Login error details:', error);
-          console.error('Error status:', error.status);
-          console.error('Error body:', error.error);
-          const message = error?.error?.message || error?.message || 'Email ou mot de passe incorrect';
-          this.errorMessage.set(message);
-        }
-      });
-    } else {
-      Object.keys(this.loginForm.controls).forEach(key => {
-        this.loginForm.get(key)?.markAsTouched();
-      });
+  /**
+   * Étape 1 : Soumission de l'email
+   * - Si ADMIN : affiche le champ mot de passe
+   * - Si CLIENT/INFLUENCEUR : envoie code et redirige vers page de vérification
+   */
+  onEmailSubmit(): void {
+    const emailControl = this.loginForm.get('email');
+    if (!emailControl || emailControl.invalid) {
+      emailControl?.markAsTouched();
+      return;
     }
+
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+    const emailValue = emailControl.value.trim();
+    this.email.set(emailValue);
+
+    this.authService.startLogin(emailValue).subscribe({
+      next: (response) => {
+        this.isLoading.set(false);
+        this.loginMode.set(response.mode);
+        
+        if (response.mode === 'ADMIN_PASSWORD') {
+          // Admin : afficher le champ mot de passe
+          this.showPasswordStep();
+        } else {
+          // Client/Influenceur : le code a déjà été envoyé, rediriger vers la page de vérification
+          this.navigateToVerification(emailValue, 'magic');
+        }
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Erreur lors de la connexion'));
+      }
+    });
+  }
+
+  /**
+   * Étape 2 : Soumission du mot de passe (pour ADMIN)
+   * - Si mot de passe correct sans 2FA : connexion directe
+   * - Si 2FA requis : envoie code et redirige vers page de vérification
+   */
+  onPasswordSubmit(): void {
+    if (this.loginForm.invalid) {
+      this.formHelper.markAllFieldsAsTouched(this.loginForm);
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+
+    this.authService.login({
+      email: this.email(),
+      password: this.loginForm.value.password
+    }).subscribe({
+      next: (response) => {
+        // Connexion réussie sans 2FA
+        this.isLoading.set(false);
+        this.authService.saveAuthData(response);
+        this.redirectToDashboard();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoading.set(false);
+        
+        // Si code 202 : 2FA requis, le code a été envoyé par le backend
+        if (error.status === 202 && error.error?.status === 'CODE_REQUIRED') {
+          this.navigateToVerification(this.email(), '2fa');
+          return;
+        }
+        
+        this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Identifiants invalides'));
+      }
+    });
+  }
+
+  /**
+   * Retour à l'étape email
+   */
+  backToEmail(): void {
+    this.loginStep.set('email');
+    this.loginMode.set(null);
+    this.loginForm.get('password')?.clearValidators();
+    this.loginForm.get('password')?.updateValueAndValidity();
+    this.loginForm.get('password')?.reset();
+    this.errorMessage.set('');
+  }
+
+  /**
+   * Helper : Affiche l'étape mot de passe pour ADMIN
+   */
+  private showPasswordStep(): void {
+    this.loginStep.set('password');
+    this.loginForm.get('password')?.setValidators(FormHelperService.passwordValidator);
+    this.loginForm.get('password')?.updateValueAndValidity();
+  }
+
+  /**
+   * Helper : Navigation vers la page de vérification du code
+   */
+  private navigateToVerification(email: string, mode: 'magic' | '2fa'): void {
+    localStorage.setItem('pendingVerificationEmail', email);
+    localStorage.setItem('loginMode', mode);
+    this.router.navigate(['/auth/verify'], { 
+      queryParams: { email },
+      replaceUrl: true 
+    });
+  }
+
+  /**
+   * Helper : Redirection vers le dashboard
+   */
+  private redirectToDashboard(): void {
+    this.router.navigate(['/dashboard'], { replaceUrl: true });
   }
 }

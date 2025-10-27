@@ -26,6 +26,11 @@ export type ResetPasswordRequest = Readonly<{
 
 export type RefreshTokenRequest = Readonly<{ refreshToken: string }>;
 
+export type StartLoginResponse = Readonly<{
+  mode: 'ADMIN_PASSWORD' | 'EMAIL_CODE';
+  message: string;
+}>;
+
 export type AuthResponse = Readonly<{
   token: string;
   refreshToken: string;
@@ -38,4 +43,10 @@ export type AuthResponse = Readonly<{
     lastName: string;
     role: string;
   }>;
+}>;
+
+export type CodeRequiredResponse = Readonly<{
+  status: 'CODE_REQUIRED';
+  message: string;
+  email: string;
 }>;

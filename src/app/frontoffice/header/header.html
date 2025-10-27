@@ -1,0 +1,405 @@
+<!-- Header Navigation -->
+<header
+  class="bg-black/95 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 border-b border-gray-800"
+>
+  <div class="container mx-auto px-6">
+    <div class="flex items-center justify-between h-20">
+      <!-- Mobile Menu Button -->
+      <div class="lg:hidden">
+        <button
+          (click)="toggleMobileMenu()"
+          class="btn btn-ghost btn-circle text-white"
+          aria-label="Menu"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Left Navigation - Desktop -->
+      <nav class="hidden lg:flex flex-1">
+        <ul class="flex items-center gap-6 text-white text-sm font-medium">
+          <li>
+            <a
+              routerLink="/"
+              routerLinkActive="text-primary"
+              [routerLinkActiveOptions]="{exact: true}"
+              class="hover:text-primary transition-colors"
+              >HOME</a
+            >
+          </li>
+          <li>
+            <a
+              routerLink="/shop"
+              routerLinkActive="text-primary"
+              class="hover:text-primary transition-colors"
+              >SHOP</a
+            >
+          </li>
+          <li class="relative group">
+            <button class="hover:text-primary transition-colors">BRANDS</button>
+            <ul
+              class="absolute left-0 top-full mt-2 bg-black border border-gray-800 rounded-lg w-52 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+            >
+              @for (brand of brands; track brand) {
+              <li>
+                <a
+                  (click)="filterByBrand(brand)"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                  >{{ brand }}</a
+                >
+              </li>
+              }
+            </ul>
+          </li>
+          <li>
+            <a
+              routerLink="/about"
+              routerLinkActive="text-primary"
+              class="hover:text-primary transition-colors"
+              >ABOUT US</a
+            >
+          </li>
+          <li>
+            <a
+              routerLink="/blog"
+              routerLinkActive="text-primary"
+              class="hover:text-primary transition-colors"
+              >BLOG</a
+            >
+          </li>
+          <li>
+            <a
+              routerLink="/frontoffice/contact"
+              routerLinkActive="text-primary"
+              class="hover:text-primary transition-colors"
+              >CONTACT</a
+            >
+          </li>
+          <li>
+            <a
+              (click)="toggleSearch()"
+              class="hover:text-primary cursor-pointer transition-colors"
+              >SEARCH</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Center Logo -->
+      <div class="absolute left-1/2 transform -translate-x-1/2">
+        <a routerLink="/" class="flex items-center">
+          <img
+            src="/img/logoPneuMali.png"
+            alt="PneuMali"
+            class="h-12 w-auto transition-transform hover:scale-110"
+          />
+        </a>
+      </div>
+
+      <!-- Right Icons -->
+      <div class="flex items-center gap-3 flex-1 justify-end">
+        <!-- Search Icon -->
+        <button
+          (click)="toggleSearch()"
+          class="text-white hover:text-primary transition-colors p-2"
+          aria-label="Recherche"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </button>
+
+        <!-- User Icon -->
+        @if (isAuthenticated()) {
+        <div class="dropdown dropdown-end">
+          <button
+            tabindex="0"
+            class="text-white hover:text-primary transition-colors p-2"
+            aria-label="Compte"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+          </button>
+          <ul
+            tabindex="0"
+            class="dropdown-content menu bg-black border border-gray-800 rounded-box w-52 p-2 shadow-xl z-50 mt-2"
+          >
+            <li>
+              <a
+                routerLink="/frontoffice/profil"
+                class="text-white hover:text-primary hover:bg-gray-900"
+                >Mon profil</a
+              >
+            </li>
+            <li>
+              <a
+                routerLink="/orders"
+                class="text-white hover:text-primary hover:bg-gray-900"
+                >Mes commandes</a
+              >
+            </li>
+            <li>
+              <a
+                routerLink="/frontoffice/favoris"
+                class="text-white hover:text-primary hover:bg-gray-900"
+                >Mes favoris</a
+              >
+            </li>
+            <li>
+              <a
+                (click)="logout()"
+                class="text-white hover:text-primary hover:bg-gray-900 cursor-pointer"
+                >Déconnexion</a
+              >
+            </li>
+          </ul>
+        </div>
+        } @else {
+        <button
+          (click)="navigateToLogin()"
+          class="text-white hover:text-primary transition-colors p-2"
+          aria-label="Connexion"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+        </button>
+        }
+
+        <!-- Cart Icon with Badge -->
+        <button
+          (click)="navigateToCart()"
+          class="text-white hover:text-primary transition-colors p-2 relative"
+          aria-label="Panier"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+          @if (cartItemCount() > 0) {
+          <span
+            class="absolute -top-1 -right-1 bg-primary text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
+            >{{ cartItemCount() }}</span
+          >
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Menu Drawer -->
+@if (mobileMenuOpen()) {
+<div class="fixed inset-0 z-40 bg-black/50" (click)="toggleMobileMenu()"></div>
+<div
+  class="fixed top-0 left-0 h-full w-64 bg-black z-50 shadow-xl transform transition-transform duration-300 border-r border-gray-800"
+>
+  <div class="p-4">
+    <button
+      (click)="toggleMobileMenu()"
+      class="btn btn-ghost btn-circle mb-4 text-white"
+      aria-label="Fermer"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+
+    <ul class="menu text-white">
+      <li>
+        <a
+          routerLink="/"
+          (click)="toggleMobileMenu()"
+          class="hover:text-primary"
+          >HOME</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/shop"
+          (click)="toggleMobileMenu()"
+          class="hover:text-primary"
+          >SHOP</a
+        >
+      </li>
+      <li>
+        <details>
+          <summary class="hover:text-primary">BRANDS</summary>
+          <ul>
+            @for (brand of brands; track brand) {
+            <li>
+              <a
+                (click)="filterByBrand(brand); toggleMobileMenu()"
+                class="hover:text-primary cursor-pointer"
+                >{{ brand }}</a
+              >
+            </li>
+            }
+          </ul>
+        </details>
+      </li>
+      <li>
+        <a
+          routerLink="/about"
+          (click)="toggleMobileMenu()"
+          class="hover:text-primary"
+          >ABOUT US</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/blog"
+          (click)="toggleMobileMenu()"
+          class="hover:text-primary"
+          >BLOG</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/frontoffice/contact"
+          (click)="toggleMobileMenu()"
+          class="hover:text-primary"
+          >CONTACT</a
+        >
+      </li>
+      <li>
+        <a
+          (click)="toggleSearch(); toggleMobileMenu()"
+          class="hover:text-primary cursor-pointer"
+          >SEARCH</a
+        >
+      </li>
+    </ul>
+  </div>
+</div>
+}
+
+<!-- Search Modal -->
+@if (searchOpen()) {
+<div class="modal modal-open">
+  <div class="modal-box bg-black border-2 border-primary max-w-md p-8">
+    <button
+      (click)="toggleSearch()"
+      class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-white hover:text-primary"
+    >
+      ✕
+    </button>
+
+    <h2 class="text-2xl font-bold mb-6 text-primary text-center">
+      Search by size
+    </h2>
+
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="space-y-5">
+      <!-- Width -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text text-white font-medium">Width</span>
+        </label>
+        <input
+          type="text"
+          formControlName="width"
+          placeholder="Enter width (e.g., 235)"
+          class="input input-bordered w-full bg-white text-black placeholder-gray-400"
+        />
+      </div>
+
+      <!-- Profile -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text text-white font-medium">Profile</span>
+        </label>
+        <input
+          type="text"
+          formControlName="profile"
+          placeholder="Enter profile (e.g., 55)"
+          class="input input-bordered w-full bg-white text-black placeholder-gray-400"
+        />
+      </div>
+
+      <!-- Diameter -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text text-white font-medium">Diameter</span>
+        </label>
+        <input
+          type="text"
+          formControlName="diameter"
+          placeholder="Enter diameter (e.g., 16)"
+          class="input input-bordered w-full bg-white text-black placeholder-gray-400"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="btn bg-primary hover:bg-cyan-400 text-white border-none w-full mt-6 font-bold text-lg"
+        [disabled]="!searchForm.valid"
+      >
+        Go
+      </button>
+    </form>
+  </div>
+  <div class="modal-backdrop bg-black/50" (click)="toggleSearch()"></div>
+</div>
+}

@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { LegalLayoutComponent } from '../legal-layout';
 
 @Component({
-  selector: 'app-terms',
+  selector: 'app-delivery',
   standalone: true,
   imports: [CommonModule, LegalLayoutComponent],
-  templateUrl: './terms.html'
+  templateUrl: './delivery.html'
 })
-export class TermsComponent {}
+export class DeliveryComponent {}
+

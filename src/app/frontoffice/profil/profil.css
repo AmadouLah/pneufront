@@ -1,0 +1,12 @@
+.avatar {
+  transition: transform 0.3s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+.card {
+  transition: all 0.3s ease;
+}
+

@@ -1,14 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { LegalLayoutComponent } from '../legal-layout';
 
 @Component({
   selector: 'app-mentions',
   standalone: true,
-  imports: [RouterLink],
-  templateUrl: './mentions.html',
-  styleUrls: ['./mentions.css']
+  imports: [CommonModule, LegalLayoutComponent],
+  templateUrl: './mentions.html'
 })
-export class Mentions {
-}
-
-
+export class MentionsComponent {}

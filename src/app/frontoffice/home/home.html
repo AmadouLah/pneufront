@@ -1,0 +1,254 @@
+<div class="min-h-screen bg-black">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <!-- Main Content -->
+  <main class="flex-1 pt-20">
+    <!-- Hero Section -->
+    <section
+      class="relative min-h-[600px] bg-black flex items-center overflow-hidden"
+    >
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <!-- Left Content -->
+          <div class="text-left z-10">
+            <h1 class="text-6xl lg:text-7xl font-bold mb-8 text-white">
+              Browse our store
+            </h1>
+            <a
+              routerLink="/shop"
+              class="inline-block bg-primary hover:bg-cyan-400 text-black font-bold px-12 py-4 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg shadow-primary/50"
+            >
+              SHOP
+            </a>
+          </div>
+
+          <!-- Right Content - Car Image Placeholder -->
+          <div class="relative hidden lg:block">
+            <div
+              class="w-full h-96 flex items-center justify-center opacity-10"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-64 w-64"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="0.5"
+                  d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="0.5"
+                  d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search by Size Section -->
+    <section class="bg-black py-12">
+      <div class="container mx-auto px-6">
+        <div class="border-2 border-primary rounded-lg p-8 max-w-4xl mx-auto">
+          <h3 class="text-primary text-xl font-semibold mb-6">
+            Search by size
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <select
+              class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
+            >
+              <option disabled selected>Width</option>
+              <option>165</option>
+              <option>175</option>
+              <option>185</option>
+              <option>195</option>
+              <option>205</option>
+              <option>215</option>
+              <option>225</option>
+            </select>
+            <select
+              class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
+            >
+              <option disabled selected>Profile</option>
+              <option>45</option>
+              <option>50</option>
+              <option>55</option>
+              <option>60</option>
+              <option>65</option>
+              <option>70</option>
+            </select>
+            <select
+              class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
+            >
+              <option disabled selected>Diameter</option>
+              <option>14</option>
+              <option>15</option>
+              <option>16</option>
+              <option>17</option>
+              <option>18</option>
+              <option>19</option>
+              <option>20</option>
+            </select>
+            <button
+              class="btn bg-primary hover:bg-cyan-400 text-black border-none font-bold"
+            >
+              Go
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Products Section -->
+    <section class="bg-black py-16">
+      <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-white text-center mb-12">Popular</h2>
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+        >
+          @for (category of categories; track category.title) {
+          <div
+            class="bg-gray-900 rounded-lg overflow-hidden hover:shadow-xl hover:shadow-primary/20 transition-all hover:-translate-y-2 border border-gray-800"
+          >
+            <div
+              class="aspect-square bg-gray-800 flex items-center justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-24 w-24 text-gray-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1"
+                  [attr.d]="category.icon"
+                />
+              </svg>
+            </div>
+            <div class="p-4">
+              <h3 class="font-bold text-white mb-2">{{ category.title }}</h3>
+              <p class="text-gray-400 text-sm mb-3">
+                {{ category.description }}
+              </p>
+              <p class="text-primary font-bold text-lg mb-4">
+                À partir de 50,000 FCFA
+              </p>
+              <button
+                routerLink="/shop"
+                class="w-full btn btn-sm bg-primary hover:bg-cyan-400 text-black border-none"
+              >
+                Voir Options
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+        <div class="text-center mt-12">
+          <a
+            routerLink="/shop"
+            class="text-primary hover:text-cyan-400 font-semibold transition-colors"
+          >
+            View all →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brands Section -->
+    <section class="bg-gray-900 py-16">
+      <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+          @for (brand of brands; track brand.name) {
+          <div
+            class="bg-black rounded-lg p-6 flex items-center justify-center hover:bg-gray-800 transition-all hover:shadow-lg hover:shadow-primary/10 border border-gray-800"
+          >
+            <h3 class="text-xl font-bold text-white text-center">
+              {{ brand.name }}
+            </h3>
+          </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="bg-black py-16">
+      <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-white text-center mb-16">
+          Le Différence Pneu Mali
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div
+            class="text-center p-8 bg-gray-900 rounded-lg border border-gray-800"
+          >
+            <h3 class="text-2xl font-bold text-primary mb-4">Notre Mission</h3>
+            <p class="text-gray-300 leading-relaxed">
+              Révolutionner le marché malien de la vente en ligne de pneus en
+              offrant une expérience e-commerce fluide avec des pneus premium à
+              prix compétitifs.
+            </p>
+          </div>
+          <div
+            class="text-center p-8 bg-gray-900 rounded-lg border border-gray-800"
+          >
+            <h3 class="text-2xl font-bold text-primary mb-4">Notre Vision</h3>
+            <p class="text-gray-300 leading-relaxed">
+              Être le premier détaillant en ligne de pneus au Mali, reconnu pour
+              notre gamme complète, nos prix abordables et notre engagement
+              envers la qualité.
+            </p>
+          </div>
+          <div
+            class="text-center p-8 bg-gray-900 rounded-lg border border-gray-800"
+          >
+            <h3 class="text-2xl font-bold text-primary mb-4">Notre Promesse</h3>
+            <p class="text-gray-300 leading-relaxed">
+              Nous comprenons le rôle vital de votre véhicule et nous nous
+              engageons à le traiter avec le plus grand soin grâce à notre
+              technologie avancée.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="bg-gray-900 py-16">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold text-white mb-4">
+          ABONNEZ-VOUS POUR DES RÉDUCTIONS
+        </h2>
+        <p class="text-gray-400 mb-8">
+          Soyez le premier à connaître les nouvelles collections et les offres
+          exclusives.
+        </p>
+        <div class="max-w-md mx-auto flex gap-2">
+          <input
+            type="email"
+            placeholder="Email"
+            class="input input-bordered bg-black text-white border-gray-700 flex-1 focus:border-primary"
+          />
+          <button
+            class="btn bg-primary hover:bg-cyan-400 text-black border-none px-8"
+          >
+            →
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
+</div>

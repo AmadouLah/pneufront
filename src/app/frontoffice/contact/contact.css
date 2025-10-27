@@ -1,0 +1,13 @@
+input, textarea {
+  width: 100%;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+}
+
+textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+

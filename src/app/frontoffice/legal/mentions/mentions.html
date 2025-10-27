@@ -1,55 +1,52 @@
-<section class="mx-auto max-w-4xl p-4 sm:p-6">
-  <div class="card bg-base-100 shadow">
-    <div class="card-body">
-      <h1 class="card-title text-2xl sm:text-3xl">Mentions Légales</h1>
+<app-legal-layout title="Mentions Légales">
+  <section>
+    <h2>1. Éditeur du site</h2>
+    <p>
+      <strong>Pneu Mali</strong><br>
+      Siège social : Bamako, Mali<br>
+      Email : contact&#64;pneumali.com<br>
+      Téléphone : +223 XX XX XX XX
+    </p>
+  </section>
 
-      <div class="divider"></div>
+  <section>
+    <h2>2. Directeur de la publication</h2>
+    <p>
+      [Nom du directeur de publication]<br>
+      Email : [Email du directeur]
+    </p>
+  </section>
 
-      <article class="prose prose-sm sm:prose lg:prose-lg">
-        <h2>1. Éditeur</h2>
-        <p>
-          Bibliothèque Sup's — Application interne de gestion de bibliothèque
-          universitaire.
-        </p>
+  <section>
+    <h2>3. Hébergement</h2>
+    <p>
+      Ce site est hébergé par :<br>
+      [Nom de l'hébergeur]<br>
+      [Adresse de l'hébergeur]
+    </p>
+  </section>
 
-        <h2>2. Hébergement</h2>
-        <p>
-          Hébergeur: précisez votre hébergeur (raison sociale, adresse,
-          contact).
-        </p>
+  <section>
+    <h2>4. Conception et développement</h2>
+    <p>
+      Site web conçu et développé par <strong>Industrial Growth Hub</strong>
+    </p>
+  </section>
 
-        <h2>3. Directeur de la publication</h2>
-        <p>Nom et fonction de la personne responsable.</p>
+  <section>
+    <h2>5. Propriété intellectuelle</h2>
+    <p>
+      L'ensemble du contenu de ce site (textes, images, vidéos, etc.) est protégé par le droit d'auteur.
+      Toute reproduction, même partielle, est interdite sans autorisation préalable.
+    </p>
+  </section>
 
-        <h2>4. Contact</h2>
-        <p>
-          Pour toute demande, utilisez la page
-          <a routerLink="/contact" class="link">Contact</a>.
-        </p>
-
-        <h2>5. Propriété intellectuelle</h2>
-        <p>
-          Les contenus présents sur l'application sont protégés par le droit
-          d'auteur.
-        </p>
-
-        <h2>6. Autorité de contrôle (APDP - Mali)</h2>
-        <p>
-          En cas de réclamation relative à vos données personnelles, vous pouvez
-          contacter l'APDP (Autorité de Protection des Données à caractère
-          Personnel) du Mali.
-        </p>
-
-        <h2>7. Responsabilité</h2>
-        <p>
-          L'éditeur ne peut être tenu responsable des dommages liés à
-          l'utilisation du service.
-        </p>
-      </article>
-
-      <div class="card-actions justify-end mt-4">
-        <a routerLink="/" class="btn btn-outline">Retour à l'accueil</a>
-      </div>
-    </div>
-  </div>
-</section>
+  <section>
+    <h2>6. Responsabilité</h2>
+    <p>
+      Pneu Mali s'efforce d'assurer l'exactitude des informations publiées sur ce site,
+      mais ne peut être tenu responsable des erreurs, omissions ou des résultats qui pourraient être
+      obtenus par l'usage de ces informations.
+    </p>
+  </section>
+</app-legal-layout>
