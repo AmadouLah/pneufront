@@ -17,10 +17,12 @@ import { environment } from '../../environement';
 })
 export class ProfilComponent implements OnInit {
   user = signal<any>(null);
+  addresses = signal<any[]>([]);
   isLoading = signal(false);
   showEditModal = signal(false);
   showVerifyModal = signal(false);
   showAddAddressModal = signal(false);
+  editingAddressId = signal<number | null>(null);
   
   editForm: FormGroup;
   verifyForm: FormGroup;
@@ -55,19 +57,22 @@ export class ProfilComponent implements OnInit {
       code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
     });
 
+    // Formulaire d'adresse : seul le pays est obligatoire
+    // L'utilisateur peut ajouter les informations une par une
     this.addressForm = this.fb.group({
       isDefault: [false],
       country: ['MALI', Validators.required],
-      street: ['', Validators.required],
-      city: ['', Validators.required],
-      region: ['Bamako', Validators.required],
+      street: [''],
+      city: [''],
+      region: ['Bamako'],
       postalCode: [''],
-      phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{8,15}$/)]]
+      phoneNumber: ['', [Validators.pattern(/^[0-9]{8,15}$/)]]
     });
   }
 
   ngOnInit(): void {
     this.loadUserInfo();
+    this.loadAddresses();
   }
 
   /**
@@ -98,6 +103,41 @@ export class ProfilComponent implements OnInit {
       });
       this.originalEmail = userInfo.email;
     }
+  }
+
+  /**
+   * Charge les adresses de l'utilisateur
+   */
+  private loadAddresses(): void {
+    this.http.get(`${environment.apiUrl}/addresses`).subscribe({
+      next: (addresses: any) => {
+        this.addresses.set(addresses);
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des adresses:', error);
+      }
+    });
+  }
+
+  /**
+   * Vérifie si toutes les informations d'une adresse sont complètes
+   */
+  isAddressComplete(address: any): boolean {
+    return !!(
+      address.street &&
+      address.city &&
+      address.region &&
+      address.country &&
+      address.postalCode &&
+      address.phoneNumber
+    );
+  }
+
+  /**
+   * Vérifie si l'utilisateur a au moins une adresse complète
+   */
+  hasCompleteAddress(): boolean {
+    return this.addresses().some(addr => this.isAddressComplete(addr));
   }
 
   /**
@@ -227,14 +267,36 @@ export class ProfilComponent implements OnInit {
   }
 
   /**
-   * Ouvre le modal d'ajout d'adresse
+   * Ouvre le modal d'ajout/modification d'adresse
+   * Si toutes les infos sont complètes, charge l'adresse pour modification
+   * Sinon, ouvre en mode ajout avec les valeurs par défaut
    */
   openAddAddressModal(): void {
-    this.addressForm.reset({
-      isDefault: false,
-      country: 'MALI',
-      region: 'Bamako'
-    });
+    const existingAddresses = this.addresses();
+    
+    if (existingAddresses.length > 0) {
+      // Mode modification : charger la première adresse
+      const address = existingAddresses[0];
+      this.editingAddressId.set(address.id);
+      this.addressForm.patchValue({
+        isDefault: address.default || false,
+        country: address.country || 'MALI',
+        street: address.street || '',
+        city: address.city || '',
+        region: address.region || 'Bamako',
+        postalCode: address.postalCode || '',
+        phoneNumber: address.phoneNumber || ''
+      });
+    } else {
+      // Mode ajout : valeurs par défaut
+      this.editingAddressId.set(null);
+      this.addressForm.reset({
+        isDefault: false,
+        country: 'MALI',
+        region: 'Bamako'
+      });
+    }
+    
     this.showAddAddressModal.set(true);
     this.errorMessage.set('');
     this.successMessage.set('');
@@ -258,29 +320,36 @@ export class ProfilComponent implements OnInit {
   }
 
   /**
-   * Sauvegarde l'adresse
+   * Sauvegarde l'adresse (ajout ou modification)
+   * L'utilisateur peut ajouter/modifier les informations une par une
    */
   saveAddress(): void {
-    if (this.addressForm.invalid) {
-      this.errorMessage.set('Veuillez remplir tous les champs obligatoires');
+    // Vérifier uniquement que le pays est fourni
+    if (this.addressForm.get('country')?.invalid) {
+      this.errorMessage.set('Le pays est obligatoire');
       return;
     }
 
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    this.http.post(`${environment.apiUrl}/addresses`, this.addressForm.value).subscribe({
+    const addressId = this.editingAddressId();
+    const apiCall = addressId
+      ? this.http.put(`${environment.apiUrl}/addresses/${addressId}`, this.addressForm.value)
+      : this.http.post(`${environment.apiUrl}/addresses`, this.addressForm.value);
+
+    apiCall.subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.successMessage.set('Adresse ajoutée avec succès');
+        this.successMessage.set(addressId ? 'Adresse modifiée avec succès' : 'Adresse enregistrée avec succès');
         setTimeout(() => {
           this.closeAddAddressModal();
-          this.loadUserInfo();
+          this.loadAddresses(); // Recharger les adresses
         }, 1500);
       },
       error: (error) => {
         this.isLoading.set(false);
-        this.errorMessage.set(error.error?.message || 'Erreur lors de l\'ajout de l\'adresse');
+        this.errorMessage.set(error.error?.message || 'Erreur lors de l\'enregistrement de l\'adresse');
       }
     });
   }
