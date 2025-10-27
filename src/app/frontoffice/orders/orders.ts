@@ -5,13 +5,13 @@ import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
 
 @Component({
-  selector: 'app-favoris',
+  selector: 'app-orders',
   standalone: true,
   imports: [CommonModule, RouterModule, HeaderComponent, FooterComponent],
-  templateUrl: './mes-favoris.html',
-  styleUrls: ['./mes-favoris.css']
+  templateUrl: './orders.html',
+  styleUrls: ['./orders.css']
 })
-export class MesFavorisComponent {
-  favoris: any[] = [];
+export class OrdersComponent {
+  orders: any[] = [];
 }
 

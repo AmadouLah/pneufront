@@ -14,6 +14,7 @@ import { Authservice } from '../../services/authservice';
 export class HeaderComponent {
   mobileMenuOpen = signal(false);
   searchOpen = signal(false);
+  userMenuOpen = signal(false);
   isAuthenticated = signal(false);
   cartItemCount = signal(0);
   searchForm: FormGroup;
@@ -58,6 +59,20 @@ export class HeaderComponent {
   }
 
   /**
+   * Toggle du menu utilisateur
+   */
+  toggleUserMenu(): void {
+    this.userMenuOpen.set(!this.userMenuOpen());
+  }
+
+  /**
+   * Ferme le menu utilisateur
+   */
+  closeUserMenu(): void {
+    this.userMenuOpen.set(false);
+  }
+
+  /**
    * Navigation vers la page de connexion
    */
   navigateToLogin(): void {
@@ -75,6 +90,7 @@ export class HeaderComponent {
    * Déconnexion
    */
   logout(): void {
+    this.closeUserMenu();
     const refreshToken = localStorage.getItem('refreshToken');
     if (refreshToken) {
       this.authService.logout(refreshToken).subscribe({
@@ -94,6 +110,14 @@ export class HeaderComponent {
       this.isAuthenticated.set(false);
       this.router.navigate(['/']);
     }
+  }
+
+  /**
+   * Navigation vers une page et fermeture du menu
+   */
+  navigateAndCloseMenu(route: string): void {
+    this.closeUserMenu();
+    this.router.navigate([route]);
   }
 
   /**

@@ -132,12 +132,11 @@
         </button>
 
         <!-- User Icon -->
-        @if (isAuthenticated()) {
-        <div class="dropdown dropdown-end">
+        <div class="relative">
           <button
-            tabindex="0"
+            (click)="isAuthenticated() ? toggleUserMenu() : navigateToLogin()"
             class="text-white hover:text-primary transition-colors p-2"
-            aria-label="Compte"
+            aria-label="Compte utilisateur"
           >
             <svg
               class="w-5 h-5"
@@ -153,61 +152,49 @@
               />
             </svg>
           </button>
-          <ul
-            tabindex="0"
-            class="dropdown-content menu bg-black border border-gray-800 rounded-box w-52 p-2 shadow-xl z-50 mt-2"
+
+          <!-- Dropdown menu (only visible when authenticated and clicked) -->
+          @if (isAuthenticated() && userMenuOpen()) {
+          <div
+            class="absolute right-0 mt-2 w-52 bg-black border border-gray-800 rounded-lg shadow-xl z-50"
           >
-            <li>
-              <a
-                routerLink="/frontoffice/profil"
-                class="text-white hover:text-primary hover:bg-gray-900"
-                >Mon profil</a
-              >
-            </li>
-            <li>
-              <a
-                routerLink="/orders"
-                class="text-white hover:text-primary hover:bg-gray-900"
-                >Mes commandes</a
-              >
-            </li>
-            <li>
-              <a
-                routerLink="/frontoffice/favoris"
-                class="text-white hover:text-primary hover:bg-gray-900"
-                >Mes favoris</a
-              >
-            </li>
-            <li>
-              <a
-                (click)="logout()"
-                class="text-white hover:text-primary hover:bg-gray-900 cursor-pointer"
-                >Déconnexion</a
-              >
-            </li>
-          </ul>
+            <ul class="py-2">
+              <li>
+                <a
+                  (click)="navigateAndCloseMenu('/frontoffice/profil')"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                >
+                  Mon profil
+                </a>
+              </li>
+              <li>
+                <a
+                  (click)="navigateAndCloseMenu('/orders')"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                >
+                  Mes commandes
+                </a>
+              </li>
+              <li>
+                <a
+                  (click)="navigateAndCloseMenu('/frontoffice/favoris')"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                >
+                  Mes favoris
+                </a>
+              </li>
+              <li>
+                <a
+                  (click)="logout()"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                >
+                  Déconnexion
+                </a>
+              </li>
+            </ul>
+          </div>
+          }
         </div>
-        } @else {
-        <button
-          (click)="navigateToLogin()"
-          class="text-white hover:text-primary transition-colors p-2"
-          aria-label="Connexion"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            />
-          </svg>
-        </button>
-        }
 
         <!-- Cart Icon with Badge -->
         <button
@@ -239,6 +226,11 @@
     </div>
   </div>
 </header>
+
+<!-- User Menu Overlay (to close when clicking outside) -->
+@if (userMenuOpen()) {
+<div class="fixed inset-0 z-40" (click)="closeUserMenu()"></div>
+}
 
 <!-- Mobile Menu Drawer -->
 @if (mobileMenuOpen()) {

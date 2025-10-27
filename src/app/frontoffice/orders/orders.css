@@ -1,4 +1,4 @@
-/* Profile page styles */
+/* Orders page styles */
 
 h1 {
   color: white;
@@ -9,17 +9,12 @@ h1 {
 }
 
 .bg-gray-900:hover {
-  border-color: rgba(0, 217, 255, 0.3);
+  border-color: #00d9ff;
 }
 
 /* Smooth transitions */
-button {
+a {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Info icon and message styling */
-.bg-gray-800 {
-  background-color: rgba(31, 41, 55, 0.5);
 }
 
 /* Focus visible pour accessibilité */
@@ -27,3 +22,4 @@ button {
   outline: 2px solid #00d9ff;
   outline-offset: 2px;
 }
+

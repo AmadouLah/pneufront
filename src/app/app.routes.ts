@@ -43,6 +43,16 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'orders',
+    loadComponent: () => import('./frontoffice/orders/orders').then(m => m.OrdersComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'frontoffice/favoris',
+    loadComponent: () => import('./frontoffice/favoris/mes-favoris').then(m => m.MesFavorisComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'frontoffice/legal/terms',
     loadComponent: () => import('./frontoffice/legal/terms/terms').then(m => m.TermsComponent)
   },

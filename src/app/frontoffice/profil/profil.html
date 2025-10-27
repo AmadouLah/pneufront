@@ -1,129 +1,479 @@
-<div class="min-h-screen flex flex-col">
+<div class="min-h-screen bg-black flex flex-col">
+  <!-- Header -->
   <app-header></app-header>
 
-  <main class="flex-1 bg-base-200">
-    <div class="container mx-auto px-4 py-12">
-      <div class="max-w-4xl mx-auto">
-        <!-- En-tête -->
-        <div class="text-center mb-8">
-          <h1 class="text-4xl font-bold mb-2">Mon Profil</h1>
-          <p class="text-base-content/70">Gérez vos informations personnelles</p>
+  <!-- Main Content -->
+  <main class="flex-1 pt-20">
+    <div class="container mx-auto px-6 py-12 max-w-4xl">
+      <!-- Page Title -->
+      <h1 class="text-4xl font-bold text-white mb-12">Profile</h1>
+
+      <!-- Success Message -->
+      @if (successMessage()) {
+      <div
+        class="bg-green-900 border border-green-700 text-white px-4 py-3 rounded-lg mb-6"
+      >
+        {{ successMessage() }}
+      </div>
+      }
+
+      <!-- Profile Information Section -->
+      <div class="bg-gray-900 rounded-lg border border-gray-800 p-8 mb-6">
+        <!-- Name -->
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-white text-lg">Name</span>
+            <button
+              (click)="openEditModal()"
+              class="text-primary hover:text-cyan-400 transition-colors"
+              aria-label="Edit profile"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                />
+              </svg>
+            </button>
+          </div>
+          @if (user()) {
+          <div class="text-white">
+            {{ user().firstName || '' }} {{ user().lastName || '' }}
+          </div>
+          }
         </div>
 
-        @if (user()) {
-          <!-- Card Profil -->
-          <div class="card bg-base-100 shadow-xl mb-6">
-            <div class="card-body">
-              <div class="flex items-center gap-6 mb-6">
-                <div class="avatar placeholder">
-                  <div class="bg-primary text-primary-content rounded-full w-24">
-                    <span class="text-3xl">{{ user().firstName?.charAt(0) || 'U' }}{{ user().lastName?.charAt(0) || '' }}</span>
-                  </div>
-                </div>
-                <div>
-                  <h2 class="text-2xl font-bold">{{ user().firstName }} {{ user().lastName }}</h2>
-                  <p class="text-base-content/70">{{ user().email }}</p>
-                  <div class="badge badge-primary mt-2">{{ user().role }}</div>
-                </div>
-              </div>
-
-              <div class="divider"></div>
-
-              <!-- Informations -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 class="font-semibold text-lg mb-4">Informations personnelles</h3>
-                  <div class="space-y-3">
-                    <div>
-                      <p class="text-sm text-base-content/60">Prénom</p>
-                      <p class="font-medium">{{ user().firstName || 'Non renseigné' }}</p>
-                    </div>
-                    <div>
-                      <p class="text-sm text-base-content/60">Nom</p>
-                      <p class="font-medium">{{ user().lastName || 'Non renseigné' }}</p>
-                    </div>
-                    <div>
-                      <p class="text-sm text-base-content/60">Email</p>
-                      <p class="font-medium">{{ user().email }}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 class="font-semibold text-lg mb-4">Compte</h3>
-                  <div class="space-y-3">
-                    <div>
-                      <p class="text-sm text-base-content/60">ID Utilisateur</p>
-                      <p class="font-medium">#{{ user().id }}</p>
-                    </div>
-                    <div>
-                      <p class="text-sm text-base-content/60">Rôle</p>
-                      <p class="font-medium">{{ user().role }}</p>
-                    </div>
-                    <div>
-                      <p class="text-sm text-base-content/60">Statut</p>
-                      <span class="badge badge-success">Actif</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button class="btn btn-outline btn-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              Modifier le profil
-            </button>
-
-            <button (click)="changePassword()" class="btn btn-outline">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              Changer mot de passe
-            </button>
-
-            <button
-              (click)="logout()"
-              class="btn btn-error btn-outline"
-              [disabled]="isLoading()"
-            >
-              @if (isLoading()) {
-                <span class="loading loading-spinner"></span>
-              } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              }
-              Se déconnecter
-            </button>
-          </div>
-
-          <!-- Section Admin -->
-          @if (user().role === 'ADMIN' || user().role === 'DEVELOPER') {
-            <div class="card bg-primary text-primary-content shadow-xl mt-6">
-              <div class="card-body">
-                <h3 class="card-title">Accès Administration</h3>
-                <p>Vous avez accès au panneau d'administration</p>
-                <div class="card-actions justify-end">
-                  <a routerLink="/dashboard" class="btn btn-ghost bg-base-100 text-primary">
-                    Aller au Dashboard
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
+        <!-- Email -->
+        <div>
+          <div class="text-white text-lg mb-2">Email</div>
+          @if (user()) {
+          <div class="text-white">{{ user().email }}</div>
           }
-        }
+        </div>
+      </div>
+
+      <!-- Addresses Section -->
+      <div class="bg-gray-900 rounded-lg border border-gray-800 p-8">
+        <!-- Addresses Header -->
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-white text-2xl font-semibold">Addresses</h2>
+          <button
+            (click)="openAddAddressModal()"
+            class="flex items-center gap-2 text-primary hover:text-cyan-400 transition-colors font-medium"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <span>Add</span>
+          </button>
+        </div>
+
+        <!-- No Addresses Message -->
+        <div
+          class="bg-gray-800 rounded-lg p-8 flex items-center justify-center gap-3"
+        >
+          <svg
+            class="w-6 h-6 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span class="text-gray-500 text-lg">No addresses added</span>
+        </div>
       </div>
     </div>
   </main>
 
+  <!-- Footer -->
   <app-footer></app-footer>
-</div>
 
+  <!-- Edit Profile Modal -->
+  @if (showEditModal()) {
+  <div
+    class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+  >
+    <div
+      class="bg-gray-900 rounded-lg border border-gray-800 max-w-2xl w-full p-8"
+    >
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-white text-2xl font-bold">Edit profile</h2>
+        <button
+          (click)="closeEditModal()"
+          class="text-white hover:text-primary transition-colors"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      @if (errorMessage()) {
+      <div
+        class="bg-red-900 border border-red-700 text-white px-4 py-3 rounded-lg mb-6"
+      >
+        {{ errorMessage() }}
+      </div>
+      }
+
+      <!-- Edit Form -->
+      <form [formGroup]="editForm" (ngSubmit)="saveProfile()">
+        <!-- First Name & Last Name -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-gray-400 mb-2">First name</label>
+            <input
+              type="text"
+              formControlName="firstName"
+              class="w-full bg-gray-800 border-2 border-primary text-white px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+              placeholder="First name"
+              autofocus
+            />
+          </div>
+          <div>
+            <label class="block text-gray-400 mb-2">Last name</label>
+            <input
+              type="text"
+              formControlName="lastName"
+              class="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+              placeholder="Last name"
+            />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-2">
+          <label class="block text-gray-400 mb-2">Email</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+            placeholder="Email"
+          />
+        </div>
+        <p class="text-gray-500 text-sm mb-6">
+          This email is used for sign-in and order updates.
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end gap-4">
+          <button
+            type="button"
+            (click)="closeEditModal()"
+            class="px-6 py-3 border border-gray-600 text-primary rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="isLoading() || editForm.invalid"
+            class="px-6 py-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ isLoading() ? 'Saving...' : 'Save' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+
+  <!-- Verify Email Modal -->
+  @if (showVerifyModal()) {
+  <div
+    class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+  >
+    <div
+      class="bg-gray-900 rounded-lg border border-gray-800 max-w-md w-full p-8"
+    >
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-white text-2xl font-bold">Verify email</h2>
+        <button
+          (click)="closeVerifyModal()"
+          class="text-white hover:text-primary transition-colors"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <p class="text-white mb-6">
+        Enter the code sent to {{ editForm.value.email }}
+      </p>
+
+      <!-- Error Message -->
+      @if (errorMessage()) {
+      <div
+        class="bg-red-900 border border-red-700 text-white px-4 py-3 rounded-lg mb-6"
+      >
+        {{ errorMessage() }}
+      </div>
+      }
+
+      <!-- Success Message -->
+      @if (successMessage()) {
+      <div
+        class="bg-green-900 border border-green-700 text-white px-4 py-3 rounded-lg mb-6"
+      >
+        {{ successMessage() }}
+      </div>
+      }
+
+      <!-- Verify Form -->
+      <form [formGroup]="verifyForm" (ngSubmit)="verifyEmail()">
+        <div class="mb-4">
+          <input
+            type="text"
+            formControlName="code"
+            maxlength="6"
+            class="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+            placeholder="6-digit code"
+            autofocus
+          />
+        </div>
+
+        <button
+          type="button"
+          (click)="resendCode()"
+          class="text-primary hover:text-cyan-400 transition-colors mb-6"
+        >
+          Resend code
+        </button>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end gap-4">
+          <button
+            type="button"
+            (click)="closeVerifyModal()"
+            class="px-6 py-3 border border-gray-600 text-primary rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="isLoading() || verifyForm.invalid"
+            class="px-6 py-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ isLoading() ? 'Verifying...' : 'Verify' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+
+  <!-- Add Address Modal -->
+  @if (showAddAddressModal()) {
+  <div
+    class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+  >
+    <div
+      class="bg-gray-900 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-800"
+    >
+      <!-- Modal Header -->
+      <div
+        class="flex items-center justify-between p-6 border-b border-gray-800"
+      >
+        <h2 class="text-white text-2xl font-semibold">Add address</h2>
+        <button
+          (click)="closeAddAddressModal()"
+          class="text-gray-400 hover:text-white transition-colors"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Form -->
+      <form
+        [formGroup]="addressForm"
+        (ngSubmit)="saveAddress()"
+        class="p-6 space-y-6"
+      >
+        <!-- Error Message -->
+        @if (errorMessage()) {
+        <div
+          class="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg"
+        >
+          {{ errorMessage() }}
+        </div>
+        }
+
+        <!-- Success Message -->
+        @if (successMessage()) {
+        <div
+          class="bg-green-500/10 border border-green-500 text-green-500 px-4 py-3 rounded-lg"
+        >
+          {{ successMessage() }}
+        </div>
+        }
+
+        <!-- Default Address Checkbox -->
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            formControlName="isDefault"
+            class="w-5 h-5 rounded border-gray-700 bg-gray-800 text-primary focus:ring-primary focus:ring-offset-gray-900"
+          />
+          <span class="text-gray-300">This is my default address</span>
+        </label>
+
+        <!-- Country/Region -->
+        <div>
+          <label class="block text-gray-300 mb-2">Country/region</label>
+          <select
+            formControlName="country"
+            class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+          >
+            @for (country of countries; track country.code) {
+            <option [value]="country.code">{{ country.name }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Address/Street -->
+        <div>
+          <label class="block text-gray-300 mb-2">Address</label>
+          <textarea
+            formControlName="street"
+            rows="3"
+            placeholder="Street address, house number, etc."
+            class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
+          ></textarea>
+        </div>
+
+        <!-- City, Region, Postal Code -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- City -->
+          <div>
+            <label class="block text-gray-300 mb-2">City</label>
+            <input
+              type="text"
+              formControlName="city"
+              placeholder="City"
+              class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
+            />
+          </div>
+
+          <!-- Region -->
+          <div>
+            <label class="block text-gray-300 mb-2">Region</label>
+            <select
+              formControlName="region"
+              class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+            >
+              @for (region of regions; track region) {
+              <option [value]="region">{{ region }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Postal Code -->
+          <div>
+            <label class="block text-gray-300 mb-2">Postal code</label>
+            <input
+              type="text"
+              formControlName="postalCode"
+              placeholder="Postal code"
+              class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
+            />
+          </div>
+        </div>
+
+        <!-- Phone Number with Country Prefix -->
+        <div>
+          <label class="block text-gray-300 mb-2">Phone</label>
+          <div class="flex gap-2">
+            <div
+              class="flex items-center px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-300"
+            >
+              {{ getPhonePrefix() }}
+            </div>
+            <input
+              type="tel"
+              formControlName="phoneNumber"
+              placeholder="Phone number"
+              class="flex-1 px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
+            />
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-4 justify-end pt-4">
+          <button
+            type="button"
+            (click)="closeAddAddressModal()"
+            class="px-6 py-3 text-primary hover:text-cyan-400 transition-colors font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="isLoading() || addressForm.invalid"
+            class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+          >
+            {{ isLoading() ? 'Saving...' : 'Save' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+</div>
