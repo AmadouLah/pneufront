@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Authservice } from '../../services/authservice';
 import { FormHelperService } from '../../shared/services/form-helper.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthResponse, CodeRequiredResponse } from '../../shared/types/auth';
 
 @Component({
   selector: 'app-login',
@@ -108,21 +109,21 @@ export class LoginComponent {
       email: this.email(),
       password: this.loginForm.value.password
     }).subscribe({
-      next: (response) => {
-        // Connexion réussie sans 2FA
-        this.isLoading.set(false);
-        this.authService.saveAuthData(response);
-        this.redirectToDashboard();
-      },
-      error: (error: HttpErrorResponse) => {
+      next: (response: AuthResponse | CodeRequiredResponse) => {
         this.isLoading.set(false);
         
-        // Si code 202 : 2FA requis, le code a été envoyé par le backend
-        if (error.status === 202 && error.error?.status === 'CODE_REQUIRED') {
+        // Vérifier si c'est une réponse 2FA (status CODE_REQUIRED dans le body)
+        if ('status' in response && response.status === 'CODE_REQUIRED') {
           this.navigateToVerification(this.email(), '2fa');
           return;
         }
         
+        // Connexion réussie sans 2FA (ne devrait jamais arriver pour ADMIN/DEVELOPER)
+        this.authService.saveAuthData(response as AuthResponse);
+        this.redirectToDashboard();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoading.set(false);
         this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Identifiants invalides'));
       }
     });
@@ -162,9 +163,9 @@ export class LoginComponent {
   }
 
   /**
-   * Helper : Redirection vers le dashboard
+   * Redirige vers la page d'accueil après connexion réussie
    */
   private redirectToDashboard(): void {
-    this.router.navigate(['/dashboard'], { replaceUrl: true });
+    this.router.navigate(['/'], { replaceUrl: true });
   }
 }

@@ -210,6 +210,16 @@
 
             <!-- Menu Options -->
             <ul class="py-2">
+              @if (isAdminOrDeveloper()) {
+              <li>
+                <a
+                  (click)="navigateAndCloseMenu('/dashboard')"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
+                >
+                  Dashboard
+                </a>
+              </li>
+              }
               <li>
                 <a
                   (click)="navigateAndCloseMenu('/frontoffice/profil')"

@@ -94,7 +94,7 @@ export class VerifyComponent implements OnDestroy {
         this.isLoading.set(false);
         this.authService.saveAuthData(response);
         this.clearStoredAuthData();
-        this.redirectBasedOnRole(response.userInfo.role);
+        this.redirectToHome();
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading.set(false);
@@ -148,14 +148,10 @@ export class VerifyComponent implements OnDestroy {
   }
 
   /**
-   * Helper : Redirige l'utilisateur selon son rôle
+   * Redirige tous les utilisateurs vers la page d'accueil après vérification
    */
-  private redirectBasedOnRole(role: string): void {
-    if (role === 'ADMIN' || role === 'DEVELOPER') {
-      this.router.navigate(['/dashboard'], { replaceUrl: true });
-    } else {
-      this.router.navigate(['/'], { replaceUrl: true });
-    }
+  private redirectToHome(): void {
+    this.router.navigate(['/'], { replaceUrl: true });
   }
 
   private startCountdown(): void {

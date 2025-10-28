@@ -14,6 +14,7 @@ import {
   RefreshTokenRequest,
   MessageResponse,
   StartLoginResponse,
+  CodeRequiredResponse,
 } from '../shared/types/auth';
 
 @Injectable({ providedIn: 'root' })
@@ -40,10 +41,10 @@ export class Authservice {
   /**
    * Connexion classique avec email + mot de passe (pour ADMIN/DEVELOPER)
    * @param payload Credentials (email + password)
-   * @returns AuthResponse ou CodeRequiredResponse (status 202) si 2FA requis
+   * @returns AuthResponse (connexion directe) ou CodeRequiredResponse (si 2FA requis - status HTTP 202)
    */
-  login(payload: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, payload)
+  login(payload: LoginRequest): Observable<AuthResponse | CodeRequiredResponse> {
+    return this.http.post<AuthResponse | CodeRequiredResponse>(`${this.baseUrl}/login`, payload)
       .pipe(catchError(this.handleError));
   }
 

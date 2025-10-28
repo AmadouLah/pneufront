@@ -76,6 +76,16 @@ export class HeaderComponent {
   }
 
   /**
+   * Vérifie si l'utilisateur connecté est un administrateur ou développeur
+   * @returns true si ADMIN ou DEVELOPER, false sinon
+   */
+  isAdminOrDeveloper(): boolean {
+    const user = this.getUserInfo();
+    if (!user?.role) return false;
+    return user.role === 'ADMIN' || user.role === 'DEVELOPER';
+  }
+
+  /**
    * Toggle du menu mobile
    */
   toggleMobileMenu(): void {
