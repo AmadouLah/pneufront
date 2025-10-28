@@ -206,7 +206,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             borderWidth: 1,
             displayColors: false,
             callbacks: {
-              label: (context) => {
+              label: (context: any) => {
                 const value = context.parsed.y ?? 0;
                 return `${this.formatCurrency(value)}`;
               }
@@ -217,7 +217,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           y: {
             beginAtZero: true,
             ticks: {
-              callback: (value) => this.formatCurrency(Number(value))
+              callback: (value: any) => this.formatCurrency(Number(value))
             },
             grid: {
               color: '#f3f4f6'
@@ -272,7 +272,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             backgroundColor: '#1f2937',
             padding: 12,
             callbacks: {
-              label: (context) => {
+              label: (context: any) => {
                 const label = context.label || '';
                 const value = context.parsed;
                 const percent = context.dataIndex === 0 ? malePercent : femalePercent;
