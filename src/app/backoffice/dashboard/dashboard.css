@@ -1,0 +1,123 @@
+/* Dashboard Styles */
+
+/* Animations pour les cartes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bg-white {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Responsive tables */
+@media (max-width: 768px) {
+  table {
+    font-size: 0.875rem;
+  }
+  
+  th, td {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Chart containers */
+canvas {
+  max-height: 100%;
+}
+
+/* Hover effects for cards */
+.bg-white:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Trend indicators animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.text-green-600, .text-red-600 {
+  animation: pulse 2s infinite;
+}
+
+/* Progress bars animation */
+@keyframes progressBar {
+  from {
+    width: 0;
+  }
+}
+
+.bg-green-500, .bg-red-500, .bg-gray-400 {
+  animation: progressBar 1s ease-out;
+}
+
+/* Table row hover effect */
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+  transform: translateX(4px);
+}
+
+/* Button hover effects */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 1024px) {
+  .grid {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .p-6 {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.125rem;
+  }
+}
+
+/* Mode sombre pour le dashboard */
+.dark .bg-white,
+[data-theme="dark"] .bg-white {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.dark .bg-white:hover,
+[data-theme="dark"] .bg-white:hover {
+  box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color) !important;
+}
+
+/* Charts en mode sombre */
+.dark canvas,
+[data-theme="dark"] canvas {
+  filter: brightness(0.9);
+}
+

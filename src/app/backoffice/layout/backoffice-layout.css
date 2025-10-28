@@ -1,0 +1,153 @@
+/* Layout Backoffice - Header professionnel */
+
+/* Header */
+header {
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Transition smooth pour le contenu principal */
+main {
+  min-height: calc(100vh - 4rem);
+  transition: padding-left 0.3s ease;
+}
+
+/* Avatar gradient animation */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-gradient-to-br {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* Search input focus effect */
+input[type="text"]:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Notification badge pulse */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+button[aria-label="Notifications"] span {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Dropdown menu animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.absolute.right-0.mt-2 {
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Hover effects */
+button:hover {
+  transform: translateY(-1px);
+  transition: transform 0.2s ease;
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  main {
+    padding-left: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .text-xl {
+    font-size: 1rem;
+  }
+}
+
+/* Logo hover effect */
+a img {
+  transition: transform 0.3s ease;
+}
+
+a:hover img {
+  transform: scale(1.05);
+}
+
+/* User menu items hover */
+.hover\:bg-gray-50:hover {
+  background-color: rgb(249 250 251);
+  transition: background-color 0.15s ease;
+}
+
+.hover\:bg-red-50:hover {
+  background-color: rgb(254 242 242);
+  transition: background-color 0.15s ease;
+}
+
+/* Smooth transitions pour tous les éléments interactifs */
+button,
+a,
+input {
+  transition: all 0.2s ease;
+}
+
+/* Z-index management */
+header {
+  z-index: 50;
+}
+
+aside {
+  z-index: 40;
+}
+
+main {
+  z-index: 10;
+}
+
+/* Badge role styling */
+.bg-blue-100 {
+  background-color: #dbeafe;
+}
+
+.text-blue-700 {
+  color: #1d4ed8;
+}
+
+.bg-purple-100 {
+  background-color: #f3e8ff;
+}
+
+.text-purple-700 {
+  color: #7c3aed;
+}

@@ -5,417 +5,316 @@
   (click)="toggleSidebar()"
 ></div>
 
+<!-- Sidebar -->
 <aside
-  class="w-64 bg-base-100 border-r border-base-200 fixed top-16 bottom-0 left-0 z-40 overflow-y-auto shadow-lg transition-transform duration-300 ease-in-out transform lg:translate-x-0"
+  class="w-64 bg-white fixed top-16 bottom-0 left-0 z-40 overflow-y-auto shadow-lg transition-transform duration-300 ease-in-out transform lg:translate-x-0"
   [ngClass]="{
     '-translate-x-full': !sidebarOpen,
     'translate-x-0': sidebarOpen
   }"
 >
-  <div class="p-4 space-y-6">
-    <!-- Section Navigation principale -->
-    <div>
+  <div class="flex flex-col h-full p-4">
+    <!-- Section MENU -->
+    <div class="flex-1">
       <div
-        class="text-xs font-semibold text-base-content/60 uppercase tracking-wider mb-4 px-2"
+        class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-2"
       >
-        <div class="flex items-center gap-2">
+        MENU
+      </div>
+
+      <ul class="space-y-1">
+        <!-- Dashboard -->
+        <li>
+          <a
+            routerLink="/dashboard"
+            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              />
+            </svg>
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- Products -->
+        <li>
+          <a
+            routerLink="/dashboard/products"
+            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+              />
+            </svg>
+            <span class="font-medium text-sm">Products</span>
+            @if (countProducts !== null) {
+            <span
+              class="ml-auto text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full"
+            >
+              {{ countProducts }}
+            </span>
+            }
+          </a>
+        </li>
+
+        <!-- Orders -->
+        <li>
+          <a
+            routerLink="/dashboard/orders"
+            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+              />
+            </svg>
+            <span class="font-medium text-sm">Orders</span>
+            @if (countPendingOrders !== null && countPendingOrders > 0) {
+            <span
+              class="ml-auto text-xs bg-blue-500 text-white px-2 py-1 rounded-full"
+            >
+              {{ countPendingOrders }}
+            </span>
+            }
+          </a>
+        </li>
+
+        <!-- Customers -->
+        <li>
+          <a
+            routerLink="/dashboard/customers"
+            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+            <span class="font-medium text-sm">Customers</span>
+            @if (countCustomers !== null) {
+            <span
+              class="ml-auto text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full"
+            >
+              {{ countCustomers }}
+            </span>
+            }
+          </a>
+        </li>
+
+        <!-- Income -->
+        <li>
+          <a
+            routerLink="/dashboard/income"
+            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+              />
+            </svg>
+            <span class="font-medium text-sm">Income</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Divider -->
+      <div class="my-6 border-t border-gray-200"></div>
+
+      <!-- Section OTHER -->
+      <div
+        class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-2"
+      >
+        OTHER
+      </div>
+
+      <ul class="space-y-1">
+        <!-- Settings -->
+        <li>
+          <a
+            routerLink="/dashboard/settings"
+            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </li>
+
+        <!-- Help & Privacy -->
+        <li>
+          <a
+            routerLink="/dashboard/help"
+            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+            <span class="font-medium text-sm">Help & Privacy</span>
+          </a>
+        </li>
+
+        <!-- Logout -->
+        <li>
+          <button
+            (click)="logout()"
+            class="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            <span class="font-medium text-sm">Logout</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Theme Toggle - Bas du sidebar -->
+    <div class="mt-auto pt-6">
+      <div class="bg-gray-100 rounded-full p-1 flex">
+        <!-- Light Mode -->
+        <button
+          (click)="switchTheme('light')"
+          [class.bg-white]="currentTheme() === 'light'"
+          [class.shadow-sm]="currentTheme() === 'light'"
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-200"
+        >
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
             class="w-4 h-4"
+            [class.text-yellow-500]="currentTheme() === 'light'"
+            [class.text-gray-500]="currentTheme() !== 'light'"
+            fill="currentColor"
+            viewBox="0 0 20 20"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+              fill-rule="evenodd"
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+              clip-rule="evenodd"
             />
           </svg>
-          Navigation
-        </div>
-      </div>
-
-      <ul class="space-y-1">
-        <!-- Tableau de bord -->
-        <li>
-          <a
-            routerLink="/backoffice/dashboard"
-            routerLinkActive="bg-primary/10 text-primary border-l-4 border-primary"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="group flex items-center gap-3 px-3 py-3 rounded-xl text-base-content hover:bg-base-200 hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
+          <span
+            class="text-sm font-medium"
+            [class.text-gray-900]="currentTheme() === 'light'"
+            [class.text-gray-500]="currentTheme() !== 'light'"
           >
-            <div
-              class="p-2 rounded-lg bg-primary/20 group-hover:bg-primary/30 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
-                />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <span class="font-semibold text-sm">Tableau de bord</span>
-              <div class="text-xs text-primary/70 mt-0.5">Vue d'ensemble</div>
-            </div>
-            <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-          </a>
-        </li>
+            Light
+          </span>
+        </button>
 
-        <!-- Gestion des auteurs -->
-        <li>
-          <a
-            routerLink="/backoffice/auteurs"
-            routerLinkActive="bg-primary/10 text-primary border-l-4 border-primary"
-            class="group flex items-center gap-3 px-3 py-3 rounded-xl text-base-content hover:bg-base-200 hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
-          >
-            <div
-              class="p-2 rounded-lg bg-base-200 group-hover:bg-primary/10 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5 group-hover:text-primary transition-colors duration-200"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-                />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <span class="font-medium text-sm">Gestion des auteurs</span>
-              <div class="text-xs text-base-content/60 mt-0.5">Référentiel</div>
-            </div>
-          </a>
-        </li>
-
-        <!-- Gestion des catégories -->
-        <li>
-          <a
-            routerLink="/backoffice/categories"
-            routerLinkActive="bg-primary/10 text-primary border-l-4 border-primary"
-            class="group flex items-center gap-3 px-3 py-3 rounded-xl text-base-content hover:bg-base-200 hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
-          >
-            <div
-              class="p-2 rounded-lg bg-base-200 group-hover:bg-primary/10 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5 group-hover:text-primary transition-colors duration-200"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"
-                />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <span class="font-medium text-sm">Gestion des catégories</span>
-              <div class="text-xs text-base-content/60 mt-0.5">Référentiel</div>
-            </div>
-          </a>
-        </li>
-
-        <!-- Gestion des livres -->
-        <li>
-          <a
-            routerLink="/backoffice/livres"
-            routerLinkActive="bg-primary/10 text-primary border-l-4 border-primary"
-            class="group flex items-center gap-3 px-3 py-3 rounded-xl text-base-content hover:bg-base-200 hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
-          >
-            <div
-              class="p-2 rounded-lg bg-base-200 group-hover:bg-primary/10 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5 group-hover:text-primary transition-colors duration-200"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-                />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <span class="font-medium text-sm">Gestion des livres</span>
-              <div class="text-xs text-base-content/60 mt-0.5">
-                Catalogue complet
-              </div>
-            </div>
-            <div class="badge badge-ghost badge-sm">
-              {{ countLivres ?? "…" }}
-            </div>
-          </a>
-        </li>
-
-        <!-- Emprunts -->
-        <li>
-          <a
-            routerLink="/backoffice/emprunts"
-            routerLinkActive="bg-primary/10 text-primary border-l-4 border-primary"
-            class="group flex items-center gap-3 px-3 py-3 rounded-xl text-base-content hover:bg-base-200 hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
-          >
-            <div
-              class="p-2 rounded-lg bg-base-200 group-hover:bg-secondary/10 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5 group-hover:text-secondary transition-colors duration-200"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a3.375 3.375 0 00-3.375 3.375V18.75m0 0H6A2.25 2.25 0 013.75 16.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a3.375 3.375 0 00-3.375 3.375V18.75"
-                />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <span class="font-medium text-sm">Emprunts</span>
-              <div class="text-xs text-base-content/60 mt-0.5">
-                Gestion active
-              </div>
-            </div>
-            <div class="badge badge-secondary badge-sm">
-              {{ countEmpruntsActifs ?? "…" }}
-            </div>
-          </a>
-        </li>
-
-        <!-- Réservations -->
-        <li>
-          <a
-            routerLink="/backoffice/reservations"
-            routerLinkActive="bg-primary/10 text-primary border-l-4 border-primary"
-            class="group flex items-center gap-3 px-3 py-3 rounded-xl text-base-content hover:bg-base-200 hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
-          >
-            <div
-              class="p-2 rounded-lg bg-base-200 group-hover:bg-accent/10 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5 group-hover:text-accent transition-colors duration-200"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-                />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <span class="font-medium text-sm">Réservations</span>
-              <div class="text-xs text-base-content/60 mt-0.5">En attente</div>
-            </div>
-            <div class="badge badge-accent badge-sm">
-              {{ countReservationsActives ?? "…" }}
-            </div>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Divider avec style moderne -->
-    <div class="relative">
-      <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-base-300"></div>
-      </div>
-      <div class="relative flex justify-center text-xs uppercase">
-        <span class="bg-base-100 px-2 text-base-content/50 font-medium"
-          >Administration</span
+        <!-- Night Mode -->
+        <button
+          (click)="switchTheme('dark')"
+          [class.bg-white]="currentTheme() === 'dark'"
+          [class.shadow-sm]="currentTheme() === 'dark'"
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-200"
         >
-      </div>
-    </div>
-
-    <!-- Section Administration -->
-    <div>
-      <ul class="space-y-1">
-        <!-- Utilisateurs - Admin uniquement -->
-        <li *ngIf="isAdmin" data-role="admin">
-          <a
-            routerLink="/backoffice/utilisateurs"
-            routerLinkActive="bg-primary/10 text-primary border-l-4 border-primary"
-            class="group flex items-center gap-3 px-3 py-3 rounded-xl text-secondary hover:bg-secondary/10 hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
+          <svg
+            class="w-4 h-4"
+            [class.text-blue-600]="currentTheme() === 'dark'"
+            [class.text-gray-500]="currentTheme() !== 'dark'"
+            fill="currentColor"
+            viewBox="0 0 20 20"
           >
-            <div
-              class="p-2 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-                />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <span class="font-medium text-sm">Utilisateurs</span>
-              <div class="text-xs text-secondary/70 mt-0.5">
-                Gestion des comptes
-              </div>
-            </div>
-            <div class="badge badge-secondary badge-sm">
-              {{ countUtilisateurs ?? "…" }}
-            </div>
-          </a>
-        </li>
-
-        <!-- Abonnements -->
-        <li data-role="admin">
-          <a
-            routerLink="/backoffice/abonnements"
-            routerLinkActive="bg-primary/10 text-primary border-l-4 border-primary"
-            class="group flex items-center gap-3 px-3 py-3 rounded-xl text-accent hover:bg-accent/10 hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium"
+            [class.text-gray-900]="currentTheme() === 'dark'"
+            [class.text-gray-500]="currentTheme() !== 'dark'"
           >
-            <div
-              class="p-2 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"
-                />
-              </svg>
-            </div>
-            <div class="flex-1">
-              <span class="font-medium text-sm">Abonnements</span>
-              <div class="text-xs text-accent/70 mt-0.5">
-                Gestion des souscriptions
-              </div>
-            </div>
-            <div class="badge badge-accent badge-sm">
-              {{ countAbonnements ?? "…" }}
-            </div>
-          </a>
-        </li>
-
-        <!-- Paramètres - Admin uniquement -->
-      </ul>
-    </div>
-
-    <!-- Section de statut en bas -->
-    <div class="mt-auto pt-6">
-      <div
-        class="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-4 border border-base-300"
-      >
-        <div class="flex items-center gap-3">
-          <div class="avatar placeholder">
-            <div class="bg-primary text-primary-content rounded-full w-10 h-10">
-              <span class="text-xs font-bold">BU</span>
-            </div>
-          </div>
-          <div class="flex-1">
-            <div class="font-semibold text-sm text-base-content">
-              Système actif
-            </div>
-            <div class="text-xs text-base-content/60">
-              Tous les services opérationnels
-            </div>
-          </div>
-          <div class="w-3 h-3 bg-success rounded-full animate-pulse"></div>
-        </div>
+            Night
+          </span>
+        </button>
       </div>
     </div>
   </div>
-
-  <!-- Styles CSS pour les animations -->
-  <style>
-    /* Animation de slide-in pour les éléments du menu */
-    aside ul li {
-      animation: slideInLeft 0.6s ease-out;
-    }
-
-    aside ul li:nth-child(1) {
-      animation-delay: 0.1s;
-    }
-    aside ul li:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-    aside ul li:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-    aside ul li:nth-child(4) {
-      animation-delay: 0.4s;
-    }
-    aside ul li:nth-child(5) {
-      animation-delay: 0.5s;
-    }
-
-    @keyframes slideInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    /* Effet de hover amélioré */
-    aside ul li a:hover {
-      transform: translateX(4px);
-    }
-
-    /* Animation pour les badges */
-    .badge {
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-  </style>
 </aside>

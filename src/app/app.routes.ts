@@ -69,6 +69,19 @@ export const routes: Routes = [
     loadComponent: () => import('./frontoffice/legal/delivery/delivery').then(m => m.DeliveryComponent)
   },
   
+  // Backoffice Routes (Admin/Developer only)
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./backoffice/layout/backoffice-layout').then(m => m.BackofficeLayoutComponent),
+    canActivate: [adminGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./backoffice/dashboard/dashboard').then(m => m.DashboardComponent)
+      }
+    ]
+  },
+  
   // Redirections
   { path: 'login', redirectTo: 'auth/login', pathMatch: 'full' },
   { path: '**', redirectTo: '' }
