@@ -68,24 +68,6 @@
             (click)="openAddAddressModal()"
             class="flex items-center gap-2 text-primary hover:text-cyan-400 transition-colors font-medium"
           >
-            @if (hasCompleteAddress()) {
-            <!-- Mode Modification -->
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-              />
-            </svg>
-            <span>Modify</span>
-            } @else {
-            <!-- Mode Ajout -->
             <svg
               class="w-5 h-5"
               fill="none"
@@ -100,7 +82,6 @@
               />
             </svg>
             <span>Add</span>
-            }
           </button>
         </div>
 
@@ -126,116 +107,142 @@
           <span class="text-gray-500 text-lg">No addresses added</span>
         </div>
         } @else {
-        <!-- Liste des adresses -->
-        @for (address of addresses(); track address.id) {
-        <div class="bg-gray-800 rounded-lg p-6 mb-4 border border-gray-700">
-          @if (address.default) {
+        <!-- Grille des adresses : Default à gauche, Autres à droite -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Adresse par défaut -->
+          @for (address of addresses(); track address.id) { @if
+          (address.default) {
           <div
-            class="inline-block bg-primary/20 text-primary px-3 py-1 rounded-full text-sm mb-3"
+            class="bg-gray-800 rounded-lg p-6 border border-gray-700 relative"
           >
-            Default address
-          </div>
-          }
+            <!-- Actions en haut à droite -->
+            <div class="absolute top-6 right-6 flex gap-2">
+              <!-- Bouton édition -->
+              <button
+                (click)="editAddress(address.id)"
+                class="text-primary hover:text-cyan-400 transition-colors"
+                aria-label="Edit address"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  />
+                </svg>
+              </button>
+              <!-- Bouton suppression -->
+              <button
+                (click)="deleteAddress(address.id)"
+                class="text-red-500 hover:text-red-400 transition-colors"
+                aria-label="Delete address"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            </div>
 
-          <div class="text-white space-y-2">
-            @if (address.street) {
-            <div class="flex items-start gap-2">
-              <svg
-                class="w-5 h-5 text-gray-400 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span>{{ address.street }}</span>
-            </div>
-            } @if (address.city || address.region) {
-            <div class="flex items-start gap-2">
-              <svg
-                class="w-5 h-5 text-gray-400 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                />
-              </svg>
-              <span
-                >{{ address.city }}{{ address.city && address.region ? ', ' : ''
-                }}{{ address.region }}</span
-              >
-            </div>
-            } @if (address.postalCode) {
-            <div class="flex items-start gap-2">
-              <svg
-                class="w-5 h-5 text-gray-400 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-              <span>{{ address.postalCode }}</span>
-            </div>
-            } @if (address.phoneNumber) {
-            <div class="flex items-start gap-2">
-              <svg
-                class="w-5 h-5 text-gray-400 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                />
-              </svg>
-              <span>{{ address.phoneNumber }}</span>
-            </div>
-            }
-
-            <div class="flex items-start gap-2">
-              <svg
-                class="w-5 h-5 text-gray-400 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span>{{ address.country }} - {{ address.region }}</span>
+            <div class="text-gray-400 text-sm mb-4">Default address</div>
+            <div class="text-white space-y-1">
+              @if (user()) {
+              <div>{{ user().firstName }} {{ user().lastName }}</div>
+              }
+              <div>{{ address.street }}</div>
+              <div>{{ address.city }}</div>
+              <div>{{ address.region }}</div>
+              @if (address.postalCode) {
+              <div>{{ address.postalCode }}</div>
+              }
+              <div>{{ address.country }}</div>
+              <div>{{ address.phoneNumber }}</div>
             </div>
           </div>
+          } }
+
+          <!-- Autres adresses -->
+          @for (address of addresses(); track address.id) { @if
+          (!address.default) {
+          <div
+            class="bg-gray-800 rounded-lg p-6 border border-gray-700 relative"
+          >
+            <!-- Actions en haut à droite -->
+            <div class="absolute top-6 right-6 flex gap-2">
+              <!-- Bouton édition -->
+              <button
+                (click)="editAddress(address.id)"
+                class="text-primary hover:text-cyan-400 transition-colors"
+                aria-label="Edit address"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  />
+                </svg>
+              </button>
+              <!-- Bouton suppression -->
+              <button
+                (click)="deleteAddress(address.id)"
+                class="text-red-500 hover:text-red-400 transition-colors"
+                aria-label="Delete address"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div class="text-white space-y-1">
+              @if (user()) {
+              <div>{{ user().firstName }} {{ user().lastName }}</div>
+              }
+              <div>{{ address.street }}</div>
+              <div>{{ address.city }}</div>
+              <div>{{ address.region }}</div>
+              @if (address.postalCode) {
+              <div>{{ address.postalCode }}</div>
+              }
+              <div>{{ address.country }}</div>
+              <div>{{ address.phoneNumber }}</div>
+            </div>
+          </div>
+          } }
         </div>
-        } }
+        }
       </div>
     </div>
   </main>
@@ -511,61 +518,91 @@
 
         <!-- Country/Region -->
         <div>
-          <label class="block text-gray-300 mb-2">Country/region</label>
+          <label class="block text-gray-300 mb-2">
+            Country/region <span class="text-red-500">*</span>
+          </label>
           <select
             formControlName="country"
-            class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+            [class]="isFieldInvalid('country') 
+              ? 'w-full px-4 py-3 bg-gray-800 text-white border-2 border-red-500 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500'
+              : 'w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary'"
           >
             @for (country of countries; track country.code) {
             <option [value]="country.code">{{ country.name }}</option>
             }
           </select>
+          @if (isFieldInvalid('country')) {
+          <p class="text-red-500 text-sm mt-1">Le pays est obligatoire</p>
+          }
         </div>
 
         <!-- Address/Street -->
         <div>
-          <label class="block text-gray-300 mb-2">Address</label>
+          <label class="block text-gray-300 mb-2">
+            Address <span class="text-red-500">*</span>
+          </label>
           <textarea
             formControlName="street"
             rows="3"
             placeholder="Street address, house number, etc."
-            class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
+            [class]="isFieldInvalid('street')
+              ? 'w-full px-4 py-3 bg-gray-800 text-white border-2 border-red-500 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500'
+              : 'w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500'"
           ></textarea>
+          @if (isFieldInvalid('street')) {
+          <p class="text-red-500 text-sm mt-1">
+            L'adresse est obligatoire (minimum 5 caractères)
+          </p>
+          }
         </div>
 
         <!-- City, Region, Postal Code -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- City -->
           <div>
-            <label class="block text-gray-300 mb-2">City</label>
+            <label class="block text-gray-300 mb-2">
+              City <span class="text-red-500">*</span>
+            </label>
             <input
               type="text"
               formControlName="city"
               placeholder="City"
-              class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
+              [class]="isFieldInvalid('city')
+                ? 'w-full px-4 py-3 bg-gray-800 text-white border-2 border-red-500 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500'
+                : 'w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500'"
             />
+            @if (isFieldInvalid('city')) {
+            <p class="text-red-500 text-sm mt-1">La ville est obligatoire</p>
+            }
           </div>
 
           <!-- Region -->
           <div>
-            <label class="block text-gray-300 mb-2">Region</label>
+            <label class="block text-gray-300 mb-2">
+              Region <span class="text-red-500">*</span>
+            </label>
             <select
               formControlName="region"
-              class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+              [class]="isFieldInvalid('region')
+                ? 'w-full px-4 py-3 bg-gray-800 text-white border-2 border-red-500 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                : 'w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary'"
             >
               @for (region of regions; track region) {
               <option [value]="region">{{ region }}</option>
               }
             </select>
+            @if (isFieldInvalid('region')) {
+            <p class="text-red-500 text-sm mt-1">La région est obligatoire</p>
+            }
           </div>
 
-          <!-- Postal Code -->
+          <!-- Postal Code (Optionnel) -->
           <div>
             <label class="block text-gray-300 mb-2">Postal code</label>
             <input
               type="text"
               formControlName="postalCode"
-              placeholder="Postal code"
+              placeholder="Optional"
               class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
             />
           </div>
@@ -573,7 +610,9 @@
 
         <!-- Phone Number with Country Prefix -->
         <div>
-          <label class="block text-gray-300 mb-2">Phone</label>
+          <label class="block text-gray-300 mb-2">
+            Phone <span class="text-red-500">*</span>
+          </label>
           <div class="flex gap-2">
             <div
               class="flex items-center px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-gray-300"
@@ -584,9 +623,16 @@
               type="tel"
               formControlName="phoneNumber"
               placeholder="Phone number"
-              class="flex-1 px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
+              [class]="isFieldInvalid('phoneNumber')
+                ? 'flex-1 px-4 py-3 bg-gray-800 text-white border-2 border-red-500 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500'
+                : 'flex-1 px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500'"
             />
           </div>
+          @if (isFieldInvalid('phoneNumber')) {
+          <p class="text-red-500 text-sm mt-1">
+            Le numéro de téléphone est obligatoire (8-15 chiffres)
+          </p>
+          }
         </div>
 
         <!-- Action Buttons -->

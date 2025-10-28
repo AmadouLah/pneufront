@@ -42,6 +42,40 @@ export class HeaderComponent {
   }
 
   /**
+   * Récupère les informations de l'utilisateur connecté
+   */
+  getUserInfo(): any {
+    return this.authService.authUser();
+  }
+
+  /**
+   * Génère les initiales de l'utilisateur
+   * - Si nom + prénom : "LA" (Landouré Amadou)
+   * - Si seulement prénom : "A" (Amadou)
+   * - Si seulement nom : "L" (Landouré)
+   */
+  getUserInitials(): string {
+    const user = this.getUserInfo();
+    if (!user) return '';
+
+    const firstName = user.firstName?.trim() || '';
+    const lastName = user.lastName?.trim() || '';
+
+    if (lastName && firstName) {
+      // Nom + Prénom : première lettre du nom + première lettre du prénom
+      return (lastName.charAt(0) + firstName.charAt(0)).toUpperCase();
+    } else if (firstName) {
+      // Seulement prénom : première lettre du prénom
+      return firstName.charAt(0).toUpperCase();
+    } else if (lastName) {
+      // Seulement nom : première lettre du nom
+      return lastName.charAt(0).toUpperCase();
+    }
+
+    return '';
+  }
+
+  /**
    * Toggle du menu mobile
    */
   toggleMobileMenu(): void {

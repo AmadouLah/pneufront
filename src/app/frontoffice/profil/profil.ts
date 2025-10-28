@@ -57,16 +57,15 @@ export class ProfilComponent implements OnInit {
       code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
     });
 
-    // Formulaire d'adresse : seul le pays est obligatoire
-    // L'utilisateur peut ajouter les informations une par une
+    // Formulaire d'adresse : champs obligatoires selon les standards e-commerce
     this.addressForm = this.fb.group({
       isDefault: [false],
       country: ['MALI', Validators.required],
-      street: [''],
-      city: [''],
-      region: ['Bamako'],
-      postalCode: [''],
-      phoneNumber: ['', [Validators.pattern(/^[0-9]{8,15}$/)]]
+      street: ['', [Validators.required, Validators.minLength(5)]],
+      city: ['', [Validators.required, Validators.minLength(2)]],
+      region: ['Bamako', Validators.required],
+      postalCode: [''], // Optionnel
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{8,15}$/)]]
     });
   }
 
@@ -120,27 +119,6 @@ export class ProfilComponent implements OnInit {
   }
 
   /**
-   * Vérifie si toutes les informations d'une adresse sont complètes
-   */
-  isAddressComplete(address: any): boolean {
-    return !!(
-      address.street &&
-      address.city &&
-      address.region &&
-      address.country &&
-      address.postalCode &&
-      address.phoneNumber
-    );
-  }
-
-  /**
-   * Vérifie si l'utilisateur a au moins une adresse complète
-   */
-  hasCompleteAddress(): boolean {
-    return this.addresses().some(addr => this.isAddressComplete(addr));
-  }
-
-  /**
    * Ouvre le modal d'édition
    */
   openEditModal(): void {
@@ -178,20 +156,39 @@ export class ProfilComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    const updateData: any = {};
-    if (formData.firstName) updateData.firstName = formData.firstName;
-    if (formData.lastName) updateData.lastName = formData.lastName;
-    if (formData.email) updateData.email = formData.email;
+    // Toujours envoyer tous les champs pour garantir la mise à jour complète
+    const updateData = {
+      firstName: formData.firstName?.trim() || '',
+      lastName: formData.lastName?.trim() || '',
+      email: formData.email?.trim() || this.originalEmail
+    };
 
     this.http.put(`${environment.apiUrl}/users/profile`, updateData).subscribe({
       next: (response: any) => {
         this.isLoading.set(false);
         
         if (emailChanged) {
+          // Si l'email change, ouvrir le modal de vérification
           this.closeEditModal();
           this.showVerifyModal.set(true);
         } else {
-          this.user.set({ ...this.user(), ...updateData });
+          // Récupérer l'utilisateur mis à jour depuis la réponse backend
+          if (response.user) {
+            const updatedUserInfo = {
+              id: response.user.id,
+              email: response.user.email,
+              firstName: response.user.firstName,
+              lastName: response.user.lastName,
+              role: response.user.role
+            };
+            
+            // Mettre à jour le localStorage (CRUCIAL pour persister les données)
+            localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+            
+            // Mettre à jour le signal local
+            this.user.set(updatedUserInfo);
+          }
+          
           this.successMessage.set('Profil mis à jour avec succès');
           setTimeout(() => this.closeEditModal(), 1500);
         }
@@ -267,35 +264,16 @@ export class ProfilComponent implements OnInit {
   }
 
   /**
-   * Ouvre le modal d'ajout/modification d'adresse
-   * Si toutes les infos sont complètes, charge l'adresse pour modification
-   * Sinon, ouvre en mode ajout avec les valeurs par défaut
+   * Ouvre le modal d'ajout d'une nouvelle adresse
    */
   openAddAddressModal(): void {
-    const existingAddresses = this.addresses();
-    
-    if (existingAddresses.length > 0) {
-      // Mode modification : charger la première adresse
-      const address = existingAddresses[0];
-      this.editingAddressId.set(address.id);
-      this.addressForm.patchValue({
-        isDefault: address.default || false,
-        country: address.country || 'MALI',
-        street: address.street || '',
-        city: address.city || '',
-        region: address.region || 'Bamako',
-        postalCode: address.postalCode || '',
-        phoneNumber: address.phoneNumber || ''
-      });
-    } else {
-      // Mode ajout : valeurs par défaut
-      this.editingAddressId.set(null);
-      this.addressForm.reset({
-        isDefault: false,
-        country: 'MALI',
-        region: 'Bamako'
-      });
-    }
+    // Mode ajout : valeurs par défaut
+    this.editingAddressId.set(null);
+    this.addressForm.reset({
+      isDefault: false,
+      country: 'MALI',
+      region: 'Bamako'
+    });
     
     this.showAddAddressModal.set(true);
     this.errorMessage.set('');
@@ -303,11 +281,75 @@ export class ProfilComponent implements OnInit {
   }
 
   /**
-   * Ferme le modal d'ajout d'adresse
+   * Ouvre le modal pour éditer une adresse spécifique
+   */
+  editAddress(addressId: number): void {
+    const address = this.addresses().find(a => a.id === addressId);
+    
+    if (!address) {
+      this.errorMessage.set('Adresse non trouvée');
+      return;
+    }
+    
+    // Charger les données de l'adresse
+    this.editingAddressId.set(addressId);
+    this.addressForm.patchValue({
+      isDefault: address.default || false,
+      country: address.country || 'MALI',
+      street: address.street || '',
+      city: address.city || '',
+      region: address.region || 'Bamako',
+      postalCode: address.postalCode || '',
+      phoneNumber: address.phoneNumber || ''
+    });
+    
+    this.showAddAddressModal.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+  }
+
+  /**
+   * Ferme le modal d'ajout d'adresse et réinitialise tout
    */
   closeAddAddressModal(): void {
     this.showAddAddressModal.set(false);
-    this.addressForm.reset();
+    this.editingAddressId.set(null);
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    this.addressForm.reset({
+      isDefault: false,
+      country: 'MALI',
+      region: 'Bamako'
+    });
+  }
+
+  /**
+   * Supprime une adresse spécifique
+   */
+  deleteAddress(addressId: number): void {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette adresse ?')) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+
+    this.http.delete(`${environment.apiUrl}/addresses/${addressId}`).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.successMessage.set('Adresse supprimée avec succès');
+        
+        // Recharger immédiatement les adresses
+        this.loadAddresses();
+        
+        // Effacer le message après 3 secondes
+        setTimeout(() => this.successMessage.set(''), 3000);
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(error.error?.message || 'Erreur lors de la suppression de l\'adresse');
+      }
+    });
   }
 
   /**
@@ -321,12 +363,16 @@ export class ProfilComponent implements OnInit {
 
   /**
    * Sauvegarde l'adresse (ajout ou modification)
-   * L'utilisateur peut ajouter/modifier les informations une par une
+   * Tous les champs obligatoires doivent être remplis
    */
   saveAddress(): void {
-    // Vérifier uniquement que le pays est fourni
-    if (this.addressForm.get('country')?.invalid) {
-      this.errorMessage.set('Le pays est obligatoire');
+    // Marquer tous les champs comme "touched" pour afficher les erreurs
+    Object.keys(this.addressForm.controls).forEach(key => {
+      this.addressForm.get(key)?.markAsTouched();
+    });
+
+    if (this.addressForm.invalid) {
+      this.errorMessage.set('Veuillez remplir tous les champs obligatoires');
       return;
     }
 
@@ -341,17 +387,32 @@ export class ProfilComponent implements OnInit {
     apiCall.subscribe({
       next: () => {
         this.isLoading.set(false);
+        
+        // Recharger immédiatement les adresses
+        this.loadAddresses();
+        
+        // Afficher le message de succès
         this.successMessage.set(addressId ? 'Adresse modifiée avec succès' : 'Adresse enregistrée avec succès');
+        
+        // Fermer le modal après un court délai pour que l'utilisateur voie le message
         setTimeout(() => {
           this.closeAddAddressModal();
-          this.loadAddresses(); // Recharger les adresses
-        }, 1500);
+          this.successMessage.set('');
+        }, 1000);
       },
       error: (error) => {
         this.isLoading.set(false);
         this.errorMessage.set(error.error?.message || 'Erreur lors de l\'enregistrement de l\'adresse');
       }
     });
+  }
+
+  /**
+   * Vérifie si un champ est invalide et a été touché (pour afficher l'erreur)
+   */
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.addressForm.get(fieldName);
+    return !!(field && field.invalid && field.touched);
   }
 }
 

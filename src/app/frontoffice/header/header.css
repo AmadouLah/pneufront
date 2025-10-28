@@ -56,3 +56,12 @@ nav ul li a {
   right: 0;
 }
 
+/* Rotation de la flèche du menu utilisateur */
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+svg {
+  transition: transform 0.3s ease;
+}
+

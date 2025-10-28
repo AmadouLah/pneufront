@@ -133,10 +133,39 @@
 
         <!-- User Icon -->
         <div class="relative">
+          @if (isAuthenticated()) {
+          <!-- Avatar avec initiales -->
           <button
-            (click)="isAuthenticated() ? toggleUserMenu() : navigateToLogin()"
-            class="text-white hover:text-primary transition-colors p-2"
+            (click)="toggleUserMenu()"
+            class="flex items-center gap-2 text-white hover:text-primary transition-colors"
             aria-label="Compte utilisateur"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold text-sm"
+            >
+              {{ getUserInitials() }}
+            </div>
+            <svg
+              class="w-4 h-4"
+              [class.rotate-180]="userMenuOpen()"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          } @else {
+          <!-- Icône par défaut si non connecté -->
+          <button
+            (click)="navigateToLogin()"
+            class="text-white hover:text-primary transition-colors p-2"
+            aria-label="Se connecter"
           >
             <svg
               class="w-5 h-5"
@@ -152,43 +181,57 @@
               />
             </svg>
           </button>
+          }
 
           <!-- Dropdown menu (only visible when authenticated and clicked) -->
           @if (isAuthenticated() && userMenuOpen()) {
           <div
-            class="absolute right-0 mt-2 w-52 bg-black border border-gray-800 rounded-lg shadow-xl z-50"
+            class="absolute right-0 mt-2 w-72 bg-gray-900 border border-gray-800 rounded-lg shadow-xl z-50"
           >
+            <!-- User Info Section -->
+            <div class="px-4 py-3 border-b border-gray-800">
+              <div class="flex items-center gap-3">
+                <!-- Avatar avec initiales -->
+                <div
+                  class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold"
+                >
+                  {{ getUserInitials() }}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-white font-medium truncate">
+                    {{ getUserInfo()?.firstName }} {{ getUserInfo()?.lastName }}
+                  </p>
+                  <p class="text-gray-400 text-sm truncate">
+                    {{ getUserInfo()?.email }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Menu Options -->
             <ul class="py-2">
               <li>
                 <a
                   (click)="navigateAndCloseMenu('/frontoffice/profil')"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
                 >
-                  Mon profil
+                  Profile
                 </a>
               </li>
               <li>
                 <a
                   (click)="navigateAndCloseMenu('/orders')"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
                 >
-                  Mes commandes
-                </a>
-              </li>
-              <li>
-                <a
-                  (click)="navigateAndCloseMenu('/frontoffice/favoris')"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
-                >
-                  Mes favoris
+                  Settings
                 </a>
               </li>
               <li>
                 <a
                   (click)="logout()"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
                 >
-                  Déconnexion
+                  Sign out
                 </a>
               </li>
             </ul>
