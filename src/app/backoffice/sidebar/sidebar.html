@@ -7,7 +7,7 @@
 
 <!-- Sidebar -->
 <aside
-  class="w-64 bg-white fixed top-16 bottom-0 left-0 z-40 overflow-y-auto shadow-lg transition-transform duration-300 ease-in-out transform lg:translate-x-0"
+  class="w-64 bg-black fixed top-16 bottom-0 left-0 z-40 overflow-y-auto border-r border-gray-800 transition-transform duration-300 ease-in-out transform lg:translate-x-0"
   [ngClass]="{
     '-translate-x-full': !sidebarOpen,
     'translate-x-0': sidebarOpen
@@ -17,7 +17,7 @@
     <!-- Section MENU -->
     <div class="flex-1">
       <div
-        class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-2"
+        class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2"
       >
         MENU
       </div>
@@ -27,9 +27,9 @@
         <li>
           <a
             routerLink="/dashboard"
-            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
+            routerLinkActive="bg-gray-900 text-primary border-l-4 border-primary"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-900 hover:text-primary transition-colors duration-200 group"
           >
             <svg
               class="w-5 h-5"
@@ -52,8 +52,8 @@
         <li>
           <a
             routerLink="/dashboard/products"
-            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
-            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+            routerLinkActive="bg-gray-900 text-primary border-l-4 border-primary"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-900 hover:text-primary transition-colors duration-200 group"
           >
             <svg
               class="w-5 h-5"
@@ -71,7 +71,7 @@
             <span class="font-medium text-sm">Products</span>
             @if (countProducts !== null) {
             <span
-              class="ml-auto text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full"
+              class="ml-auto text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-full"
             >
               {{ countProducts }}
             </span>
@@ -83,8 +83,8 @@
         <li>
           <a
             routerLink="/dashboard/orders"
-            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
-            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+            routerLinkActive="bg-gray-900 text-primary border-l-4 border-primary"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-900 hover:text-primary transition-colors duration-200 group"
           >
             <svg
               class="w-5 h-5"
@@ -102,7 +102,7 @@
             <span class="font-medium text-sm">Orders</span>
             @if (countPendingOrders !== null && countPendingOrders > 0) {
             <span
-              class="ml-auto text-xs bg-blue-500 text-white px-2 py-1 rounded-full"
+              class="ml-auto text-xs bg-primary text-black px-2 py-1 rounded-full font-bold"
             >
               {{ countPendingOrders }}
             </span>
@@ -114,8 +114,8 @@
         <li>
           <a
             routerLink="/dashboard/customers"
-            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
-            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+            routerLinkActive="bg-gray-900 text-primary border-l-4 border-primary"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-900 hover:text-primary transition-colors duration-200 group"
           >
             <svg
               class="w-5 h-5"
@@ -133,7 +133,7 @@
             <span class="font-medium text-sm">Customers</span>
             @if (countCustomers !== null) {
             <span
-              class="ml-auto text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded-full"
+              class="ml-auto text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-full"
             >
               {{ countCustomers }}
             </span>
@@ -145,8 +145,8 @@
         <li>
           <a
             routerLink="/dashboard/income"
-            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
-            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+            routerLinkActive="bg-gray-900 text-primary border-l-4 border-primary"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-900 hover:text-primary transition-colors duration-200 group"
           >
             <svg
               class="w-5 h-5"
@@ -171,7 +171,7 @@
 
       <!-- Section OTHER -->
       <div
-        class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-2"
+        class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-2"
       >
         OTHER
       </div>
@@ -181,8 +181,8 @@
         <li>
           <a
             routerLink="/dashboard/settings"
-            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
-            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+            routerLinkActive="bg-gray-900 text-primary border-l-4 border-primary"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-900 hover:text-primary transition-colors duration-200 group"
           >
             <svg
               class="w-5 h-5"
@@ -211,8 +211,8 @@
         <li>
           <a
             routerLink="/dashboard/help"
-            routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600"
-            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+            routerLinkActive="bg-gray-900 text-primary border-l-4 border-primary"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-900 hover:text-primary transition-colors duration-200 group"
           >
             <svg
               class="w-5 h-5"
@@ -235,7 +235,7 @@
         <li>
           <button
             (click)="logout()"
-            class="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 group"
+            class="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-red-900 hover:text-red-400 transition-colors duration-200 group"
           >
             <svg
               class="w-5 h-5"
@@ -254,67 +254,6 @@
           </button>
         </li>
       </ul>
-    </div>
-
-    <!-- Theme Toggle - Bas du sidebar -->
-    <div class="mt-auto pt-6">
-      <div class="bg-gray-100 rounded-full p-1 flex">
-        <!-- Light Mode -->
-        <button
-          (click)="switchTheme('light')"
-          [class.bg-white]="currentTheme() === 'light'"
-          [class.shadow-sm]="currentTheme() === 'light'"
-          class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-200"
-        >
-          <svg
-            class="w-4 h-4"
-            [class.text-yellow-500]="currentTheme() === 'light'"
-            [class.text-gray-500]="currentTheme() !== 'light'"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span
-            class="text-sm font-medium"
-            [class.text-gray-900]="currentTheme() === 'light'"
-            [class.text-gray-500]="currentTheme() !== 'light'"
-          >
-            Light
-          </span>
-        </button>
-
-        <!-- Night Mode -->
-        <button
-          (click)="switchTheme('dark')"
-          [class.bg-white]="currentTheme() === 'dark'"
-          [class.shadow-sm]="currentTheme() === 'dark'"
-          class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-full transition-all duration-200"
-        >
-          <svg
-            class="w-4 h-4"
-            [class.text-blue-600]="currentTheme() === 'dark'"
-            [class.text-gray-500]="currentTheme() !== 'dark'"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-            />
-          </svg>
-          <span
-            class="text-sm font-medium"
-            [class.text-gray-900]="currentTheme() === 'dark'"
-            [class.text-gray-500]="currentTheme() !== 'dark'"
-          >
-            Night
-          </span>
-        </button>
-      </div>
     </div>
   </div>
 </aside>

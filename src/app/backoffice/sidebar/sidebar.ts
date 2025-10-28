@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { Authservice } from '../../services/authservice';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environement';
-import { ThemeService } from '../../shared/services/theme.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,16 +15,10 @@ export class Sidebar implements OnInit, OnDestroy {
   private auth = inject(Authservice);
   private http = inject(HttpClient);
   private router = inject(Router);
-  private themeService = inject(ThemeService);
   
   sidebarOpen = false;
   isAdminOrDeveloper = false;
   private toggleListener: any;
-
-  // Exposer le thème du service
-  get currentTheme() {
-    return this.themeService.currentTheme;
-  }
 
   // Compteurs pour les badges
   countProducts: number | null = null;
@@ -56,13 +49,6 @@ export class Sidebar implements OnInit, OnDestroy {
 
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
-  }
-
-  /**
-   * Change le thème de l'application via le service centralisé
-   */
-  switchTheme(theme: 'light' | 'dark'): void {
-    this.themeService.setTheme(theme);
   }
 
   /**

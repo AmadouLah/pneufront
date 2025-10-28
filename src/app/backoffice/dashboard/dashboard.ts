@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, signal, inject, effect } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environement';
 import { Chart, registerables } from 'chart.js';
-import { ThemeService } from '../../shared/services/theme.service';
 
 // Enregistrer tous les composants Chart.js
 Chart.register(...registerables);
@@ -50,23 +49,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('customerChart') customerChartRef!: ElementRef<HTMLCanvasElement>;
 
   private http = inject(HttpClient);
-  private themeService = inject(ThemeService);
   private salesChart: Chart | null = null;
   private customerChart: Chart | null = null;
 
   // Signals pour la réactivité
   selectedPeriod = signal<'1D' | '1M' | '3M' | '1Y'>('1Y');
   isLoading = signal(true);
-
-  constructor() {
-    // Écouter les changements de thème
-    effect(() => {
-      const isDark = this.themeService.currentTheme() === 'dark';
-      if (this.salesChart || this.customerChart) {
-        this.updateChartsTheme(isDark);
-      }
-    });
-  }
 
   // Données du dashboard
   stats: DashboardStats = {
@@ -185,9 +173,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         datasets: [{
           label: 'Ventes',
           data: this.salesData.data,
-          backgroundColor: '#3b82f6',
+          backgroundColor: '#00d9ff',
           borderRadius: 6,
-          barThickness: 30
+          barThickness: 30,
+          hoverBackgroundColor: '#00f0ff'
         }]
       },
       options: {
@@ -198,11 +187,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             display: false
           },
           tooltip: {
-            backgroundColor: '#1f2937',
+            backgroundColor: '#1a1a1a',
             padding: 12,
             titleColor: '#fff',
             bodyColor: '#fff',
-            borderColor: '#374151',
+            borderColor: '#00d9ff',
             borderWidth: 1,
             displayColors: false,
             callbacks: {
@@ -217,13 +206,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           y: {
             beginAtZero: true,
             ticks: {
+              color: '#9ca3af',
               callback: (value: any) => this.formatCurrency(Number(value))
             },
             grid: {
-              color: '#f3f4f6'
+              color: '#374151'
             }
           },
           x: {
+            ticks: {
+              color: '#9ca3af'
+            },
             grid: {
               display: false
             }
@@ -256,8 +249,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         labels: ['Hommes', 'Femmes'],
         datasets: [{
           data: [this.customerStats.male, this.customerStats.female],
-          backgroundColor: ['#3b82f6', '#93c5fd'],
-          borderWidth: 0
+          backgroundColor: ['#00d9ff', '#10b981'],
+          borderWidth: 2,
+          borderColor: '#1a1a1a'
         }]
       },
       options: {
@@ -269,8 +263,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             display: false
           },
           tooltip: {
-            backgroundColor: '#1f2937',
+            backgroundColor: '#1a1a1a',
             padding: 12,
+            borderColor: '#00d9ff',
+            borderWidth: 1,
+            titleColor: '#fff',
+            bodyColor: '#fff',
             callbacks: {
               label: (context: any) => {
                 const label = context.label || '';
@@ -332,28 +330,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
    */
   generateStars(rating: number): boolean[] {
     return Array(5).fill(0).map((_, i) => i < Math.floor(rating));
-  }
-
-  /**
-   * Met à jour le thème des graphiques
-   */
-  private updateChartsTheme(isDark: boolean): void {
-    const textColor = isDark ? '#f9fafb' : '#111827';
-    const gridColor = isDark ? '#374151' : '#e5e7eb';
-
-    if (this.salesChart) {
-      this.salesChart.options.scales!['y']!.ticks!.color = textColor;
-      this.salesChart.options.scales!['y']!.grid!.color = gridColor;
-      this.salesChart.options.scales!['x']!.ticks!.color = textColor;
-      this.salesChart.options.scales!['x']!.grid!.color = gridColor;
-      this.salesChart.options.plugins!.tooltip!.backgroundColor = isDark ? '#1a1a1a' : '#1f2937';
-      this.salesChart.update();
-    }
-
-    if (this.customerChart) {
-      this.customerChart.options.plugins!.tooltip!.backgroundColor = isDark ? '#1a1a1a' : '#1f2937';
-      this.customerChart.update();
-    }
   }
 }
 
