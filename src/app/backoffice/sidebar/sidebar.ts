@@ -3,7 +3,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Authservice } from '../../services/authservice';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environement';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-sidebar',

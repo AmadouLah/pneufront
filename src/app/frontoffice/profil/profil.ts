@@ -6,7 +6,7 @@ import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
 import { Authservice } from '../../services/authservice';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environement';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-profil',

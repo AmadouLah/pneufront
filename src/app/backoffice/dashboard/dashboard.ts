@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environement';
+import { environment } from '../../environment';
 import { Chart, registerables } from 'chart.js';
 
 // Enregistrer tous les composants Chart.js
