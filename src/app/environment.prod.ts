@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://pneuback-2.onrender.com/api',
+  apiUrl: 'https://pneumback.onrender.com/api',
 };
