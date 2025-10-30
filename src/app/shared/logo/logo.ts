@@ -9,6 +9,10 @@ import { NgClass } from '@angular/common';
     <img
       [src]="src"
       [alt]="alt"
+      decoding="async"
+      fetchpriority="high"
+      [attr.width]="size"
+      [attr.height]="size"
       [style.width.px]="size"
       [style.height.px]="size"
       [ngClass]="roundedClass"

@@ -95,7 +95,7 @@ export class VerifyComponent implements OnDestroy {
     };
 
     // Choisir la bonne méthode selon le mode
-    const verifyMethod = this.loginMode() === 'magic' 
+    const verifyMethod = (this.loginMode() === 'magic' || this.loginMode() === 'oauth')
       ? this.authService.magicVerify(verificationData)
       : this.authService.verify(verificationData);
 
@@ -137,7 +137,15 @@ export class VerifyComponent implements OnDestroy {
       },
       error: (error: HttpErrorResponse) => {
         this.isResending.set(false);
-        this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Erreur lors du renvoi du code'));
+        const msg = this.formHelper.extractErrorMessage(error, 'Erreur lors du renvoi du code');
+        this.errorMessage.set(msg);
+        // Si le backend indique qu'un mot de passe local est requis, rediriger vers la page login
+        if (msg && msg.includes('authentification par mot de passe')) {
+          this.router.navigate(['/auth/login'], {
+            queryParams: { email: this.email(), mode: 'ADMIN_PASSWORD' },
+            replaceUrl: true,
+          });
+        }
       }
     });
   }

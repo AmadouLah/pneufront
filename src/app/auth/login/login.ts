@@ -1,7 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Authservice } from '../../services/authservice';
 import { FormHelperService } from '../../shared/services/form-helper.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -14,7 +14,7 @@ import { AuthResponse, CodeRequiredResponse } from '../../shared/types/auth';
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   isLoading = signal(false);
   showPassword = signal(false);
   errorMessage = signal('');
@@ -29,6 +29,7 @@ export class LoginComponent {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private authService: Authservice,
     private formHelper: FormHelperService
   ) {
@@ -36,6 +37,16 @@ export class LoginComponent {
       email: ['', FormHelperService.emailValidator],
       password: ['']
     });
+  }
+
+  ngOnInit(): void {
+    // Vérifier les erreurs OAuth dans les paramètres d'URL
+    const error = this.route.snapshot.queryParams['error'];
+    const message = this.route.snapshot.queryParams['message'];
+    
+    if (error === 'oauth_blocked' && message) {
+      this.errorMessage.set(decodeURIComponent(message));
+    }
   }
 
   togglePasswordVisibility(): void {
