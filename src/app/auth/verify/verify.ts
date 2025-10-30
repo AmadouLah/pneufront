@@ -40,8 +40,8 @@ export class VerifyComponent implements OnDestroy {
       code: ['', FormHelperService.codeValidator]
     });
 
-    // Récupérer l'email et le mode depuis les paramètres ou localStorage
-    const emailParam = this.route.snapshot.queryParams['email'] || localStorage.getItem('pendingVerificationEmail') || '';
+    // Récupérer l'email et le mode depuis les paramètres ou localStorage (normaliser en minuscules)
+    const emailParam = (this.route.snapshot.queryParams['email'] || localStorage.getItem('pendingVerificationEmail') || '').toLowerCase().trim();
     this.email.set(emailParam);
     
     // Vérifier si c'est un flux OAuth2
@@ -123,8 +123,9 @@ export class VerifyComponent implements OnDestroy {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    // Pour magic login, utiliser magicStart, sinon resendVerification
-    const resendMethod = this.loginMode() === 'magic'
+    // Pour magic login OU OAuth, utiliser magicStart, sinon resendVerification (2FA)
+    const isClientFlow = this.loginMode() === 'magic' || this.loginMode() === 'oauth';
+    const resendMethod = isClientFlow
       ? this.authService.magicStart(this.email())
       : this.authService.resendVerification({ email: this.email() });
 
