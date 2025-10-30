@@ -49,6 +49,19 @@ export class HeaderComponent {
   }
 
   /**
+   * Vérifie si l'utilisateur a renseigné son nom ou prénom
+   */
+  hasUserName(): boolean {
+    const user = this.getUserInfo();
+    if (!user) return false;
+    
+    const firstName = user.firstName?.trim() || '';
+    const lastName = user.lastName?.trim() || '';
+    
+    return !!(firstName || lastName);
+  }
+
+  /**
    * Génère les initiales de l'utilisateur
    * - Si nom + prénom : "LA" (Landouré Amadou)
    * - Si seulement prénom : "A" (Amadou)
