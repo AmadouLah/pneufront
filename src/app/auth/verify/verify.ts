@@ -24,7 +24,8 @@ export class VerifyComponent implements OnDestroy {
   
   verificationForm: FormGroup;
   email = signal('');
-  loginMode = signal<'magic' | '2fa'>('magic');
+  loginMode = signal<'magic' | '2fa' | 'oauth'>('magic');
+  isOAuth = signal(false);
   
   private countdownTimerId: any = null;
 
@@ -43,8 +44,17 @@ export class VerifyComponent implements OnDestroy {
     const emailParam = this.route.snapshot.queryParams['email'] || localStorage.getItem('pendingVerificationEmail') || '';
     this.email.set(emailParam);
     
-    const mode = localStorage.getItem('loginMode') as 'magic' | '2fa' || 'magic';
-    this.loginMode.set(mode);
+    // Vérifier si c'est un flux OAuth2
+    const oauthParam = this.route.snapshot.queryParams['oauth'];
+    if (oauthParam === 'google') {
+      this.isOAuth.set(true);
+      this.loginMode.set('oauth');
+      localStorage.setItem('loginMode', 'oauth');
+    } else {
+      const mode = localStorage.getItem('loginMode') as 'magic' | '2fa' | 'oauth' || 'magic';
+      this.loginMode.set(mode);
+      this.isOAuth.set(mode === 'oauth');
+    }
     
     if (!emailParam) {
       this.router.navigate(['/auth/login'], { replaceUrl: true });

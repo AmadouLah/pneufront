@@ -168,4 +168,12 @@ export class LoginComponent {
   private redirectToDashboard(): void {
     this.router.navigate(['/'], { replaceUrl: true });
   }
+
+  /**
+   * Initie la connexion OAuth2 avec Google
+   * Redirige vers le backend qui gérera le flux OAuth2
+   */
+  onGoogleLogin(): void {
+    window.location.href = this.authService.getGoogleLoginUrl();
+  }
 }

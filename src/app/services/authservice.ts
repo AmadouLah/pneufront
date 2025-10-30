@@ -184,5 +184,13 @@ export class Authservice {
   mustChangePassword(): boolean {
     return false;
   }
+
+  /**
+   * Obtient l'URL pour initier le flux OAuth2 avec Google
+   * @returns URL de connexion Google
+   */
+  getGoogleLoginUrl(): string {
+    return `${environment.apiUrl}/auth/oauth2/google/login`;
+  }
 }
 
