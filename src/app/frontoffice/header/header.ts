@@ -28,9 +28,7 @@ export class HeaderComponent {
     private fb: FormBuilder
   ) {
     this.searchForm = this.fb.group({
-      width: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
-      profile: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
-      diameter: ['', [Validators.required, Validators.pattern(/^\d+$/)]]
+      keyword: ['', [Validators.required, Validators.minLength(2)]]
     });
     this.checkAuthStatus();
   }
@@ -223,17 +221,20 @@ export class HeaderComponent {
    * Rechercher un produit par dimensions
    */
   onSearch(): void {
-    if (this.searchForm.valid) {
-      const { width, profile, diameter } = this.searchForm.value;
-      this.router.navigate(['/shop'], { 
-        queryParams: { 
-          width, 
-          profile, 
-          diameter 
-        } 
-      });
-      this.toggleSearch();
+    if (this.searchForm.invalid) {
+      this.searchForm.markAllAsTouched();
+      return;
     }
+
+    const keyword = this.searchForm.value.keyword?.trim();
+    if (!keyword) {
+      return;
+    }
+
+    this.router.navigate(['/shop'], {
+      queryParams: { q: keyword }
+    });
+    this.toggleSearch();
   }
 }
 

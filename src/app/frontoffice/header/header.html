@@ -575,68 +575,71 @@
 
 <!-- Search Modal -->
 @if (searchOpen()) {
-<div class="modal modal-open">
-  <div class="modal-box bg-black border-2 border-primary max-w-md p-8">
-    <button
-      (click)="toggleSearch()"
-      class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-white hover:text-primary"
-    >
-      ✕
-    </button>
-
-    <h2 class="text-2xl font-bold mb-6 text-primary text-center">
-      Search by size
-    </h2>
-
-    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="space-y-5">
-      <!-- Width -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text text-white font-medium">Width</span>
-        </label>
-        <input
-          type="text"
-          formControlName="width"
-          placeholder="Enter width (e.g., 235)"
-          class="input input-bordered w-full bg-white text-black placeholder-gray-400"
-        />
-      </div>
-
-      <!-- Profile -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text text-white font-medium">Profile</span>
-        </label>
-        <input
-          type="text"
-          formControlName="profile"
-          placeholder="Enter profile (e.g., 55)"
-          class="input input-bordered w-full bg-white text-black placeholder-gray-400"
-        />
-      </div>
-
-      <!-- Diameter -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text text-white font-medium">Diameter</span>
-        </label>
-        <input
-          type="text"
-          formControlName="diameter"
-          placeholder="Enter diameter (e.g., 16)"
-          class="input input-bordered w-full bg-white text-black placeholder-gray-400"
-        />
-      </div>
-
-      <button
-        type="submit"
-        class="btn bg-primary hover:bg-cyan-400 text-white border-none w-full mt-6 font-bold text-lg"
-        [disabled]="!searchForm.valid"
+<div class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex flex-col">
+  <div class="px-6 pt-6">
+    <div class="flex items-center gap-4">
+      <form
+        [formGroup]="searchForm"
+        (ngSubmit)="onSearch()"
+        class="flex items-center flex-1 bg-black/90 border border-gray-700 rounded-2xl px-4 py-3 focus-within:border-primary transition-all"
       >
-        Go
+        <input
+          type="text"
+          formControlName="keyword"
+          class="flex-1 bg-transparent text-white placeholder-gray-500 text-lg outline-none"
+          placeholder="Search"
+          autocomplete="off"
+        />
+        <button
+          type="submit"
+          class="text-gray-400 hover:text-primary transition-colors"
+          aria-label="Valider la recherche"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </button>
+      </form>
+      <button
+        type="button"
+        (click)="toggleSearch()"
+        class="text-white hover:text-primary transition-colors"
+        aria-label="Fermer la recherche"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
       </button>
-    </form>
+    </div>
   </div>
-  <div class="modal-backdrop bg-black/50" (click)="toggleSearch()"></div>
+
+  <div class="flex-1 px-6 py-10 text-gray-400">
+    <div class="max-w-xl">
+      <p class="text-sm">
+        Tapez au moins deux caractères pour lancer une recherche dans notre
+        catalogue.
+      </p>
+    </div>
+  </div>
 </div>
 }
