@@ -13,6 +13,7 @@ import { Authservice } from '../../services/authservice';
 })
 export class HeaderComponent {
   mobileMenuOpen = signal(false);
+  mobileMenuSection = signal<'root' | 'brands'>('root');
   searchOpen = signal(false);
   userMenuOpen = signal(false);
   isAuthenticated = signal(false);
@@ -102,7 +103,41 @@ export class HeaderComponent {
    * Toggle du menu mobile
    */
   toggleMobileMenu(): void {
-    this.mobileMenuOpen.set(!this.mobileMenuOpen());
+    const next = !this.mobileMenuOpen();
+    this.mobileMenuOpen.set(next);
+    if (!next) {
+      this.mobileMenuSection.set('root');
+    }
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
+    this.mobileMenuSection.set('root');
+  }
+
+  openMobileBrands(): void {
+    this.mobileMenuSection.set('brands');
+  }
+
+  backToMobileRoot(): void {
+    this.mobileMenuSection.set('root');
+  }
+
+  navigateFromMobile(route: string): void {
+    this.router.navigate([route]);
+    this.closeMobileMenu();
+  }
+
+  handleBrandSelection(brand: string): void {
+    this.filterByBrand(brand);
+    this.closeMobileMenu();
+  }
+
+  openSearchFromMobile(): void {
+    this.closeMobileMenu();
+    if (!this.searchOpen()) {
+      this.toggleSearch();
+    }
   }
 
   /**

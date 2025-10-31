@@ -9,10 +9,25 @@
       class="relative min-h-[600px] bg-black flex items-center overflow-hidden"
     >
       <div class="max-w-none px-6 w-full">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div
+          class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+        >
+          <!-- Image -->
+          <div class="order-1 lg:order-2 w-full flex justify-center">
+            <img
+              src="/assets/img/font.png"
+              alt="Supercar silhouette"
+              class="w-full max-w-[520px] max-h-[420px] sm:max-h-[480px] lg:max-h-[520px] object-cover rounded-[2.5rem] shadow-[0_35px_70px_rgba(0,0,0,0.45)]"
+              decoding="async"
+              loading="lazy"
+            />
+          </div>
+
           <!-- Left Content -->
-          <div class="text-left z-10">
-            <h1 class="text-6xl lg:text-7xl font-bold mb-8 text-white">
+          <div class="order-2 lg:order-1 z-10 text-center lg:text-left">
+            <h1
+              class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 text-white"
+            >
               Browse our store
             </h1>
             <a
@@ -21,17 +36,6 @@
             >
               SHOP
             </a>
-          </div>
-
-          <!-- Right Content - Car Image Placeholder -->
-          <div class="relative hidden lg:block">
-            <img
-              src="/assets/img/font.png"
-              alt="Supercar silhouette"
-              class="w-full h-full object-cover max-h-[520px] rounded-3xl shadow-[0_35px_70px_rgba(0,0,0,0.45)]"
-              decoding="async"
-              loading="lazy"
-            />
           </div>
         </div>
       </div>
