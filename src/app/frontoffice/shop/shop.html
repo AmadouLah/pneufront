@@ -1,0 +1,336 @@
+<ng-template #filtersContent>
+  <details class="filter-block" open>
+    <summary class="filter-summary">
+      <span>Brand</span>
+      <svg
+        class="filter-chevron"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </summary>
+    <ul class="filter-list">
+      @for (brand of brandList(); track brand) {
+      <li>
+        <label class="filter-option">
+          <input
+            type="checkbox"
+            [checked]="isBrandSelected(brand)"
+            (change)="toggleBrand(brand)"
+          />
+          <span>{{ brand }}</span>
+          <span class="filter-count">({{ getBrandCount(brand) }})</span>
+        </label>
+      </li>
+      }
+    </ul>
+  </details>
+
+  <details class="filter-block">
+    <summary class="filter-summary">
+      <span>Price</span>
+      <svg
+        class="filter-chevron"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </summary>
+    <div class="filter-stack">
+      @for (range of priceRanges; track range.id) {
+      <button
+        type="button"
+        class="filter-choice"
+        [class.is-active]="isPriceRangeSelected(range.id)"
+        (click)="selectPriceRange(range.id)"
+      >
+        {{ range.label }}
+      </button>
+      }
+    </div>
+  </details>
+
+  <details class="filter-block">
+    <summary class="filter-summary">
+      <span>Width</span>
+      <svg
+        class="filter-chevron"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </summary>
+    <div class="filter-grid">
+      @for (width of widthOptions(); track width) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.is-active]="isWidthSelected(width)"
+        (click)="selectWidth(width)"
+      >
+        {{ width }}
+      </button>
+      }
+    </div>
+  </details>
+
+  <details class="filter-block">
+    <summary class="filter-summary">
+      <span>Profile</span>
+      <svg
+        class="filter-chevron"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </summary>
+    <div class="filter-grid">
+      @for (profile of profileOptions(); track profile) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.is-active]="isProfileSelected(profile)"
+        (click)="selectProfile(profile)"
+      >
+        {{ profile }}
+      </button>
+      }
+    </div>
+  </details>
+
+  <details class="filter-block">
+    <summary class="filter-summary">
+      <span>Diameter</span>
+      <svg
+        class="filter-chevron"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </summary>
+    <div class="filter-grid">
+      @for (diameter of diameterOptions(); track diameter) {
+      <button
+        type="button"
+        class="filter-chip"
+        [class.is-active]="isDiameterSelected(diameter)"
+        (click)="selectDiameter(diameter)"
+      >
+        {{ diameter }}
+      </button>
+      }
+    </div>
+  </details>
+
+  <div class="filter-block mobile-only mobile-sort">
+    <div class="mobile-sort__label">Sort by:</div>
+    <div class="toolbar-select">
+      <select [value]="selectedSort()" (change)="onSortChange($event)">
+        @for (option of sortOptions; track option.id) {
+        <option [value]="option.id">{{ option.label }}</option>
+        }
+      </select>
+      <svg
+        class="toolbar-chevron"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </div>
+  </div>
+</ng-template>
+
+<div class="min-h-screen bg-black">
+  <app-header></app-header>
+
+  <main class="shop-main">
+    <div class="shop-container">
+      <h1 class="shop-title">Products</h1>
+
+      <div class="products-toolbar mobile-only">
+        <button class="filters-toggle" type="button" (click)="openFilters()">
+          <svg
+            class="filters-toggle__icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 4h18M4 12h16M6 20h12"
+            />
+          </svg>
+          <span>Filter and sort</span>
+        </button>
+        <span class="products-count">{{ totalProducts() }} products</span>
+      </div>
+
+      <div class="shop-layout">
+        <aside class="filters-column desktop-only">
+          <div class="filters-header">
+            <span class="filters-label">Filter:</span>
+            <button
+              type="button"
+              class="filters-reset"
+              (click)="clearFilters()"
+            >
+              Remove all
+            </button>
+          </div>
+          <div class="filters-divider"></div>
+
+          <ng-container *ngTemplateOutlet="filtersContent"></ng-container>
+        </aside>
+
+        <section class="products-column">
+          <div class="products-toolbar desktop-only">
+            <div class="products-toolbar__meta">
+              <span class="toolbar-caption">Sort by:</span>
+              <div class="toolbar-select">
+                <select
+                  [value]="selectedSort()"
+                  (change)="onSortChange($event)"
+                >
+                  @for (option of sortOptions; track option.id) {
+                  <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+                <svg
+                  class="toolbar-chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+            <span class="products-count">{{ totalProducts() }} products</span>
+          </div>
+
+          <div class="products-grid">
+            @for (product of sortedProducts(); track product.id) {
+            <article class="product-card">
+              <div class="product-card__image">
+                <img
+                  [src]="product.image"
+                  [alt]="product.name"
+                  loading="lazy"
+                />
+              </div>
+              <h3 class="product-card__name">{{ product.name }}</h3>
+              <p class="product-card__brand">{{ product.brand }}</p>
+              <p class="product-card__price">
+                @if (product.fromPrice) { From {{ formatPrice(product.price) }}
+                } @else { {{ formatPrice(product.price) }} }
+              </p>
+            </article>
+            } @empty {
+            <div class="products-empty">No products match your filters.</div>
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="filters-drawer" [class.is-open]="isDrawerOpen()">
+    <div class="filters-drawer__overlay" (click)="closeFilters()"></div>
+    <div class="filters-drawer__panel">
+      <header class="filters-drawer__header">
+        <div>
+          <div class="filters-drawer__title">Filter and sort</div>
+          <div class="filters-drawer__subtitle">
+            {{ totalProducts() }} products
+          </div>
+        </div>
+        <button
+          class="filters-drawer__close"
+          type="button"
+          (click)="closeFilters()"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </header>
+
+      <div class="filters-drawer__content">
+        <ng-container *ngTemplateOutlet="filtersContent"></ng-container>
+      </div>
+
+      <footer class="filters-drawer__footer">
+        <button
+          type="button"
+          class="filters-drawer__action filters-drawer__action--ghost"
+          (click)="clearFilters()"
+        >
+          Remove all
+        </button>
+        <button
+          type="button"
+          class="filters-drawer__action"
+          (click)="applyFilters()"
+        >
+          Apply
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
+</div>

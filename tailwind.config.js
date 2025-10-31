@@ -3,8 +3,22 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts}",
   ],
+  darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#00d9ff',
+        'primary-content': '#000000',
+        neutral: '#0a0a0a',
+        'neutral-soft': '#1a1a1a',
+        'base-100': '#000000',
+        'base-content': '#ffffff',
+      },
+      boxShadow: {
+        'pneu-card': '0 30px 60px rgba(0, 217, 255, 0.15)',
+        overlay: '0 20px 40px rgba(0, 0, 0, 0.45)',
+      },
+    },
   },
   plugins: [require('daisyui')],
   daisyui: {

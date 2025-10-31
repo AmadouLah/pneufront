@@ -9,6 +9,10 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./frontoffice/home/home').then(m => m.HomeComponent)
   },
+  {
+    path: 'shop',
+    loadComponent: () => import('./frontoffice/shop/shop').then(m => m.ShopComponent)
+  },
   
   // Auth Routes
   {
