@@ -29,7 +29,7 @@ const continentalProducts: readonly Product[] = [
     width: 235,
     profile: 65,
     diameter: 17,
-    image: '/img/products/continental-4x4-contact.png',
+    image: '/assets/img/products/continental-4x4-contact.png',
     launchedAt: '2021-02-15',
     salesRank: 1
   },
@@ -41,7 +41,7 @@ const continentalProducts: readonly Product[] = [
     width: 255,
     profile: 55,
     diameter: 19,
-    image: '/img/products/continental-4x4-sportcontact.png',
+    image: '/assets/img/products/continental-4x4-sportcontact.png',
     launchedAt: '2021-08-12',
     salesRank: 6
   },
@@ -54,7 +54,7 @@ const continentalProducts: readonly Product[] = [
     width: 265,
     profile: 75,
     diameter: 16,
-    image: '/img/products/continental-crosscontact-at.png',
+    image: '/assets/img/products/continental-crosscontact-at.png',
     launchedAt: '2020-05-03',
     salesRank: 8
   },
@@ -67,7 +67,7 @@ const continentalProducts: readonly Product[] = [
     width: 255,
     profile: 60,
     diameter: 18,
-    image: '/img/products/continental-crosscontact-lx.png',
+    image: '/assets/img/products/continental-crosscontact-lx.png',
     launchedAt: '2019-11-20',
     salesRank: 11
   },
@@ -80,7 +80,7 @@ const continentalProducts: readonly Product[] = [
     width: 255,
     profile: 65,
     diameter: 17,
-    image: '/img/products/continental-crosscontact-lx2.png',
+    image: '/assets/img/products/continental-crosscontact-lx2.png',
     launchedAt: '2020-09-08',
     salesRank: 5
   },
@@ -93,7 +93,7 @@ const continentalProducts: readonly Product[] = [
     width: 205,
     profile: 55,
     diameter: 16,
-    image: '/img/products/continental-ecocontact-5.png',
+    image: '/assets/img/products/continental-ecocontact-5.png',
     launchedAt: '2022-01-14',
     salesRank: 9
   },
@@ -106,7 +106,7 @@ const continentalProducts: readonly Product[] = [
     width: 215,
     profile: 55,
     diameter: 17,
-    image: '/img/products/continental-premiumcontact-5.png',
+    image: '/assets/img/products/continental-premiumcontact-5.png',
     launchedAt: '2022-06-02',
     salesRank: 4
   },
@@ -119,7 +119,7 @@ const continentalProducts: readonly Product[] = [
     width: 235,
     profile: 40,
     diameter: 18,
-    image: '/img/products/continental-sportcontact-5.png',
+    image: '/assets/img/products/continental-sportcontact-5.png',
     launchedAt: '2021-04-23',
     salesRank: 10
   },
@@ -132,7 +132,7 @@ const continentalProducts: readonly Product[] = [
     width: 265,
     profile: 35,
     diameter: 20,
-    image: '/img/products/continental-sportcontact-5p.png',
+    image: '/assets/img/products/continental-sportcontact-5p.png',
     launchedAt: '2023-02-18',
     salesRank: 13
   },
@@ -145,7 +145,7 @@ const continentalProducts: readonly Product[] = [
     width: 245,
     profile: 45,
     diameter: 18,
-    image: '/img/products/continental-sportcontact-3.png',
+    image: '/assets/img/products/continental-sportcontact-3.png',
     launchedAt: '2018-07-11',
     salesRank: 15
   },
@@ -158,7 +158,7 @@ const continentalProducts: readonly Product[] = [
     width: 205,
     profile: 55,
     diameter: 16,
-    image: '/img/products/continental-premiumcontact-2.png',
+    image: '/assets/img/products/continental-premiumcontact-2.png',
     launchedAt: '2017-03-30',
     salesRank: 18
   }
@@ -174,7 +174,7 @@ const generalTireProducts: readonly Product[] = [
     width: 205,
     profile: 60,
     diameter: 16,
-    image: '/img/products/generaltire-altimax-comfort.png',
+    image: '/assets/img/products/generaltire-altimax-comfort.png',
     launchedAt: '2020-01-20',
     salesRank: 2
   },
@@ -187,7 +187,7 @@ const generalTireProducts: readonly Product[] = [
     width: 215,
     profile: 55,
     diameter: 17,
-    image: '/img/products/generaltire-altimax-one.png',
+    image: '/assets/img/products/generaltire-altimax-one.png',
     launchedAt: '2021-03-05',
     salesRank: 3
   },
@@ -200,7 +200,7 @@ const generalTireProducts: readonly Product[] = [
     width: 225,
     profile: 45,
     diameter: 18,
-    image: '/img/products/generaltire-altimax-one-s.png',
+    image: '/assets/img/products/generaltire-altimax-one-s.png',
     launchedAt: '2021-11-09',
     salesRank: 7
   },
@@ -213,7 +213,7 @@ const generalTireProducts: readonly Product[] = [
     width: 265,
     profile: 70,
     diameter: 17,
-    image: '/img/products/generaltire-grabber-at3.png',
+    image: '/assets/img/products/generaltire-grabber-at3.png',
     launchedAt: '2019-05-18',
     salesRank: 12
   },
@@ -226,7 +226,7 @@ const generalTireProducts: readonly Product[] = [
     width: 285,
     profile: 70,
     diameter: 17,
-    image: '/img/products/generaltire-grabber-x3.png',
+    image: '/assets/img/products/generaltire-grabber-x3.png',
     launchedAt: '2018-10-02',
     salesRank: 16
   }
@@ -241,7 +241,7 @@ const dunlopProducts: readonly Product[] = [
     width: 245,
     profile: 45,
     diameter: 18,
-    image: '/img/products/dunlop-sp-sport-maxx.png',
+    image: '/assets/img/products/dunlop-sp-sport-maxx.png',
     launchedAt: '2022-04-28',
     salesRank: 14
   },
@@ -253,7 +253,7 @@ const dunlopProducts: readonly Product[] = [
     width: 225,
     profile: 50,
     diameter: 17,
-    image: '/img/products/dunlop-winter-sport-3d.png',
+    image: '/assets/img/products/dunlop-winter-sport-3d.png',
     launchedAt: '2019-12-10',
     salesRank: 19
   },
@@ -266,7 +266,7 @@ const dunlopProducts: readonly Product[] = [
     width: 265,
     profile: 65,
     diameter: 17,
-    image: '/img/products/dunlop-grandtrek-at3g.png',
+    image: '/assets/img/products/dunlop-grandtrek-at3g.png',
     launchedAt: '2018-04-22',
     salesRank: 21
   },
@@ -279,7 +279,7 @@ const dunlopProducts: readonly Product[] = [
     width: 265,
     profile: 60,
     diameter: 18,
-    image: '/img/products/dunlop-grandtrek-at5.png',
+    image: '/assets/img/products/dunlop-grandtrek-at5.png',
     launchedAt: '2020-08-07',
     salesRank: 20
   }
@@ -294,7 +294,7 @@ const pirelliProducts: readonly Product[] = [
     width: 195,
     profile: 55,
     diameter: 15,
-    image: '/img/products/pirelli-carrera-xl.png',
+    image: '/assets/img/products/pirelli-carrera-xl.png',
     launchedAt: '2017-09-16',
     salesRank: 22
   },
@@ -306,7 +306,7 @@ const pirelliProducts: readonly Product[] = [
     width: 255,
     profile: 50,
     diameter: 19,
-    image: '/img/products/pirelli-scorpion-verde.png',
+    image: '/assets/img/products/pirelli-scorpion-verde.png',
     launchedAt: '2021-01-29',
     salesRank: 17
   },
@@ -318,7 +318,7 @@ const pirelliProducts: readonly Product[] = [
     width: 265,
     profile: 70,
     diameter: 16,
-    image: '/img/products/pirelli-scorpion-atr.png',
+    image: '/assets/img/products/pirelli-scorpion-atr.png',
     launchedAt: '2016-03-12',
     salesRank: 23
   },
@@ -330,7 +330,7 @@ const pirelliProducts: readonly Product[] = [
     width: 245,
     profile: 40,
     diameter: 19,
-    image: '/img/products/pirelli-pzero.png',
+    image: '/assets/img/products/pirelli-pzero.png',
     launchedAt: '2022-09-01',
     salesRank: 24
   },
@@ -342,7 +342,7 @@ const pirelliProducts: readonly Product[] = [
     width: 225,
     profile: 45,
     diameter: 17,
-    image: '/img/products/pirelli-cinturato-p7.png',
+    image: '/assets/img/products/pirelli-cinturato-p7.png',
     launchedAt: '2020-03-27',
     salesRank: 25
   }

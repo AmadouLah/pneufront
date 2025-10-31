@@ -21,7 +21,7 @@ import { NgClass } from '@angular/common';
 })
 export class LogoComponent {
   @Input() size = 40;
-  @Input() src = '/img/logoPneuMali.png';
+  @Input() src = '/assets/img/logoPneuMali.png';
   @Input() alt = 'PneuMali';
   @Input() roundedClass = 'rounded-xl';
 }

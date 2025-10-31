@@ -1,0 +1,85 @@
+.about-page {
+  @apply bg-base-100 text-base-content min-h-screen;
+}
+
+.about-main {
+  @apply max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-16 lg:py-20;
+}
+
+.about-hero {
+  @apply grid gap-12 lg:grid-cols-2 items-center;
+}
+
+.about-hero__image {
+  @apply flex justify-center lg:justify-start;
+}
+
+.about-hero__frame {
+  @apply relative w-full max-w-xl overflow-hidden rounded-[2.5rem] border border-primary/20 shadow-[0_35px_70px_rgba(0,217,255,0.18)];
+}
+
+.about-hero__photo {
+  @apply absolute inset-0 w-full h-full object-cover;
+  animation: about-pan 24s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.about-hero__content {
+  @apply space-y-6 text-lg leading-relaxed lg:text-xl;
+}
+
+.about-title {
+  @apply text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight;
+}
+
+.about-paragraph {
+  @apply text-base-content/80;
+}
+
+.about-differentiators {
+  @apply mt-20 lg:mt-28 space-y-10;
+}
+
+.about-differentiators__title {
+  @apply text-center text-3xl sm:text-4xl font-semibold tracking-wide uppercase text-primary;
+}
+
+.about-differentiators__grid {
+  @apply grid gap-8 lg:grid-cols-3;
+}
+
+.about-card {
+  @apply bg-neutral-soft/60 backdrop-blur border border-primary/10 rounded-3xl p-8 shadow-[0_30px_60px_rgba(0,0,0,0.35)] h-full flex flex-col gap-4;
+}
+
+.about-card__title {
+  @apply text-2xl font-semibold text-primary uppercase tracking-widest;
+}
+
+.about-card__icon {
+  @apply w-16 h-16 mb-4 mx-auto lg:mx-0 object-contain;
+}
+
+.about-card__text {
+  @apply text-base-content/80 leading-relaxed;
+}
+
+@keyframes about-pan {
+  0% {
+    transform: scale(1.1) translate(-4%, -4%);
+  }
+  25% {
+    transform: scale(1.1) translate(4%, -4%);
+  }
+  50% {
+    transform: scale(1.1) translate(4%, 4%);
+  }
+  75% {
+    transform: scale(1.1) translate(-4%, 4%);
+  }
+  100% {
+    transform: scale(1.1) translate(-4%, -4%);
+  }
+}
+

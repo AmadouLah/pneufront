@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+    <title>Pneu Mali</title>
+    <defs>
+        <linearGradient id="ring" x1="16" y1="8" x2="48" y2="56" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ff7a00" />
+            <stop offset="1" stop-color="#ff9a1a" />
+        </linearGradient>
+    </defs>
+    <circle cx="32" cy="32" r="26" stroke="url(#ring)" stroke-width="10" fill="none" stroke-linecap="round" />
+    <path d="M35.5 6L19 37h12l-3.5 21 17-31h-12z" fill="#ffd645" />
+</svg>
+

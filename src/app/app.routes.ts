@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadComponent: () => import('./frontoffice/home/home').then(m => m.HomeComponent)
   },
   {
+    path: 'about',
+    loadComponent: () => import('./frontoffice/about/about').then(m => m.AboutComponent)
+  },
+  {
     path: 'shop',
     loadComponent: () => import('./frontoffice/shop/shop').then(m => m.ShopComponent)
   },
