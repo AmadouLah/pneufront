@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
+import { DifferentiatorsComponent } from '../../shared/differentiators/differentiators';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, RouterModule, HeaderComponent, FooterComponent, DifferentiatorsComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })

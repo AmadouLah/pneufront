@@ -3,12 +3,12 @@
   <app-header></app-header>
 
   <!-- Main Content -->
-  <main class="flex-1 pt-20">
+  <main class="flex-1 page-shell">
     <!-- Hero Section -->
     <section
       class="relative min-h-[600px] bg-black flex items-center overflow-hidden"
     >
-      <div class="container mx-auto px-6">
+      <div class="max-w-none px-6 w-full">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <!-- Left Content -->
           <div class="text-left z-10">
@@ -25,30 +25,13 @@
 
           <!-- Right Content - Car Image Placeholder -->
           <div class="relative hidden lg:block">
-            <div
-              class="w-full h-96 flex items-center justify-center opacity-10"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-64 w-64"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="0.5"
-                  d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="0.5"
-                  d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
-                />
-              </svg>
-            </div>
+            <img
+              src="/assets/img/font.png"
+              alt="Supercar silhouette"
+              class="w-full h-full object-cover max-h-[520px] rounded-3xl shadow-[0_35px_70px_rgba(0,0,0,0.45)]"
+              decoding="async"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>
@@ -56,7 +39,7 @@
 
     <!-- Search by Size Section -->
     <section class="bg-black py-12">
-      <div class="container mx-auto px-6">
+      <div class="px-6">
         <div class="border-2 border-primary rounded-lg p-8 max-w-4xl mx-auto">
           <h3 class="text-primary text-xl font-semibold mb-6">
             Search by size
@@ -182,46 +165,7 @@
       </div>
     </section>
 
-    <!-- Info Section -->
-    <section class="bg-black py-16">
-      <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-bold text-white text-center mb-16">
-          Le Différence Pneu Mali
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div
-            class="text-center p-8 bg-gray-900 rounded-lg border border-gray-800"
-          >
-            <h3 class="text-2xl font-bold text-primary mb-4">Notre Mission</h3>
-            <p class="text-gray-300 leading-relaxed">
-              Révolutionner le marché malien de la vente en ligne de pneus en
-              offrant une expérience e-commerce fluide avec des pneus premium à
-              prix compétitifs.
-            </p>
-          </div>
-          <div
-            class="text-center p-8 bg-gray-900 rounded-lg border border-gray-800"
-          >
-            <h3 class="text-2xl font-bold text-primary mb-4">Notre Vision</h3>
-            <p class="text-gray-300 leading-relaxed">
-              Être le premier détaillant en ligne de pneus au Mali, reconnu pour
-              notre gamme complète, nos prix abordables et notre engagement
-              envers la qualité.
-            </p>
-          </div>
-          <div
-            class="text-center p-8 bg-gray-900 rounded-lg border border-gray-800"
-          >
-            <h3 class="text-2xl font-bold text-primary mb-4">Notre Promesse</h3>
-            <p class="text-gray-300 leading-relaxed">
-              Nous comprenons le rôle vital de votre véhicule et nous nous
-              engageons à le traiter avec le plus grand soin grâce à notre
-              technologie avancée.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <app-differentiators></app-differentiators>
 
     <!-- Newsletter Section -->
     <section class="bg-gray-900 py-16">

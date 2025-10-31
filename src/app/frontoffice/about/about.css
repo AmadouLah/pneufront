@@ -3,83 +3,80 @@
 }
 
 .about-main {
-  @apply max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 py-16 lg:py-20;
+  margin: 0 auto;
+  padding-inline: clamp(1.5rem, 4vw, 3rem);
+  padding-block-end: clamp(4rem, 6vw, 6rem);
 }
 
 .about-hero {
-  @apply grid gap-12 lg:grid-cols-2 items-center;
+  display: grid;
+  gap: clamp(2rem, 4vw, 5rem);
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .about-hero {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
 }
 
 .about-hero__image {
-  @apply flex justify-center lg:justify-start;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .about-hero__frame {
-  @apply relative w-full max-w-xl overflow-hidden rounded-[2.5rem] border border-primary/20 shadow-[0_35px_70px_rgba(0,217,255,0.18)];
+  position: relative;
+  width: 80%;
+  padding-top: 80%;
+  border-radius: 1.75rem;
+  overflow: hidden;
+  box-shadow: 0 55px 110px rgba(0, 0, 0, 0.5);
 }
 
 .about-hero__photo {
-  @apply absolute inset-0 w-full h-full object-cover;
-  animation: about-pan 24s ease-in-out infinite;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: about-orbit 28s ease-in-out infinite;
   transform-origin: center;
   will-change: transform;
 }
 
 .about-hero__content {
-  @apply space-y-6 text-lg leading-relaxed lg:text-xl;
+  display: grid;
+  gap: 1.5rem;
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.2rem);
+  line-height: 1.8;
 }
 
 .about-title {
-  @apply text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight;
+  font-size: clamp(2.5rem, 2rem + 1vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .about-paragraph {
-  @apply text-base-content/80;
+  color: rgba(229, 231, 235, 0.75);
 }
 
-.about-differentiators {
-  @apply mt-20 lg:mt-28 space-y-10;
-}
-
-.about-differentiators__title {
-  @apply text-center text-3xl sm:text-4xl font-semibold tracking-wide uppercase text-primary;
-}
-
-.about-differentiators__grid {
-  @apply grid gap-8 lg:grid-cols-3;
-}
-
-.about-card {
-  @apply bg-neutral-soft/60 backdrop-blur border border-primary/10 rounded-3xl p-8 shadow-[0_30px_60px_rgba(0,0,0,0.35)] h-full flex flex-col gap-4;
-}
-
-.about-card__title {
-  @apply text-2xl font-semibold text-primary uppercase tracking-widest;
-}
-
-.about-card__icon {
-  @apply w-16 h-16 mb-4 mx-auto lg:mx-0 object-contain;
-}
-
-.about-card__text {
-  @apply text-base-content/80 leading-relaxed;
-}
-
-@keyframes about-pan {
+@keyframes about-orbit {
   0% {
-    transform: scale(1.1) translate(-4%, -4%);
+    transform: scale(1.08) translate(-2%, -2%);
   }
   25% {
-    transform: scale(1.1) translate(4%, -4%);
+    transform: scale(1.08) translate(2%, -1%);
   }
   50% {
-    transform: scale(1.1) translate(4%, 4%);
+    transform: scale(1.08) translate(2%, 2%);
   }
   75% {
-    transform: scale(1.1) translate(-4%, 4%);
+    transform: scale(1.08) translate(-2%, 1%);
   }
   100% {
-    transform: scale(1.1) translate(-4%, -4%);
+    transform: scale(1.08) translate(-2%, -2%);
   }
 }
 
