@@ -7,6 +7,10 @@ header .container {
   max-width: 1440px;
 }
 
+.app-logo {
+  filter: saturate(0) brightness(0.55) contrast(1.15);
+}
+
 /* Navigation links */
 nav ul li a {
   font-size: 0.875rem;
