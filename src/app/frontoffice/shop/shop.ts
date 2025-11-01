@@ -19,6 +19,8 @@ import {
   SortOption,
   SortOptionId,
 } from './shop.model';
+import { CartService } from '../../services/cart.service';
+import { formatCurrency } from '../../shared/utils/currency';
 
 @Component({
   selector: 'app-shop',
@@ -31,13 +33,7 @@ export class ShopComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-
-  private readonly currencyFormatter = new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
+  private readonly cartService = inject(CartService);
 
   readonly products = signal<Product[]>([...PRODUCTS]);
 
@@ -239,7 +235,23 @@ export class ShopComponent {
   }
 
   formatPrice(value: number): string {
-    return this.currencyFormatter.format(value);
+    return formatCurrency(value);
+  }
+
+  addToCart(product: Product): void {
+    this.cartService.addItem(
+      {
+        productId: product.id,
+        name: product.name,
+        brand: product.brand,
+        price: product.price,
+        image: product.image,
+        width: product.width,
+        profile: product.profile,
+        diameter: product.diameter
+      },
+      1
+    );
   }
 
   getBrandCount(brand: string): number {

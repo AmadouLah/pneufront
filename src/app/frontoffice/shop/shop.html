@@ -273,6 +273,13 @@
                 @if (product.fromPrice) { From {{ formatPrice(product.price) }}
                 } @else { {{ formatPrice(product.price) }} }
               </p>
+              <button
+                type="button"
+                class="product-card__cta"
+                (click)="addToCart(product)"
+              >
+                Ajouter au panier
+              </button>
             </article>
             } @empty {
             <div class="products-empty">No products match your filters.</div>

@@ -27,11 +27,38 @@
     grid-template-columns: 260px 1fr;
     align-items: start;
   }
+
+  .filters-column {
+    position: sticky;
+    top: 6.5rem;
+    max-height: calc(100vh - 7.5rem);
+    padding-right: 0.75rem;
+    padding-bottom: 2rem;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
 }
 
 .filters-column {
   font-size: 0.95rem;
   @apply text-base-content;
+}
+
+.filters-column::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filters-column::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filters-column::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+
+.filters-column::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 217, 255, 0.6);
 }
 
 .filters-header {
@@ -303,6 +330,30 @@
   font-size: 0.95rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.product-card__cta {
+  width: 100%;
+  margin-top: 1.25rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 217, 255, 0.35);
+  background: rgba(15, 23, 42, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease,
+    background 0.2s ease, color 0.2s ease;
+  @apply text-primary;
+}
+
+.product-card__cta:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 217, 255, 0.8);
+  background: rgba(0, 217, 255, 0.2);
+  box-shadow: 0 18px 35px rgba(0, 217, 255, 0.18);
+  color: #0f172a;
 }
 
 .products-empty {

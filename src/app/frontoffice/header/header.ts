@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Authservice } from '../../services/authservice';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +18,7 @@ export class HeaderComponent {
   searchOpen = signal(false);
   userMenuOpen = signal(false);
   isAuthenticated = signal(false);
-  cartItemCount = signal(0);
+  readonly cartItemCount = computed(() => this.cartService.totalItems());
   searchForm: FormGroup;
 
   brands = ['Michelin', 'Bridgestone', 'Goodyear', 'Continental', 'Pirelli', 'Dunlop'];
@@ -25,7 +26,8 @@ export class HeaderComponent {
   constructor(
     private authService: Authservice,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cartService: CartService
   ) {
     this.searchForm = this.fb.group({
       keyword: ['', [Validators.required, Validators.minLength(2)]]

@@ -1,0 +1,128 @@
+<div class="cart-shell">
+  <app-header></app-header>
+
+  <main class="cart-main">
+    <section class="cart-container">
+      <header class="cart-header">
+        <h1>Votre panier</h1>
+        <p class="cart-header__subtitle">
+          @if (hasItems()) { {{ totalItems() }} article{{ totalItems() > 1 ? 's'
+          : '' }} prêts à être commandés } @else { Votre sélection sera affichée
+          ici }
+        </p>
+      </header>
+
+      @if (!hasItems()) {
+      <section class="cart-empty">
+        <div class="cart-empty__content">
+          <div class="cart-empty__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4m-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </div>
+          <h2>Votre panier est vide</h2>
+          <p>
+            Explorez notre boutique et ajoutez vos pneus favoris pour créer
+            votre commande.
+          </p>
+          <a routerLink="/shop" class="cart-button cart-button--primary"
+            >Continuer vos achats</a
+          >
+        </div>
+      </section>
+      } @else {
+      <div class="cart-layout">
+        <section class="cart-items">
+          @for (item of items(); track trackByProductId) {
+          <article class="cart-item">
+            <div class="cart-item__image">
+              <img [src]="item.image" [alt]="item.name" loading="lazy" />
+            </div>
+            <div class="cart-item__content">
+              <div class="cart-item__header">
+                <h2>{{ item.name }}</h2>
+                <button
+                  type="button"
+                  class="cart-item__remove"
+                  (click)="remove(item)"
+                >
+                  Retirer
+                </button>
+              </div>
+              <p class="cart-item__brand">{{ item.brand }}</p>
+              <div class="cart-item__meta">
+                @if (item.width) {
+                <span>Largeur {{ item.width }}</span>
+                } @if (item.profile) {
+                <span>Profil {{ item.profile }}</span>
+                } @if (item.diameter) {
+                <span>Diamètre {{ item.diameter }}</span>
+                }
+              </div>
+              <div class="cart-item__footer">
+                <div class="cart-qty">
+                  <button
+                    type="button"
+                    class="cart-qty__btn"
+                    aria-label="Diminuer la quantité"
+                    (click)="decrement(item)"
+                  >
+                    &minus;
+                  </button>
+                  <span class="cart-qty__value">{{ item.quantity }}</span>
+                  <button
+                    type="button"
+                    class="cart-qty__btn"
+                    aria-label="Augmenter la quantité"
+                    (click)="increment(item)"
+                  >
+                    +
+                  </button>
+                </div>
+                <div class="cart-item__price">
+                  {{ formatPrice(item.price * item.quantity) }}
+                </div>
+              </div>
+            </div>
+          </article>
+          }
+        </section>
+
+        <aside class="cart-summary">
+          <div class="cart-summary__card">
+            <h2 class="cart-summary__title">Résumé</h2>
+            <div class="cart-summary__row">
+              <span>Sous-total</span>
+              <strong>{{ formatPrice(subtotal()) }}</strong>
+            </div>
+            <p class="cart-summary__note">
+              Les taxes et frais de livraison seront calculés lors de la
+              finalisation de la commande.
+            </p>
+            <button
+              type="button"
+              class="cart-button cart-button--primary"
+              disabled
+            >
+              Passer la commande
+            </button>
+            <a routerLink="/shop" class="cart-button cart-button--ghost"
+              >Continuer vos achats</a
+            >
+            <button type="button" class="cart-summary__clear" (click)="clear()">
+              Vider le panier
+            </button>
+          </div>
+        </aside>
+      </div>
+      }
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>

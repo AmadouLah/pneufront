@@ -33,10 +33,10 @@ export class ContactComponent implements OnInit {
   errorMessage = signal('');
 
   readonly contactInfo = {
-    address: 'Carbon Black Tyres, Shop ALG 9-10, Cnr Main Rd & Kyalami Downs, Kyalami Blvd, Midrand, 1686',
-    hours: 'Monday – Friday, 8 AM – 4:30 PM',
-    email: 'info@carbon-black.co.za',
-    phone: '087 265 8280'
+    address: 'PneuMali, Rue 725 Porte 12, ACI 2000, Bamako, Mali',
+    hours: 'Lundi – Samedi, 8h00 – 18h00',
+    email: 'contact@pneumali.com',
+    phone: '+223 20 21 43 50'
   };
 
   constructor(

@@ -46,6 +46,10 @@ export const routes: Routes = [
     loadComponent: () => import('./frontoffice/contact/contact').then(m => m.ContactComponent)
   },
   {
+    path: 'cart',
+    loadComponent: () => import('./frontoffice/cart/cart').then(m => m.CartComponent)
+  },
+  {
     path: 'frontoffice/profil',
     loadComponent: () => import('./frontoffice/profil/profil').then(m => m.ProfilComponent),
     canActivate: [authGuard]
