@@ -7,8 +7,31 @@ header .container {
   max-width: 1440px;
 }
 
+.app-logo-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-logo-wrap::after {
+  content: '';
+  position: absolute;
+  inset: -0.4rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, rgba(0, 217, 255, 0.22) 0%, rgba(0, 217, 255, 0.05) 45%, transparent 75%);
+  opacity: 0.9;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.app-logo-wrap:hover::after {
+  opacity: 1;
+}
+
 .app-logo {
-  filter: saturate(0) brightness(0.55) contrast(1.15);
+  filter: saturate(0.45) brightness(0.62) contrast(1.18)
+    drop-shadow(0 10px 25px rgba(0, 217, 255, 0.3));
 }
 
 /* Navigation links */
