@@ -10,8 +10,10 @@ export class FormHelperService {
    * Retourne les classes CSS pour un champ de formulaire
    */
   getInputClasses(fieldName: string, form: FormGroup): string {
-    const baseClasses = 'w-full px-4 py-3 pl-12 bg-gray-700/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200';
-    const errorClasses = this.hasFieldError(fieldName, form) ? 'border-red-500' : 'border-gray-600';
+    const baseClasses = 'w-full px-4 py-3 pl-12 rounded-xl border transition-colors duration-200 bg-neutral-soft/70 text-base-content placeholder:text-base-content/60 focus-visible:outline-none focus:border-primary focus:ring-2 focus:ring-primary/40 backdrop-blur-sm';
+    const errorClasses = this.hasFieldError(fieldName, form)
+      ? 'border-error focus:border-error focus:ring-error/40'
+      : 'border-neutral/60';
     const passwordClasses = this.isPasswordField(fieldName) ? 'pr-12' : '';
     return `${baseClasses} ${errorClasses} ${passwordClasses}`;
   }

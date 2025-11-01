@@ -25,6 +25,14 @@ export class LoginComponent implements OnInit {
   
   loginForm: FormGroup;
   email = signal('');
+  readonly mailIconPath = 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z';
+  readonly lockIconPath = 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z';
+  readonly chevronRight = 'M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z';
+  readonly arrowRight = 'M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1';
+  readonly primaryActionClasses = 'auth-button auth-button--primary';
+  readonly primaryIconClasses = 'auth-button__icon auth-button__icon--primary';
+  readonly googleButtonClasses = 'auth-button auth-button--google';
+  readonly googleIconClasses = 'auth-button__icon auth-button__icon--google';
 
   constructor(
     private formBuilder: FormBuilder,
