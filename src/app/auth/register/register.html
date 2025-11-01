@@ -1,394 +1,340 @@
-<!-- Page d'inscription simplifiée -->
-<div class="min-h-screen bg-black flex items-center justify-center p-4">
-  <!-- Conteneur principal -->
-  <div class="w-full max-w-md">
-    <!-- Carte d'inscription -->
-    <div class="bg-gray-800 rounded-2xl shadow-2xl p-8">
-      <!-- En-tête avec logo et titre -->
-      <div class="text-center mb-8">
-        <!-- Logo -->
-        <div class="flex justify-center mb-4">
-          <div
-            class="w-16 h-16 bg-white rounded-lg shadow-lg flex items-center justify-center"
-          >
-            <img
-              src="/assets/img/logoPneuMali.png"
-              alt="PneuMali"
-              class="w-12 h-12"
-            />
+<div class="auth-shell">
+  <div class="auth-container">
+    <section class="auth-card">
+      <div class="auth-card__content space-y-8">
+        <header class="auth-card__header">
+          <div class="flex justify-center">
+            <span class="auth-logo-wrap">
+              <img
+                src="/assets/img/logoPneuMali.png"
+                alt="PneuMali"
+                class="auth-logo h-12 w-12"
+              />
+            </span>
           </div>
-        </div>
-        <div class="text-white text-sm font-medium mb-2">PNEUMALI</div>
+          <div class="space-y-2">
+            <span class="auth-card__subtitle">Pneumali</span>
+            <h1 class="auth-card__title">Créer votre compte</h1>
+            <p class="auth-card__description">
+              Activez votre espace PneuMali en quelques secondes pour suivre vos
+              commandes et vos pneus.
+            </p>
+          </div>
+          <div class="auth-divider">Inscription</div>
+        </header>
 
-        <!-- Titre principal -->
-        <h1 class="text-3xl font-bold text-green-500 mb-2">PneuMali</h1>
-        <p class="text-gray-300 text-sm mb-6">Plateforme de gestion de pneus</p>
-
-        <!-- Séparateur avec "Inscription" -->
-        <div class="flex items-center mb-6">
-          <div class="flex-1 h-px bg-green-500"></div>
-          <span class="px-4 text-green-500 text-sm font-medium"
-            >Inscription</span
-          >
-          <div class="flex-1 h-px bg-gray-600"></div>
-        </div>
-      </div>
-
-      <!-- Message d'erreur -->
-      @if (errorMessage()) {
-      <div class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6">
-        <div class="flex items-center">
-          <svg
-            class="w-5 h-5 text-red-400 mr-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        @if (errorMessage()) {
+        <div class="auth-alert auth-alert--error">
+          <svg class="auth-alert__icon" fill="none" viewBox="0 0 24 24">
             <path
+              stroke="currentColor"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             ></path>
           </svg>
-          <span class="text-red-400 text-sm font-medium"
-            >{{ errorMessage() }}</span
-          >
+          <span class="font-medium">{{ errorMessage() }}</span>
         </div>
-      </div>
-      }
-
-      <!-- Message de succès -->
-      @if (successMessage()) {
-      <div
-        class="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mb-6"
-      >
-        <div class="flex items-center">
-          <svg
-            class="w-5 h-5 text-green-400 mr-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        } @if (successMessage()) {
+        <div class="auth-alert auth-alert--success">
+          <svg class="auth-alert__icon" fill="none" viewBox="0 0 24 24">
             <path
+              stroke="currentColor"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
             ></path>
           </svg>
-          <span class="text-green-400 text-sm font-medium"
-            >{{ successMessage() }}</span
-          >
+          <span class="font-medium">{{ successMessage() }}</span>
         </div>
-      </div>
-      }
+        }
 
-      <!-- Formulaire d'inscription -->
-      <form
-        [formGroup]="registerForm"
-        (ngSubmit)="onSubmit()"
-        class="space-y-6"
-      >
-        <!-- Champ Email -->
-        <div class="space-y-2">
-          <label class="text-gray-300 text-sm font-medium flex items-center">
-            <svg
-              class="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-            Email
-          </label>
-          <div class="relative">
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="Votre email"
-              [class]="getInputClasses('email')"
-            />
-            <svg
-              class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </div>
-          @if (hasFieldError('email')) {
-          <p class="text-red-400 text-xs font-medium">
-            {{ getFieldError('email') }}
-          </p>
-          }
-        </div>
-
-        <!-- Champ Mot de passe -->
-        <div class="space-y-2">
-          <label class="text-gray-300 text-sm font-medium flex items-center">
-            <svg
-              class="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-            Mot de passe
-          </label>
-          <div class="relative">
-            <input
-              [type]="showPassword() ? 'text' : 'password'"
-              formControlName="password"
-              placeholder="Votre mot de passe"
-              [class]="getInputClasses('password')"
-            />
-            <svg
-              class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-            <button
-              type="button"
-              (click)="togglePasswordVisibility()"
-              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors duration-200"
-            >
-              @if (showPassword()) {
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                />
-              </svg>
-              } @else {
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-              }
-            </button>
-          </div>
-          @if (hasFieldError('password')) {
-          <p class="text-red-400 text-xs font-medium">
-            {{ getFieldError('password') }}
-          </p>
-          }
-        </div>
-
-        <!-- Champ Confirmation mot de passe -->
-        <div class="space-y-2">
-          <label class="text-gray-300 text-sm font-medium flex items-center">
-            <svg
-              class="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-            Confirmer le mot de passe
-          </label>
-          <div class="relative">
-            <input
-              [type]="showConfirmPassword() ? 'text' : 'password'"
-              formControlName="confirmPassword"
-              placeholder="Confirmez votre mot de passe"
-              [class]="getInputClasses('confirmPassword')"
-            />
-            <svg
-              class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-            <button
-              type="button"
-              (click)="toggleConfirmPasswordVisibility()"
-              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300 transition-colors duration-200"
-            >
-              @if (showConfirmPassword()) {
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                />
-              </svg>
-              } @else {
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-              }
-            </button>
-          </div>
-          @if (hasFieldError('confirmPassword')) {
-          <p class="text-red-400 text-xs font-medium">
-            {{ getFieldError('confirmPassword') }}
-          </p>
-          }
-        </div>
-
-        <!-- Bouton d'inscription -->
-        <button
-          type="submit"
-          [disabled]="isLoading()"
-          class="w-full bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+        <form
+          [formGroup]="registerForm"
+          (ngSubmit)="onSubmit()"
+          class="auth-form"
         >
-          @if (isLoading()) {
-          <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <span>Inscription en cours...</span>
-          } @else {
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <div class="space-y-4">
+            <label class="auth-field__label">
+              <svg
+                class="auth-field__icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              Email
+            </label>
+            <div class="relative auth-field">
+              <div
+                class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base-content/50"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="prenom.nom@email.com"
+                [class]="getInputClasses('email')"
+              />
+            </div>
+            @if (hasFieldError('email')) {
+            <p class="text-xs font-medium text-error">
+              {{ getFieldError('email') }}
+            </p>
+            }
+          </div>
+
+          <div class="space-y-4">
+            <label class="auth-field__label">
+              <svg
+                class="auth-field__icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              Mot de passe
+            </label>
+            <div class="relative auth-field">
+              <div
+                class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base-content/50"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Au moins 8 caractères"
+                [class]="getInputClasses('password')"
+              />
+              <button
+                type="button"
+                (click)="togglePasswordVisibility()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/60 hover:text-base-content transition-colors"
+              >
+                @if (showPassword()) {
+                <svg
+                  class="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                  />
+                </svg>
+                } @else {
+                <svg
+                  class="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                }
+              </button>
+            </div>
+            <p class="auth-field__info">
+              Utilisez un mot de passe sécurisé que vous seul connaissez.
+            </p>
+            @if (hasFieldError('password')) {
+            <p class="text-xs font-medium text-error">
+              {{ getFieldError('password') }}
+            </p>
+            }
+          </div>
+
+          <div class="space-y-4">
+            <label class="auth-field__label">
+              <svg
+                class="auth-field__icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              Confirmer le mot de passe
+            </label>
+            <div class="relative auth-field">
+              <div
+                class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base-content/50"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+              <input
+                [type]="showConfirmPassword() ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                placeholder="Répétez votre mot de passe"
+                [class]="getInputClasses('confirmPassword')"
+              />
+              <button
+                type="button"
+                (click)="toggleConfirmPasswordVisibility()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/60 hover:text-base-content transition-colors"
+              >
+                @if (showConfirmPassword()) {
+                <svg
+                  class="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                  />
+                </svg>
+                } @else {
+                <svg
+                  class="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                }
+              </button>
+            </div>
+            @if (hasFieldError('confirmPassword')) {
+            <p class="text-xs font-medium text-error">
+              {{ getFieldError('confirmPassword') }}
+            </p>
+            }
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="isLoading()"
+            class="auth-button auth-button--primary"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-            />
-          </svg>
-          <span>S'inscrire</span>
-          }
-        </button>
-      </form>
+            @if (isLoading()) {
+            <span
+              class="loading loading-spinner loading-sm auth-loading"
+            ></span>
+            <span>Inscription en cours...</span>
+            } @else {
+            <span class="auth-button__icon auth-button__icon--primary">
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                />
+              </svg>
+            </span>
+            <span>S'inscrire</span>
+            }
+          </button>
+        </form>
 
-      <!-- Séparateur -->
-      <div class="flex items-center my-6">
-        <div class="flex-1 h-px bg-gray-600"></div>
-        <span class="px-4 text-gray-400 text-xs font-medium">OU</span>
-        <div class="flex-1 h-px bg-gray-600"></div>
-      </div>
+        <div class="auth-divider">ou</div>
 
-      <!-- Lien vers la connexion -->
-      <div class="text-center">
-        <p class="text-gray-400 text-sm">
+        <p class="auth-small-note">
           Déjà un compte ?
-          <a
-            routerLink="/auth/login"
-            class="text-green-500 hover:text-green-400 font-medium transition-colors"
-          >
-            Se connecter
-          </a>
+          <a routerLink="/auth/login" class="auth-inline-link">Se connecter</a>
         </p>
       </div>
-    </div>
+    </section>
 
-    <!-- Footer -->
-    <div class="text-center mt-8">
-      <p class="text-xs text-gray-400">
-        © 2025 PneuMali - Plateforme de gestion de pneus
-      </p>
-      <div class="flex justify-center space-x-4 mt-2 text-xs">
-        <a href="#" class="text-gray-400 hover:text-gray-300 transition-colors"
-          >Aide</a
-        >
-        <a href="#" class="text-gray-400 hover:text-gray-300 transition-colors"
-          >Confidentialité</a
-        >
-        <a href="#" class="text-gray-400 hover:text-gray-300 transition-colors"
-          >Conditions</a
-        >
+    <footer class="auth-footer">
+      <p>© 2025 PneuMali - Plateforme de gestion de pneus</p>
+      <div class="auth-footer__links">
+        <a href="#" class="auth-footer__link">Aide</a>
+        <a href="#" class="auth-footer__link">Confidentialité</a>
+        <a href="#" class="auth-footer__link">Conditions</a>
       </div>
-    </div>
+    </footer>
   </div>
 </div>

@@ -12,7 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './verify.html',
-  styleUrls: ['./verify.css']
+  styleUrls: ['./verify.css', '../shared/auth-theme.css']
 })
 export class VerifyComponent implements OnDestroy {
   isLoading = signal(false);

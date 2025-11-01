@@ -1,45 +1,28 @@
-<div
-  class="min-h-screen bg-neutral text-base-content flex items-center justify-center px-4 py-12"
->
-  <div class="w-full max-w-md">
-    <section
-      class="login-card rounded-3xl border border-neutral/60 bg-neutral-soft/80 backdrop-blur-xl shadow-overlay"
-    >
-      <header class="px-8 pt-10 pb-6 text-center space-y-6">
-        <div class="flex justify-center">
-          <div
-            class="flex h-16 w-16 items-center justify-center rounded-2xl border border-neutral/50 bg-base-100/10 shadow-lg shadow-primary/30"
-          >
-            <img
-              src="/assets/img/logoPneuMali.png"
-              alt="PneuMali"
-              class="h-10 w-10"
-            />
+<div class="auth-shell">
+  <div class="auth-container">
+    <section class="auth-card">
+      <div class="auth-card__content space-y-8">
+        <header class="auth-card__header">
+          <div class="flex justify-center">
+            <span class="auth-logo-wrap">
+              <img
+                src="/assets/img/logoPneuMali.png"
+                alt="PneuMali"
+                class="auth-logo h-12 w-12"
+              />
+            </span>
           </div>
-        </div>
-        <div class="space-y-2">
-          <span
-            class="text-sm font-medium tracking-[0.3em] text-primary uppercase"
-            >Pneumali</span
-          >
-          <h1 class="text-3xl font-bold">Connexion</h1>
-          <p class="text-sm text-base-content/70">
-            Plateforme de gestion de pneus
-          </p>
-        </div>
-        <div
-          class="flex items-center justify-center gap-4 text-xs uppercase tracking-[0.3em] text-base-content/60"
-        >
-          <div class="h-px w-12 bg-primary/40"></div>
-          <span
-            >{{ loginStep() === 'email' ? 'Identifiez-vous' : 'Authentification'
-            }}</span
-          >
-          <div class="h-px w-12 bg-primary/40"></div>
-        </div>
-      </header>
+          <div class="space-y-2">
+            <span class="auth-card__subtitle">Pneumali</span>
+            <h1 class="auth-card__title">Connexion</h1>
+            <p class="auth-card__description">Plateforme de gestion de pneus</p>
+          </div>
+          <div class="auth-divider">
+            {{ loginStep() === 'email' ? 'Identifiez-vous' : 'Authentification'
+            }}
+          </div>
+        </header>
 
-      <div class="px-8 pb-10 space-y-6">
         <ng-template #mailIcon>
           <svg
             class="h-5 w-5"
@@ -105,10 +88,8 @@
         </ng-template>
 
         @if (errorMessage()) {
-        <div
-          class="flex items-start gap-3 rounded-2xl border border-error/40 bg-error/10 px-4 py-3 text-sm text-error"
-        >
-          <svg class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+        <div class="auth-alert auth-alert--error">
+          <svg class="auth-alert__icon" fill="none" viewBox="0 0 24 24">
             <path
               stroke="currentColor"
               stroke-linecap="round"
@@ -121,16 +102,14 @@
         </div>
         }
 
-        <form [formGroup]="loginForm" class="space-y-6">
+        <form [formGroup]="loginForm" class="auth-form">
           @if (loginStep() === 'email') {
-          <div class="space-y-4">
-            <label
-              class="text-xs font-semibold uppercase tracking-wide text-base-content/60 flex items-center gap-2"
-            >
+          <div class="space-y-5">
+            <label class="auth-field__label">
               <ng-container *ngTemplateOutlet="mailIcon"></ng-container>
               Adresse email
             </label>
-            <div class="relative">
+            <div class="relative auth-field">
               <div
                 class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base-content/50"
               >
@@ -154,28 +133,30 @@
               type="button"
               (click)="onEmailSubmit()"
               [disabled]="isLoading()"
-              [class]="primaryActionClasses"
+              class="auth-button auth-button--primary"
             >
               @if (isLoading()) {
-              <span class="loading loading-spinner loading-sm"></span>
+              <span
+                class="loading loading-spinner loading-sm auth-loading"
+              ></span>
               <span>Vérification...</span>
               } @else {
-              <span [class]="primaryIconClasses">
+              <span class="auth-button__icon auth-button__icon--primary">
                 <ng-container *ngTemplateOutlet="chevronIcon"></ng-container>
               </span>
               <span>Continuer</span>
               }
             </button>
 
-            <div class="divider text-xs uppercase text-base-content/50">ou</div>
+            <div class="auth-divider">ou</div>
 
             <button
               type="button"
               (click)="onGoogleLogin()"
               [disabled]="isLoading()"
-              [class]="googleButtonClasses"
+              class="auth-button auth-button--google"
             >
-              <span [class]="googleIconClasses">
+              <span class="auth-button__icon auth-button__icon--google">
                 <svg class="h-5 w-5" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
@@ -201,9 +182,7 @@
           } @if (loginStep() === 'password') {
           <div class="space-y-6">
             <div class="space-y-3">
-              <label
-                class="text-xs font-semibold uppercase tracking-wide text-base-content/60 flex items-center gap-2"
-              >
+              <label class="auth-field__label">
                 <ng-container *ngTemplateOutlet="mailIcon"></ng-container>
                 Adresse email
               </label>
@@ -230,9 +209,7 @@
             </div>
 
             <div class="space-y-3">
-              <label
-                class="text-xs font-semibold uppercase tracking-wide text-base-content/60 flex items-center gap-2"
-              >
+              <label class="auth-field__label">
                 <ng-container *ngTemplateOutlet="lockIcon"></ng-container>
                 Mot de passe
               </label>
@@ -302,26 +279,26 @@
               type="button"
               (click)="onPasswordSubmit()"
               [disabled]="isLoading()"
-              [class]="primaryActionClasses"
+              class="auth-button auth-button--primary"
             >
               @if (isLoading()) {
-              <span class="loading loading-spinner loading-sm"></span>
+              <span
+                class="loading loading-spinner loading-sm auth-loading"
+              ></span>
               <span>Connexion en cours...</span>
               } @else {
-              <span [class]="primaryIconClasses">
+              <span class="auth-button__icon auth-button__icon--primary">
                 <ng-container *ngTemplateOutlet="arrowIcon"></ng-container>
               </span>
               <span>Se connecter</span>
               }
             </button>
 
-            <div class="divider text-xs uppercase text-base-content/50">ou</div>
+            <div class="auth-divider">ou</div>
 
-            <p class="text-center text-sm text-base-content/70">
+            <p class="auth-small-note">
               Mot de passe oublié ?
-              <a
-                routerLink="/auth/forgot-password"
-                class="text-primary hover:text-primary/80 font-semibold"
+              <a routerLink="/auth/forgot-password" class="auth-inline-link"
                 >Réinitialiser</a
               >
             </p>
@@ -331,16 +308,12 @@
       </div>
     </section>
 
-    <footer class="mt-8 text-center text-xs text-base-content/60 space-y-2">
+    <footer class="auth-footer">
       <p>© 2025 PneuMali - Plateforme de gestion de pneus</p>
-      <div class="flex justify-center gap-4">
-        <a href="#" class="transition-colors hover:text-base-content">Aide</a>
-        <a href="#" class="transition-colors hover:text-base-content"
-          >Confidentialité</a
-        >
-        <a href="#" class="transition-colors hover:text-base-content"
-          >Conditions</a
-        >
+      <div class="auth-footer__links">
+        <a href="#" class="auth-footer__link">Aide</a>
+        <a href="#" class="auth-footer__link">Confidentialité</a>
+        <a href="#" class="auth-footer__link">Conditions</a>
       </div>
     </footer>
   </div>

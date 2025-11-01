@@ -4,13 +4,14 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { Router, RouterModule } from '@angular/router';
 import { Authservice } from '../../services/authservice';
 import { RegisterRequest } from '../../shared/types/auth';
+import { FormHelperService } from '../../shared/services/form-helper.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.html',
-  styleUrls: ['./register.css']
+  styleUrls: ['./register.css', '../shared/auth-theme.css']
 })
 export class RegisterComponent {
 
@@ -25,13 +26,14 @@ export class RegisterComponent {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: Authservice
+    private authService: Authservice,
+    private formHelper: FormHelperService
   ) {
     this.registerForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      email: ['', FormHelperService.emailValidator],
+      password: ['', FormHelperService.passwordValidator],
       confirmPassword: ['', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
+    }, { validators: FormHelperService.passwordMatchValidator() });
   }
 
   togglePasswordVisibility(): void {
@@ -43,58 +45,15 @@ export class RegisterComponent {
   }
 
   getInputClasses(fieldName: string): string {
-    const baseClasses = 'w-full px-4 py-3 pl-12 bg-gray-700/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200';
-    const errorClasses = this.hasFieldError(fieldName) ? 'border-red-500' : 'border-gray-600';
-    const passwordClasses = fieldName === 'password' || fieldName === 'confirmPassword' ? 'pr-12' : '';
-    return `${baseClasses} ${errorClasses} ${passwordClasses}`;
+    return this.formHelper.getInputClasses(fieldName, this.registerForm);
   }
 
   getFieldError(fieldName: string): string {
-    const field = this.registerForm.get(fieldName);
-    if (!field?.errors || !field.touched) return '';
-
-    const errorMessages = this.getErrorMessages(fieldName);
-    const errorKey = Object.keys(field.errors)[0];
-    return errorMessages[errorKey] || '';
+    return this.formHelper.getFieldError(fieldName, this.registerForm);
   }
 
   hasFieldError(fieldName: string): boolean {
-    const field = this.registerForm.get(fieldName);
-    return !!(field?.errors && field.touched);
-  }
-
-  private passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password');
-    const confirmPassword = form.get('confirmPassword');
-    
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
-    }
-    
-    if (confirmPassword?.hasError('passwordMismatch')) {
-      confirmPassword.setErrors(null);
-    }
-    
-    return null;
-  }
-
-  private getErrorMessages(fieldName: string): Record<string, string> {
-    const errorMessages: Record<string, Record<string, string>> = {
-      email: {
-        required: "L'email est obligatoire",
-        email: "Format d'email invalide"
-      },
-      password: {
-        required: 'Le mot de passe est obligatoire',
-        minlength: 'Le mot de passe doit contenir au moins 8 caractères'
-      },
-      confirmPassword: {
-        required: 'La confirmation du mot de passe est obligatoire',
-        passwordMismatch: 'Les mots de passe ne correspondent pas'
-      }
-    };
-    return errorMessages[fieldName] || {};
+    return this.formHelper.hasFieldError(fieldName, this.registerForm);
   }
 
   onSubmit(): void {
@@ -153,9 +112,7 @@ export class RegisterComponent {
         }
       });
     } else {
-      Object.keys(this.registerForm.controls).forEach(key => {
-        this.registerForm.get(key)?.markAsTouched();
-      });
+      this.formHelper.markAllFieldsAsTouched(this.registerForm);
     }
   }
 }

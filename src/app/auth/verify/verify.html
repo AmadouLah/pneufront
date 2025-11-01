@@ -1,288 +1,238 @@
-<!-- Page de vérification du code d'authentification -->
-<div class="min-h-screen bg-black flex items-center justify-center p-4">
-  <!-- Conteneur principal -->
-  <div class="w-full max-w-md">
-    <!-- Carte de vérification -->
-    <div class="bg-gray-800 rounded-2xl shadow-2xl p-8">
-      <!-- En-tête avec logo et titre -->
-      <div class="text-center mb-8">
-        <!-- Bouton retour -->
-        <div class="flex justify-start mb-4">
-          <button
-            type="button"
-            (click)="backToLogin()"
-            class="flex items-center text-gray-400 hover:text-green-500 transition-colors text-sm"
-          >
-            <svg
-              class="w-4 h-4 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+<div class="auth-shell">
+  <div class="auth-container">
+    <section class="auth-card">
+      <div class="auth-card__content space-y-8">
+        <header class="auth-card__header">
+          <div class="flex justify-between items-center">
+            <button
+              type="button"
+              (click)="backToLogin()"
+              class="auth-secondary-link"
             >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Retour
+            </button>
+            <span></span>
+          </div>
+
+          <div class="flex justify-center">
+            <span class="auth-logo-wrap">
+              <img
+                src="/assets/img/logoPneuMali.png"
+                alt="PneuMali"
+                class="auth-logo h-12 w-12"
+              />
+            </span>
+          </div>
+
+          <div class="space-y-2 text-center">
+            <span class="auth-card__subtitle">Pneumali</span>
+            <h1 class="auth-card__title">Vérification du code</h1>
+            <p class="auth-card__description">
+              {{ loginMode() === 'magic' ? 'Un code à 6 chiffres vous a été
+              envoyé par email.' : loginMode() === 'oauth' ? 'Finalisez la
+              connexion sécurisée avec votre compte Google.' : 'Code requis pour
+              authentifier votre accès administrateur.' }}
+            </p>
+          </div>
+
+          @if (isOAuth()) {
+          <div
+            class="flex items-center justify-center gap-2 text-sm text-white"
+          >
+            <svg class="h-5 w-5" viewBox="0 0 24 24">
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Retour
-          </button>
-        </div>
-
-        <!-- Logo -->
-        <div class="flex justify-center mb-4">
-          <div
-            class="w-16 h-16 bg-white rounded-lg shadow-lg flex items-center justify-center"
-          >
-            <img
-              src="/assets/img/logoPneuMali.png"
-              alt="PneuMali"
-              class="w-12 h-12"
-            />
+            <span class="font-medium">Connexion via Google</span>
           </div>
-        </div>
-        <div class="text-white text-sm font-medium mb-2">PNEUMALI</div>
+          }
 
-        <!-- Titre principal -->
-        <h1 class="text-3xl font-bold text-green-500 mb-2">Vérification</h1>
-        @if (isOAuth()) {
-        <div class="flex items-center justify-center mb-3">
-          <svg class="w-5 h-5 mr-2 text-white" viewBox="0 0 24 24">
-            <path
-              fill="#4285F4"
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-            />
-            <path
-              fill="#34A853"
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-            />
-            <path
-              fill="#EA4335"
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-            />
-          </svg>
-          <span class="text-white text-sm font-medium"
-            >Connexion via Google</span
-          >
-        </div>
-        }
-        <p class="text-gray-300 text-sm mb-2">
-          {{ isOAuth() ? 'Un code de vérification a été envoyé à' : (loginMode()
-          === 'magic' ? 'Un code à 6 chiffres a été envoyé à' : 'Vérification
-          supplémentaire requise pour') }}
-        </p>
-        <p class="text-green-400 text-sm font-medium mb-6">{{ email() }}</p>
+          <div class="auth-divider">
+            {{ loginMode() === 'magic' ? 'Connexion sécurisée' : loginMode() ===
+            'oauth' ? 'Validation OAuth' : 'Authentification 2FA' }}
+          </div>
+        </header>
 
-        <!-- Séparateur -->
-        <div class="flex items-center mb-6">
-          <div class="flex-1 h-px bg-green-500"></div>
-          <span class="px-4 text-green-500 text-sm font-medium">
-            {{ loginMode() === 'magic' ? 'Connexion sécurisée' :
-            'Authentification 2FA' }}
-          </span>
-          <div class="flex-1 h-px bg-gray-600"></div>
+        <div class="text-center space-y-1">
+          <p class="auth-small-note">
+            Code envoyé à <span class="auth-inline-link">{{ email() }}</span>
+          </p>
         </div>
-      </div>
 
-      <!-- Message d'erreur -->
-      @if (errorMessage()) {
-      <div class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6">
-        <div class="flex items-center">
-          <svg
-            class="w-5 h-5 text-red-400 mr-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        @if (errorMessage()) {
+        <div class="auth-alert auth-alert--error">
+          <svg class="auth-alert__icon" fill="none" viewBox="0 0 24 24">
             <path
+              stroke="currentColor"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             ></path>
           </svg>
-          <span class="text-red-400 text-sm font-medium"
-            >{{ errorMessage() }}</span
-          >
+          <span class="font-medium">{{ errorMessage() }}</span>
         </div>
-      </div>
-      }
-
-      <!-- Message de succès -->
-      @if (successMessage()) {
-      <div
-        class="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mb-6"
-      >
-        <div class="flex items-center">
-          <svg
-            class="w-5 h-5 text-green-400 mr-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        } @if (successMessage()) {
+        <div class="auth-alert auth-alert--success">
+          <svg class="auth-alert__icon" fill="none" viewBox="0 0 24 24">
             <path
+              stroke="currentColor"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               d="M5 13l4 4L19 7"
             ></path>
           </svg>
-          <span class="text-green-400 text-sm font-medium"
-            >{{ successMessage() }}</span
-          >
+          <span class="font-medium">{{ successMessage() }}</span>
         </div>
-      </div>
-      }
+        }
 
-      <!-- Formulaire de vérification -->
-      <form
-        [formGroup]="verificationForm"
-        (ngSubmit)="onSubmit()"
-        class="space-y-6"
-      >
-        <!-- Champ Code de vérification -->
-        <div class="space-y-2">
-          <label class="text-gray-300 text-sm font-medium flex items-center">
-            <svg
-              class="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              ></path>
-            </svg>
-            Code de vérification
-          </label>
-          <div class="relative">
-            <input
-              type="text"
-              formControlName="code"
-              placeholder="123456"
-              maxlength="6"
-              [class]="getInputClasses('code')"
-            />
-            <svg
-              class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              ></path>
-            </svg>
-          </div>
-          @if (hasFieldError('code')) {
-          <p class="text-red-400 text-xs font-medium">
-            {{ getFieldError('code') }}
-          </p>
-          }
-        </div>
-
-        <!-- Compte à rebours de renvoi du code -->
-        <div class="text-xs text-gray-400">
-          @if (!canResend()) {
-          <span>Vous pourrez renvoyer un code dans {{ countdown() }}s</span>
-          } @else {
-          <span>Vous pouvez renvoyer un nouveau code.</span>
-          }
-        </div>
-
-        <!-- Bouton de vérification -->
-        <button
-          type="submit"
-          [disabled]="isLoading()"
-          class="w-full bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+        <form
+          [formGroup]="verificationForm"
+          (ngSubmit)="onSubmit()"
+          class="auth-form"
         >
-          @if (isLoading()) {
-          <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <span>Vérification en cours...</span>
-          } @else {
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            ></path>
-          </svg>
-          <span>Vérifier le code</span>
-          }
-        </button>
-      </form>
+          <div class="space-y-4">
+            <label class="auth-field__label">
+              <svg
+                class="auth-field__icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              Code de vérification
+            </label>
+            <div class="relative auth-field">
+              <div
+                class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base-content/50"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                formControlName="code"
+                placeholder="123456"
+                maxlength="6"
+                [class]="getInputClasses('code')"
+              />
+            </div>
+            @if (hasFieldError('code')) {
+            <p class="text-xs font-medium text-error">
+              {{ getFieldError('code') }}
+            </p>
+            }
+          </div>
 
-      <!-- Séparateur -->
-      <div class="flex items-center my-6">
-        <div class="flex-1 h-px bg-gray-600"></div>
-        <span class="px-4 text-gray-400 text-xs font-medium">OU</span>
-        <div class="flex-1 h-px bg-gray-600"></div>
-      </div>
-
-      <!-- Liens de navigation -->
-      <div class="text-center space-y-2">
-        <p class="text-gray-400 text-sm">
-          Vous n'avez pas reçu le code ? @if (!canResend()) {
-          <span class="text-gray-300">Renvoyer dans {{ countdown() }}s</span>
-          } @else {
           <button
+            type="submit"
+            [disabled]="isLoading()"
+            class="auth-button auth-button--primary"
+          >
+            @if (isLoading()) {
+            <span
+              class="loading loading-spinner loading-sm auth-loading"
+            ></span>
+            <span>Vérification en cours...</span>
+            } @else {
+            <span class="auth-button__icon auth-button__icon--primary">
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </span>
+            <span>Vérifier le code</span>
+            }
+          </button>
+        </form>
+
+        <div class="space-y-3 text-center">
+          <p class="auth-small-note">
+            @if (!canResend()) {
+            <span
+              >Vous pourrez renvoyer un code dans
+              <span class="auth-timer">{{ countdown() }}s</span></span
+            >
+            } @else {
+            <span>Vous pouvez demander un nouveau code.</span>
+            }
+          </p>
+          <button
+            type="button"
             (click)="resendCode()"
             [disabled]="isResending() || !canResend()"
-            class="text-green-500 hover:text-green-400 font-medium transition-colors"
+            class="auth-inline-link"
           >
             @if (isResending()) { Renvoi en cours... } @else { Renvoyer le code
             }
           </button>
-          }
-        </p>
-        <p class="text-gray-400 text-sm">
-          Retour à la connexion ?
-          <a
-            routerLink="/auth/login"
-            class="text-green-500 hover:text-green-400 font-medium transition-colors"
-          >
-            Se connecter
-          </a>
+        </div>
+
+        <div class="auth-divider">ou</div>
+
+        <p class="auth-small-note">
+          Besoin de revenir à la page de connexion ?
+          <a routerLink="/auth/login" class="auth-inline-link">Se connecter</a>
         </p>
       </div>
-    </div>
+    </section>
 
-    <!-- Footer -->
-    <div class="text-center mt-8">
-      <p class="text-xs text-gray-400">
-        2025 PneuMali - Plateforme de gestion de pneus
-      </p>
-    </div>
+    <footer class="auth-footer">
+      <p>© 2025 PneuMali - Plateforme de gestion de pneus</p>
+      <div class="auth-footer__links">
+        <a href="#" class="auth-footer__link">Aide</a>
+        <a href="#" class="auth-footer__link">Confidentialité</a>
+        <a href="#" class="auth-footer__link">Conditions</a>
+      </div>
+    </footer>
   </div>
 </div>
