@@ -1,0 +1,49 @@
+<div class="blog-shell">
+  <app-header></app-header>
+
+  <main class="blog-main">
+    <section class="blog-hero">
+      <div class="blog-hero__content">
+        <p class="blog-hero__eyebrow">Blog PneuMali</p>
+        <h1 class="blog-hero__title">{{ hero.title }}</h1>
+        <p class="blog-hero__subtitle">{{ hero.subtitle }}</p>
+        <a routerLink="/shop" class="blog-hero__cta">{{ hero.cta }}</a>
+      </div>
+      <div class="blog-hero__media">
+        <div class="blog-hero__image-wrap">
+          <img [src]="hero.image" alt="PneuMali Magazine" />
+        </div>
+      </div>
+    </section>
+
+    <section class="blog-list">
+      <header class="blog-list__header">
+        <h2>Derniers articles</h2>
+        <p>Conseils techniques, maintenance et tendances pour rouler sereinement.</p>
+      </header>
+
+      <div class="blog-grid">
+        @for (post of posts; track post.id) {
+        <article class="blog-card" tabindex="0">
+          <div class="blog-card__image">
+            <img [src]="post.image" [alt]="post.title" loading="lazy" />
+          </div>
+          <div class="blog-card__body">
+            <div class="blog-card__meta">
+              <span>{{ post.publishedAt }}</span>
+              <span>&bullet;</span>
+              <span>{{ post.readTime }}</span>
+            </div>
+            <h3 class="blog-card__title">{{ post.title }}</h3>
+            <p class="blog-card__excerpt">{{ post.excerpt }}</p>
+            <span class="blog-card__link">Lire l'article</span>
+          </div>
+        </article>
+        }
+      </div>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>
+

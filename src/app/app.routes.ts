@@ -17,6 +17,10 @@ export const routes: Routes = [
     path: 'shop',
     loadComponent: () => import('./frontoffice/shop/shop').then(m => m.ShopComponent)
   },
+  {
+    path: 'blog',
+    loadComponent: () => import('./frontoffice/blog/blog').then(m => m.BlogComponent)
+  },
   
   // Auth Routes
   {
