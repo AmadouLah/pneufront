@@ -94,6 +94,10 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () => import('./backoffice/dashboard/dashboard').then(m => m.DashboardComponent)
+      },
+      {
+        path: 'products',
+        loadComponent: () => import('./backoffice/products/products').then(m => m.ProductsComponent)
       }
     ]
   },

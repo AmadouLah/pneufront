@@ -1,0 +1,116 @@
+/* Products Management Styles */
+
+/* Override bg-white pour thème sombre (comme dashboard) */
+.bg-white {
+  background-color: #1a1a1a !important;
+  border: 1px solid #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+.bg-white:hover {
+  border-color: #00d9ff !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 217, 255, 0.3), 0 4px 6px -2px rgba(0, 217, 255, 0.15) !important;
+}
+
+/* Smooth transitions */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Table hover effects */
+tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+tbody tr:hover {
+  background-color: #1a1a1a;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Image styling */
+img {
+  object-fit: cover;
+}
+
+/* Checkbox styling */
+input[type="checkbox"]:checked {
+  background-color: #00d9ff;
+  border-color: #00d9ff;
+}
+
+/* Focus rings */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+}
+
+/* Button hover effects */
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+/* Status badges - Override pour thème sombre */
+.bg-green-900\/50 {
+  background-color: rgba(6, 78, 59, 0.5);
+}
+
+.bg-orange-900\/50 {
+  background-color: rgba(154, 52, 18, 0.5);
+}
+
+/* Scrollbar styling */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* Modal backdrop */
+.bg-black\/50 {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    font-size: 0.875rem;
+  }
+
+  th, td {
+    padding: 0.75rem 1rem !important;
+  }
+}
+

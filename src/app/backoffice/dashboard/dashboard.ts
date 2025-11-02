@@ -30,8 +30,21 @@ interface CustomerStats {
   female: number;
 }
 
+interface CustomerGenderStatsResponse {
+  male: number;
+  female: number;
+  other: number;
+}
+
 interface DistributionMap {
-  asia: number;
+  africa: number;
+  america: number;
+  europe: number;
+  others: number;
+}
+
+interface DistributionStatsResponse {
+  africa: number;
   america: number;
   europe: number;
   others: number;
@@ -68,7 +81,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   topProducts: TopProduct[] = [];
   customerStats: CustomerStats = { male: 0, female: 0 };
-  distributionMap: DistributionMap = { asia: 0, america: 0, europe: 0, others: 0 };
+  distributionMap: DistributionMap = { africa: 0, america: 0, europe: 0, others: 0 };
 
   // Données pour le graphique des ventes mensuelles
   salesData = {
@@ -90,6 +103,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // Attendre un court instant pour que les canvas soient disponibles
     setTimeout(() => {
       this.initSalesChart();
+      // Initialiser le graphique clients même si les données ne sont pas encore chargées
       this.initCustomerChart();
     }, 100);
   }
@@ -137,17 +151,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       }
     ];
 
-    this.customerStats = {
-      male: 942,
-      female: 2452
-    };
+    // Les statistiques clients seront chargées depuis l'API
+    this.customerStats = { male: 0, female: 0 };
+    this.loadCustomerGenderStats();
 
-    this.distributionMap = {
-      asia: 90,
-      america: 30,
-      europe: 40,
-      others: 25
-    };
+    // Les statistiques de distribution seront chargées depuis l'API
+    this.distributionMap = { africa: 0, america: 0, europe: 0, others: 0 };
+    this.loadDistributionStats();
 
     this.isLoading.set(false);
   }
@@ -330,6 +340,65 @@ export class DashboardComponent implements OnInit, AfterViewInit {
    */
   generateStars(rating: number): boolean[] {
     return Array(5).fill(0).map((_, i) => i < Math.floor(rating));
+  }
+
+  /**
+   * Charge les statistiques clients par genre depuis l'API
+   */
+  private loadCustomerGenderStats(): void {
+    this.http.get<CustomerGenderStatsResponse>(`${environment.apiUrl}/admin/stats/customers-gender`).subscribe({
+      next: (response) => {
+        this.customerStats = {
+          male: response.male,
+          female: response.female
+        };
+        // Mettre à jour le graphique si déjà initialisé, sinon initialiser
+        if (this.customerChart) {
+          this.updateCustomerChart();
+        } else if (this.customerChartRef) {
+          // Si le graphique n'est pas encore initialisé, l'initialiser maintenant avec les vraies données
+          setTimeout(() => this.initCustomerChart(), 50);
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des statistiques clients par genre:', error);
+        // Garder les valeurs par défaut en cas d'erreur
+      }
+    });
+  }
+
+  /**
+   * Met à jour le graphique des clients avec les nouvelles données
+   */
+  private updateCustomerChart(): void {
+    if (!this.customerChart || !this.customerChartRef) return;
+
+    const total = this.customerStats.male + this.customerStats.female;
+    const malePercent = total > 0 ? ((this.customerStats.male / total) * 100).toFixed(0) : '0';
+    const femalePercent = total > 0 ? ((this.customerStats.female / total) * 100).toFixed(0) : '0';
+
+    this.customerChart.data.datasets[0].data = [this.customerStats.male, this.customerStats.female];
+    this.customerChart.update();
+  }
+
+  /**
+   * Charge les statistiques de distribution géographique depuis l'API
+   */
+  private loadDistributionStats(): void {
+    this.http.get<DistributionStatsResponse>(`${environment.apiUrl}/admin/stats/distribution`).subscribe({
+      next: (response) => {
+        this.distributionMap = {
+          africa: response.africa,
+          america: response.america,
+          europe: response.europe,
+          others: response.others
+        };
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des statistiques de distribution:', error);
+        // Garder les valeurs par défaut en cas d'erreur
+      }
+    });
   }
 }
 
