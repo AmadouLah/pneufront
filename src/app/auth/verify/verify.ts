@@ -6,11 +6,12 @@ import { Authservice } from '../../services/authservice';
 import { FormHelperService } from '../../shared/services/form-helper.service';
 import { VerificationRequest } from '../../shared/types/auth';
 import { HttpErrorResponse } from '@angular/common/http';
+import { GenderModalComponent } from '../../shared/components/gender-modal/gender-modal';
 
 @Component({
   selector: 'app-verify',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, GenderModalComponent],
   templateUrl: './verify.html',
   styleUrls: ['./verify.css', '../shared/auth-theme.css']
 })
@@ -21,6 +22,7 @@ export class VerifyComponent implements OnDestroy {
   successMessage = signal('');
   countdown = signal(20);
   canResend = signal(false);
+  showGenderModal = signal(false);
   
   verificationForm: FormGroup;
   email = signal('');
@@ -104,7 +106,12 @@ export class VerifyComponent implements OnDestroy {
         this.isLoading.set(false);
         this.authService.saveAuthData(response);
         this.clearStoredAuthData();
-        this.redirectToHome();
+        
+        if (!response.userInfo.gender) {
+          this.showGenderModal.set(true);
+        } else {
+          this.redirectToHome();
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading.set(false);
@@ -171,6 +178,14 @@ export class VerifyComponent implements OnDestroy {
    */
   private redirectToHome(): void {
     this.router.navigate(['/'], { replaceUrl: true });
+  }
+
+  /**
+   * Ferme la modal de genre et redirige vers la home
+   */
+  onGenderModalClosed(): void {
+    this.showGenderModal.set(false);
+    this.redirectToHome();
   }
 
   private startCountdown(): void {

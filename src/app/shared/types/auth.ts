@@ -42,7 +42,12 @@ export type AuthResponse = Readonly<{
     firstName: string;
     lastName: string;
     role: string;
+    gender: string | null;
   }>;
+}>;
+
+export type UpdateGenderRequest = Readonly<{
+  gender: 'HOMME' | 'FEMME' | 'AUTRE';
 }>;
 
 export type CodeRequiredResponse = Readonly<{

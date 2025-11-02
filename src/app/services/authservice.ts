@@ -15,6 +15,7 @@ import {
   MessageResponse,
   StartLoginResponse,
   CodeRequiredResponse,
+  UpdateGenderRequest,
 } from '../shared/types/auth';
 
 @Injectable({ providedIn: 'root' })
@@ -191,6 +192,15 @@ export class Authservice {
    */
   getGoogleLoginUrl(): string {
     return `${environment.apiUrl}/auth/oauth2/google/login`;
+  }
+
+  /**
+   * Met à jour le genre de l'utilisateur
+   * @param payload Genre (HOMME, FEMME, AUTRE)
+   */
+  updateGender(payload: UpdateGenderRequest): Observable<MessageResponse> {
+    return this.http.put<MessageResponse>(`${environment.apiUrl}/users/gender`, payload)
+      .pipe(catchError(this.handleError));
   }
 }
 

@@ -1,0 +1,119 @@
+.gender-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+}
+
+.gender-modal {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  border-radius: 1.75rem;
+  border: 1px solid rgba(15, 23, 42, 0.55);
+  background: linear-gradient(145deg, rgba(12, 20, 31, 0.96) 0%, rgba(2, 6, 23, 0.92) 100%);
+  box-shadow: 0 40px 80px rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.gender-modal::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(140deg, rgba(0, 217, 255, 0.2), transparent 55%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gender-modal__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 2rem 1.5rem;
+  z-index: 1;
+}
+
+.gender-modal__header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.gender-modal__close {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 150ms ease;
+}
+
+.gender-modal__close:hover {
+  color: #ffffff;
+}
+
+.gender-modal__close svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.gender-modal__body {
+  position: relative;
+  padding: 0 2rem 2rem;
+  z-index: 1;
+}
+
+.gender-modal__intro {
+  margin-bottom: 2rem;
+  color: rgba(226, 232, 240, 0.75);
+  line-height: 1.7;
+}
+
+.gender-options {
+  display: grid;
+  gap: 1rem;
+}
+
+.gender-option {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms ease;
+  text-align: center;
+}
+
+.gender-option:hover {
+  border-color: rgba(0, 217, 255, 0.5);
+  background: rgba(0, 217, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.gender-option--active {
+  border-color: rgba(0, 217, 255, 0.8);
+  background: rgba(0, 217, 255, 0.2);
+  color: #00d9ff;
+  box-shadow: 0 8px 24px rgba(0, 217, 255, 0.25);
+}
+
+.gender-option__label {
+  display: block;
+}
+
+.gender-modal__footer {
+  position: relative;
+  padding: 1.5rem 2rem 2rem;
+  z-index: 1;
+}

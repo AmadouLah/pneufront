@@ -6,11 +6,12 @@ import { Authservice } from '../../services/authservice';
 import { FormHelperService } from '../../shared/services/form-helper.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthResponse, CodeRequiredResponse } from '../../shared/types/auth';
+import { GenderModalComponent } from '../../shared/components/gender-modal/gender-modal';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, GenderModalComponent],
   templateUrl: './login.html',
   styleUrls: ['./login.css', '../shared/auth-theme.css']
 })
@@ -18,6 +19,7 @@ export class LoginComponent implements OnInit {
   isLoading = signal(false);
   showPassword = signal(false);
   errorMessage = signal('');
+  showGenderModal = signal(false);
   
   // Gestion des étapes de connexion
   loginStep = signal<'email' | 'password'>('email');
@@ -134,8 +136,14 @@ export class LoginComponent implements OnInit {
         }
         
         // Connexion réussie sans 2FA (ne devrait jamais arriver pour ADMIN/DEVELOPER)
-        this.authService.saveAuthData(response as AuthResponse);
-        this.redirectToDashboard();
+        const authResponse = response as AuthResponse;
+        this.authService.saveAuthData(authResponse);
+        
+        if (!authResponse.userInfo.gender) {
+          this.showGenderModal.set(true);
+        } else {
+          this.redirectToDashboard();
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.isLoading.set(false);
@@ -182,6 +190,14 @@ export class LoginComponent implements OnInit {
    */
   private redirectToDashboard(): void {
     this.router.navigate(['/'], { replaceUrl: true });
+  }
+
+  /**
+   * Ferme la modal de genre et redirige vers la home
+   */
+  onGenderModalClosed(): void {
+    this.showGenderModal.set(false);
+    this.redirectToDashboard();
   }
 
   /**

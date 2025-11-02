@@ -317,4 +317,8 @@
       </div>
     </footer>
   </div>
+
+  @if (showGenderModal()) {
+  <app-gender-modal (closed)="onGenderModalClosed()"></app-gender-modal>
+  }
 </div>
