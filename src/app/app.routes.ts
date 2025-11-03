@@ -104,6 +104,10 @@ export const routes: Routes = [
         loadComponent: () => import('./backoffice/categories/categories').then(m => m.CategoriesComponent)
       },
       {
+        path: 'vehicle-types',
+        loadComponent: () => import('./backoffice/vehicle-types/vehicle-types').then(m => m.VehicleTypesComponent)
+      },
+      {
         path: 'brands',
         loadComponent: () => import('./backoffice/brands/brands').then(m => m.BrandsComponent)
       }

@@ -56,41 +56,37 @@
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <select
+              [value]="selectedWidth()"
+              (change)="onWidthChange($event)"
               class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
             >
-              <option disabled selected>Width</option>
-              <option>165</option>
-              <option>175</option>
-              <option>185</option>
-              <option>195</option>
-              <option>205</option>
-              <option>215</option>
-              <option>225</option>
+              <option value="" disabled>Width</option>
+              @for (width of widths(); track width.id) {
+              <option [value]="width.value">{{ width.value }}</option>
+              }
             </select>
             <select
+              [value]="selectedProfile()"
+              (change)="onProfileChange($event)"
               class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
             >
-              <option disabled selected>Profile</option>
-              <option>45</option>
-              <option>50</option>
-              <option>55</option>
-              <option>60</option>
-              <option>65</option>
-              <option>70</option>
+              <option value="" disabled>Profile</option>
+              @for (profile of profiles(); track profile.id) {
+              <option [value]="profile.value">{{ profile.value }}</option>
+              }
             </select>
             <select
+              [value]="selectedDiameter()"
+              (change)="onDiameterChange($event)"
               class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
             >
-              <option disabled selected>Diameter</option>
-              <option>14</option>
-              <option>15</option>
-              <option>16</option>
-              <option>17</option>
-              <option>18</option>
-              <option>19</option>
-              <option>20</option>
+              <option value="" disabled>Diameter</option>
+              @for (diameter of diameters(); track diameter.id) {
+              <option [value]="diameter.value">{{ diameter.value }}</option>
+              }
             </select>
             <button
+              (click)="searchBySize()"
               class="btn bg-primary hover:bg-cyan-400 text-black border-none font-bold"
             >
               Go

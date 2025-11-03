@@ -16,7 +16,7 @@ interface Product {
   profile: { id: number; value: number } | null;
   diameter: { id: number; value: number } | null;
   season: 'ETE' | 'HIVER' | 'QUATRE_SAISONS' | 'TOUT_TERRAIN' | null;
-  vehicleType: 'CITADINE' | 'BERLINE' | 'SUV' | 'PICKUP' | 'CAMION' | 'MOTO' | null;
+  vehicleType: { id: number; name: string; category: { id: number; name: string } } | null;
   imageUrl: string | null;
   description: string | null;
   active: boolean;
@@ -86,6 +86,10 @@ export class ProductsComponent implements OnInit {
   profiles = signal<Array<{id: number; value: number}>>([]);
   diameters = signal<Array<{id: number; value: number}>>([]);
   
+  // Vehicle Types
+  vehicleTypes = signal<Array<{id: number; name: string; category: { id: number; name: string } }>>([]);
+  filteredVehicleTypes = signal<Array<{id: number; name: string; category: { id: number; name: string } }>>([]);
+  
   // Pagination
   currentPage = signal(0);
   pageSize = signal(10);
@@ -96,7 +100,7 @@ export class ProductsComponent implements OnInit {
   searchTerm = signal('');
   selectedBrand = signal<string>('');
   selectedSeason = signal<string>('');
-  selectedVehicleType = signal<string>('');
+  selectedVehicleType = signal<number | null>(null);
   minStock = signal<number | null>(null);
   maxStock = signal<number | null>(null);
   
@@ -122,14 +126,6 @@ export class ProductsComponent implements OnInit {
     { value: 'TOUT_TERRAIN', label: 'Tout-terrain' }
   ];
 
-  readonly vehicleTypeOptions = [
-    { value: 'CITADINE', label: 'Citadine' },
-    { value: 'BERLINE', label: 'Berline' },
-    { value: 'SUV', label: 'SUV/4x4' },
-    { value: 'PICKUP', label: 'Pick-up' },
-    { value: 'CAMION', label: 'Camion' },
-    { value: 'MOTO', label: 'Moto' }
-  ];
 
   constructor() {
     this.filterForm = this.fb.group({
@@ -151,7 +147,7 @@ export class ProductsComponent implements OnInit {
       profileId: [''],
       diameterId: [''],
       season: [''],
-      vehicleType: [''],
+      vehicleTypeId: [''],
       description: ['', Validators.maxLength(1000)],
       categoryId: ['', Validators.required],
       active: [true]
@@ -162,7 +158,13 @@ export class ProductsComponent implements OnInit {
     this.loadCategories();
     this.loadBrands();
     this.loadDimensions();
+    this.loadVehicleTypes();
     this.loadProducts();
+    
+    // Écouter les changements de catégorie pour filtrer les types de véhicules
+    this.productForm.get('categoryId')?.valueChanges.subscribe((categoryId) => {
+      this.onCategoryChange(categoryId);
+    });
   }
 
   /**
@@ -203,6 +205,58 @@ export class ProductsComponent implements OnInit {
       next: (diameters) => this.diameters.set(diameters),
       error: () => this.diameters.set([])
     });
+  }
+
+  /**
+   * Charge les types de véhicules depuis l'API
+   */
+  loadVehicleTypes(): void {
+    this.http.get<Array<{id: number; name: string; category: { id: number; name: string } }>>(`${environment.apiUrl}/vehicle-types/active`).subscribe({
+      next: (vehicleTypes) => {
+        this.vehicleTypes.set(vehicleTypes);
+        this.filterVehicleTypes();
+      },
+      error: () => this.vehicleTypes.set([])
+    });
+  }
+
+  /**
+   * Gère le changement de catégorie
+   */
+  onCategoryChange(categoryId: string | number | null): void {
+    if (!categoryId) {
+      this.filteredVehicleTypes.set([]);
+      this.productForm.patchValue({ vehicleTypeId: '' });
+      return;
+    }
+
+    const categoryIdNum = typeof categoryId === 'string' ? parseInt(categoryId, 10) : categoryId;
+    this.http.get<Array<{id: number; name: string; category: { id: number; name: string } }>>(`${environment.apiUrl}/vehicle-types/category/${categoryIdNum}`).subscribe({
+      next: (vehicleTypes) => {
+        this.filteredVehicleTypes.set(vehicleTypes);
+        // Réinitialiser le type de véhicule si le type actuel n'est pas dans la nouvelle liste
+        const currentVehicleTypeId = this.productForm.value.vehicleTypeId;
+        if (currentVehicleTypeId && !vehicleTypes.find(vt => vt.id === currentVehicleTypeId)) {
+          this.productForm.patchValue({ vehicleTypeId: '' });
+        }
+      },
+      error: () => {
+        this.filteredVehicleTypes.set([]);
+        this.productForm.patchValue({ vehicleTypeId: '' });
+      }
+    });
+  }
+
+  /**
+   * Filtre les types de véhicules selon la catégorie sélectionnée
+   */
+  private filterVehicleTypes(): void {
+    const categoryId = this.productForm.value.categoryId;
+    if (categoryId) {
+      this.onCategoryChange(categoryId);
+    } else {
+      this.filteredVehicleTypes.set([]);
+    }
   }
 
   /**
@@ -279,8 +333,9 @@ export class ProductsComponent implements OnInit {
     let filtered = [...response.content];
 
     // Filtrer par type de véhicule
-    if (this.selectedVehicleType()) {
-      filtered = filtered.filter(p => p.vehicleType === this.selectedVehicleType());
+    const vehicleTypeId = this.selectedVehicleType();
+    if (vehicleTypeId !== null && vehicleTypeId !== undefined) {
+      filtered = filtered.filter(p => p.vehicleType?.id === vehicleTypeId);
     }
 
     // Filtrer par stock min
@@ -316,7 +371,8 @@ export class ProductsComponent implements OnInit {
     this.searchTerm.set(this.filterForm.value.searchTerm || '');
     this.selectedBrand.set(this.filterForm.value.brand || '');
     this.selectedSeason.set(this.filterForm.value.season || '');
-    this.selectedVehicleType.set(this.filterForm.value.vehicleType || '');
+    const vehicleTypeValue = this.filterForm.value.vehicleType;
+    this.selectedVehicleType.set(vehicleTypeValue ? (typeof vehicleTypeValue === 'string' ? parseInt(vehicleTypeValue, 10) : vehicleTypeValue) : null);
     this.minStock.set(this.filterForm.value.minStock || null);
     this.maxStock.set(this.filterForm.value.maxStock || null);
     this.currentPage.set(0);
@@ -338,7 +394,7 @@ export class ProductsComponent implements OnInit {
     this.searchTerm.set('');
     this.selectedBrand.set('');
     this.selectedSeason.set('');
-    this.selectedVehicleType.set('');
+    this.selectedVehicleType.set(null);
     this.minStock.set(null);
     this.maxStock.set(null);
     this.currentPage.set(0);
@@ -361,7 +417,7 @@ export class ProductsComponent implements OnInit {
       profileId: '',
       diameterId: '',
       season: '',
-      vehicleType: '',
+      vehicleTypeId: '',
       description: '',
       categoryId: '',
       active: true
@@ -387,11 +443,13 @@ export class ProductsComponent implements OnInit {
       profileId: product.profile?.id || '',
       diameterId: product.diameter?.id || '',
       season: product.season || '',
-      vehicleType: product.vehicleType || '',
+      vehicleTypeId: product.vehicleType?.id || '',
       description: product.description || '',
       categoryId: product.category.id,
       active: product.active
     });
+    // Charger les types de véhicules pour la catégorie du produit
+    this.onCategoryChange(product.category.id);
     this.selectedImage.set(null);
     this.imagePreview.set(product.imageUrl || null);
     this.showModal.set(true);
@@ -436,7 +494,7 @@ export class ProductsComponent implements OnInit {
     if (formValue.profileId) formData.append('profileId', formValue.profileId.toString());
     if (formValue.diameterId) formData.append('diameterId', formValue.diameterId.toString());
     if (formValue.season) formData.append('season', formValue.season);
-    if (formValue.vehicleType) formData.append('vehicleType', formValue.vehicleType);
+    if (formValue.vehicleTypeId) formData.append('vehicleTypeId', formValue.vehicleTypeId.toString());
     if (formValue.description) formData.append('description', formValue.description);
     
     formData.append('active', (formValue.active !== false).toString());
@@ -562,9 +620,8 @@ export class ProductsComponent implements OnInit {
   /**
    * Retourne le libellé du type de véhicule
    */
-  getVehicleTypeLabel(type: string | null): string {
-    const option = this.vehicleTypeOptions.find(opt => opt.value === type);
-    return option?.label || type || '-';
+  getVehicleTypeLabel(vehicleType: { id: number; name: string } | null): string {
+    return vehicleType?.name || '-';
   }
 
   /**

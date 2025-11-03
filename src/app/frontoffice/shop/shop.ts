@@ -36,7 +36,7 @@ interface ApiProduct {
   profile: { id: number; value: number } | null;
   diameter: { id: number; value: number } | null;
   season: string | null;
-  vehicleType: string | null;
+  vehicleType: { id: number; name: string; category: { id: number; name: string } } | null;
   imageUrl: string | null;
   description: string | null;
   active: boolean;
