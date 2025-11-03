@@ -52,7 +52,7 @@
             <ul
               class="absolute left-0 top-full mt-2 bg-black border border-gray-800 rounded-lg w-52 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
             >
-              @for (brand of brands; track brand) {
+              @for (brand of brands(); track brand) {
               <li>
                 <a
                   (click)="filterByBrand(brand)"
@@ -504,7 +504,7 @@
           <span class="font-medium">Brands</span>
         </button>
         <nav class="space-y-4">
-          @for (brand of brands; track brand) {
+          @for (brand of brands(); track brand) {
           <button
             type="button"
             (click)="handleBrandSelection(brand)"

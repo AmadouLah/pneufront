@@ -63,6 +63,8 @@ export class ProductsComponent implements OnInit {
   isEditMode = signal(false);
   editingProductId = signal<number | null>(null);
   productForm: FormGroup;
+  selectedImage = signal<File | null>(null);
+  imagePreview = signal<string | null>(null);
   
   // Categories
   categories = signal<Category[]>([]);
@@ -130,7 +132,6 @@ export class ProductsComponent implements OnInit {
       size: ['', Validators.maxLength(50)],
       season: [''],
       vehicleType: [''],
-      imageUrl: ['', Validators.maxLength(255)],
       description: ['', Validators.maxLength(1000)],
       categoryId: ['', Validators.required],
       active: [true]
@@ -306,11 +307,12 @@ export class ProductsComponent implements OnInit {
       size: '',
       season: '',
       vehicleType: '',
-      imageUrl: '',
       description: '',
       categoryId: '',
       active: true
     });
+    this.selectedImage.set(null);
+    this.imagePreview.set(null);
     this.showModal.set(true);
   }
 
@@ -328,11 +330,12 @@ export class ProductsComponent implements OnInit {
       size: product.size || '',
       season: product.season || '',
       vehicleType: product.vehicleType || '',
-      imageUrl: product.imageUrl || '',
       description: product.description || '',
       categoryId: product.category.id,
       active: product.active
     });
+    this.selectedImage.set(null);
+    this.imagePreview.set(product.imageUrl || null);
     this.showModal.set(true);
   }
 
@@ -343,6 +346,8 @@ export class ProductsComponent implements OnInit {
     this.showModal.set(false);
     this.isEditMode.set(false);
     this.editingProductId.set(null);
+    this.selectedImage.set(null);
+    this.imagePreview.set(null);
     this.successMessage.set('');
     this.errorMessage.set('');
   }
@@ -360,24 +365,30 @@ export class ProductsComponent implements OnInit {
     this.errorMessage.set('');
 
     const formValue = this.productForm.value;
-    const payload = {
-      name: formValue.name,
-      price: parseFloat(formValue.price),
-      stock: parseInt(formValue.stock, 10),
-      brand: formValue.brand || null,
-      size: formValue.size || null,
-      season: formValue.season || null,
-      vehicleType: formValue.vehicleType || null,
-      imageUrl: formValue.imageUrl || null,
-      description: formValue.description || null,
-      categoryId: parseInt(formValue.categoryId, 10),
-      active: formValue.active !== false
-    };
+    const formData = new FormData();
+    
+    formData.append('name', formValue.name);
+    formData.append('price', formValue.price.toString());
+    formData.append('stock', formValue.stock.toString());
+    formData.append('categoryId', formValue.categoryId.toString());
+    
+    if (formValue.brand) formData.append('brand', formValue.brand);
+    if (formValue.size) formData.append('size', formValue.size);
+    if (formValue.season) formData.append('season', formValue.season);
+    if (formValue.vehicleType) formData.append('vehicleType', formValue.vehicleType);
+    if (formValue.description) formData.append('description', formValue.description);
+    
+    formData.append('active', (formValue.active !== false).toString());
+
+    const imageFile = this.selectedImage();
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
 
     if (this.isEditMode()) {
       const id = this.editingProductId();
       if (id) {
-        this.http.put(`${environment.apiUrl}/products/${id}`, payload).subscribe({
+        this.http.put<Product>(`${environment.apiUrl}/products/${id}`, formData).subscribe({
           next: () => {
             this.successMessage.set('Produit mis à jour avec succès');
             this.loadProducts();
@@ -390,7 +401,7 @@ export class ProductsComponent implements OnInit {
         });
       }
     } else {
-      this.http.post(`${environment.apiUrl}/products`, payload).subscribe({
+      this.http.post<Product>(`${environment.apiUrl}/products`, formData).subscribe({
         next: () => {
           this.successMessage.set('Produit créé avec succès');
           this.loadProducts();
@@ -401,6 +412,37 @@ export class ProductsComponent implements OnInit {
           this.isLoading.set(false);
         }
       });
+    }
+  }
+
+  /**
+   * Gère la sélection d'une image
+   */
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      
+      if (!file.type.startsWith('image/')) {
+        this.errorMessage.set('Veuillez sélectionner un fichier image');
+        input.value = '';
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        this.errorMessage.set('L\'image ne doit pas dépasser 5 MB');
+        input.value = '';
+        return;
+      }
+
+      this.selectedImage.set(file);
+      this.errorMessage.set('');
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreview.set(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   }
 

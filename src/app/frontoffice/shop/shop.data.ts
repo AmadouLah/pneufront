@@ -12,11 +12,11 @@ export const SORT_OPTIONS: readonly SortOption[] = [
 ];
 
 export const PRICE_RANGES: readonly PriceRange[] = [
-  { id: 'under2000', label: 'Under R 2,000', max: 2000 },
-  { id: '2000-3000', label: 'R 2,000 - R 3,000', min: 2000, max: 3000 },
-  { id: '3000-4000', label: 'R 3,000 - R 4,000', min: 3000, max: 4000 },
-  { id: '4000-5000', label: 'R 4,000 - R 5,000', min: 4000, max: 5000 },
-  { id: 'above5000', label: 'Above R 5,000', min: 5000 }
+  { id: 'under50000', label: 'Moins de 50,000 FCFA', max: 50000 },
+  { id: '50000-100000', label: '50,000 - 100,000 FCFA', min: 50000, max: 100000 },
+  { id: '100000-150000', label: '100,000 - 150,000 FCFA', min: 100000, max: 150000 },
+  { id: '150000-200000', label: '150,000 - 200,000 FCFA', min: 150000, max: 200000 },
+  { id: 'above200000', label: 'Plus de 200,000 FCFA', min: 200000 }
 ];
 
 const continentalProducts: readonly Product[] = [

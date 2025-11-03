@@ -1,9 +1,11 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { Authservice } from '../../services/authservice';
 import { CartService } from '../../services/cart.service';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +14,9 @@ import { CartService } from '../../services/cart.service';
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  private readonly http = inject(HttpClient);
+  
   mobileMenuOpen = signal(false);
   mobileMenuSection = signal<'root' | 'brands'>('root');
   searchOpen = signal(false);
@@ -21,7 +25,7 @@ export class HeaderComponent {
   readonly cartItemCount = computed(() => this.cartService.totalItems());
   searchForm: FormGroup;
 
-  brands = ['Michelin', 'Bridgestone', 'Goodyear', 'Continental', 'Pirelli', 'Dunlop'];
+  readonly brands = signal<string[]>([]);
 
   constructor(
     private authService: Authservice,
@@ -33,6 +37,10 @@ export class HeaderComponent {
       keyword: ['', [Validators.required, Validators.minLength(2)]]
     });
     this.checkAuthStatus();
+  }
+
+  ngOnInit(): void {
+    this.loadBrands();
   }
 
   /**
@@ -210,6 +218,21 @@ export class HeaderComponent {
   navigateAndCloseMenu(route: string): void {
     this.closeUserMenu();
     this.router.navigate([route]);
+  }
+
+  /**
+   * Charge les marques depuis l'API
+   */
+  private loadBrands(): void {
+    this.http.get<string[]>(`${environment.apiUrl}/products/brands`).subscribe({
+      next: (brands) => {
+        this.brands.set(brands.sort((a, b) => a.localeCompare(b)));
+      },
+      error: () => {
+        // En cas d'erreur, utiliser des marques par défaut
+        this.brands.set(['Michelin', 'Bridgestone', 'Goodyear', 'Continental', 'Pirelli', 'Dunlop']);
+      }
+    });
   }
 
   /**

@@ -1,11 +1,28 @@
-import { Injectable, computed, effect, signal } from '@angular/core';
+import { Injectable, computed, effect, signal, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { CartItem, CartItemPayload } from '../shared/types/cart';
+import { environment } from '../environment';
+
+interface ApiProduct {
+  id: number;
+  name: string;
+  price: number | string;
+  brand: string | null;
+  size: string | null;
+  imageUrl: string | null;
+}
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
   private static readonly STORAGE_KEY = 'pneumali.cart.v1';
+  private readonly http = inject(HttpClient);
 
   private readonly itemsSignal = signal<CartItem[]>(this.restoreFromStorage());
+  private isSyncing = false;
+  private lastSyncTime = 0;
+  private readonly SYNC_INTERVAL = 30000; // Synchroniser toutes les 30 secondes maximum
 
   private readonly itemsComputed = computed(() => this.itemsSignal());
   private readonly totalItemsComputed = computed(() =>
@@ -24,6 +41,9 @@ export class CartService {
       const serialized = JSON.stringify(this.itemsSignal());
       window.localStorage.setItem(CartService.STORAGE_KEY, serialized);
     });
+
+    // Synchroniser les produits au démarrage
+    this.syncProductsWithApi();
   }
 
   items(): CartItem[] {
@@ -102,6 +122,14 @@ export class CartService {
     this.itemsSignal.set([]);
   }
 
+  /**
+   * Force la synchronisation des produits avec l'API
+   */
+  syncNow(): void {
+    this.lastSyncTime = 0; // Réinitialiser pour forcer la synchronisation
+    this.syncProductsWithApi();
+  }
+
   private restoreFromStorage(): CartItem[] {
     if (typeof window === 'undefined') {
       return [];
@@ -172,6 +200,93 @@ export class CartService {
 
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  /**
+   * Synchronise les données des produits du panier avec l'API
+   */
+  private syncProductsWithApi(): void {
+    const items = this.itemsSignal();
+    const now = Date.now();
+    
+    if (items.length === 0 || this.isSyncing || (now - this.lastSyncTime) < this.SYNC_INTERVAL) {
+      return;
+    }
+
+    this.isSyncing = true;
+    this.lastSyncTime = now;
+
+    // Récupérer les données à jour pour chaque produit
+    const syncRequests = items.map(item =>
+      this.http.get<ApiProduct>(`${environment.apiUrl}/products/${item.productId}`).pipe(
+        map(product => ({
+          item,
+          product: {
+            name: product.name,
+            brand: product.brand || 'Autre',
+            price: typeof product.price === 'number' ? product.price : parseFloat(String(product.price)) || 0,
+            imageUrl: product.imageUrl || '/assets/img/placeholder.png',
+            size: product.size || null
+          }
+        })),
+        catchError(() => of({ item, product: null }))
+      )
+    );
+
+    forkJoin(syncRequests).subscribe({
+      next: (results) => {
+        const updatedItems = results.map(({ item, product }) => {
+          if (!product) {
+            return item;
+          }
+
+          const dimensions = this.parseDimensions(product.size);
+          return {
+            ...item,
+            name: product.name,
+            brand: product.brand,
+            price: product.price,
+            image: product.imageUrl,
+            width: dimensions.width || item.width,
+            profile: dimensions.profile || item.profile,
+            diameter: dimensions.diameter || item.diameter
+          };
+        });
+
+        this.itemsSignal.set(updatedItems);
+        this.isSyncing = false;
+      },
+      error: () => {
+        this.isSyncing = false;
+      }
+    });
+  }
+
+  /**
+   * Parse les dimensions depuis le format "235/45R17" ou similaire
+   */
+  private parseDimensions(size: string | null): { width: number; profile: number; diameter: number } {
+    if (!size) {
+      return { width: 0, profile: 0, diameter: 0 };
+    }
+
+    const patterns = [
+      /(\d+)\/(\d+)R?(\d+)/,
+      /(\d+)[-\/](\d+)[-\/](\d+)/
+    ];
+
+    for (const pattern of patterns) {
+      const match = size.match(pattern);
+      if (match) {
+        return {
+          width: parseInt(match[1], 10) || 0,
+          profile: parseInt(match[2], 10) || 0,
+          diameter: parseInt(match[3], 10) || 0
+        };
+      }
+    }
+
+    return { width: 0, profile: 0, diameter: 0 };
   }
 }
 

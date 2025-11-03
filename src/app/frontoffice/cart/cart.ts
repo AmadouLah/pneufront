@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed } from '@angular/core';
+import { Component, computed, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { HeaderComponent } from '../header/header';
@@ -15,13 +15,18 @@ import { formatCurrency } from '../../shared/utils/currency';
   templateUrl: './cart.html',
   styleUrls: ['./cart.css']
 })
-export class CartComponent {
+export class CartComponent implements OnInit {
   readonly items = computed(() => this.cartService.items());
   readonly subtotal = computed(() => this.cartService.subtotal());
   readonly totalItems = computed(() => this.cartService.totalItems());
   readonly hasItems = computed(() => this.totalItems() > 0);
 
   constructor(private readonly cartService: CartService) {}
+
+  ngOnInit(): void {
+    // Synchroniser les produits lors de l'ouverture de la page panier
+    this.cartService.syncNow();
+  }
 
   trackByProductId(_: number, item: CartItem): number {
     return item.productId;

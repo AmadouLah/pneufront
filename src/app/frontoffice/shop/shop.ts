@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   DestroyRef,
+  OnInit,
   computed,
   inject,
   signal,
@@ -9,10 +10,11 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
-import { PRICE_RANGES, PRODUCTS, SORT_OPTIONS } from './shop.data';
+import { PRICE_RANGES, SORT_OPTIONS } from './shop.data';
 import {
   PriceRange,
   Product,
@@ -21,6 +23,35 @@ import {
 } from './shop.model';
 import { CartService } from '../../services/cart.service';
 import { formatCurrency } from '../../shared/utils/currency';
+import { environment } from '../../environment';
+
+interface ApiProduct {
+  id: number;
+  name: string;
+  price: number | string;
+  stock: number;
+  brand: string | null;
+  size: string | null;
+  season: string | null;
+  vehicleType: string | null;
+  imageUrl: string | null;
+  description: string | null;
+  active: boolean;
+  category: {
+    id: number;
+    name: string;
+  };
+  createdAt?: string;
+  createdDate?: string;
+}
+
+interface ApiProductPage {
+  content: ApiProduct[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
 
 @Component({
   selector: 'app-shop',
@@ -29,13 +60,15 @@ import { formatCurrency } from '../../shared/utils/currency';
   templateUrl: './shop.html',
   styleUrl: './shop.css'
 })
-export class ShopComponent {
+export class ShopComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly cartService = inject(CartService);
+  private readonly http = inject(HttpClient);
 
-  readonly products = signal<Product[]>([...PRODUCTS]);
+  readonly products = signal<Product[]>([]);
+  readonly isLoading = signal(false);
 
   readonly sortOptions: readonly SortOption[] = SORT_OPTIONS;
 
@@ -50,21 +83,21 @@ export class ShopComponent {
   readonly isDrawerOpen = signal(false);
 
   readonly brandList = computed(() =>
-    Array.from(new Set(this.products().map(product => product.brand))).sort((a, b) =>
-      a.localeCompare(b)
+    Array.from(new Set(this.products().map(product => product.brand).filter(b => b))).sort((a, b) =>
+      (a || '').localeCompare(b || '')
     )
   );
 
   readonly widthOptions = computed(() =>
-    Array.from(new Set(this.products().map(product => product.width))).sort((a, b) => a - b)
+    Array.from(new Set(this.products().map(product => product.width).filter(w => w !== null && w !== undefined && w > 0))).sort((a, b) => a - b) as number[]
   );
 
   readonly profileOptions = computed(() =>
-    Array.from(new Set(this.products().map(product => product.profile))).sort((a, b) => a - b)
+    Array.from(new Set(this.products().map(product => product.profile).filter(p => p !== null && p !== undefined && p > 0))).sort((a, b) => a - b) as number[]
   );
 
   readonly diameterOptions = computed(() =>
-    Array.from(new Set(this.products().map(product => product.diameter))).sort((a, b) => a - b)
+    Array.from(new Set(this.products().map(product => product.diameter).filter(d => d !== null && d !== undefined && d > 0))).sort((a, b) => a - b) as number[]
   );
 
   readonly brandCountMap = computed(() => {
@@ -98,15 +131,15 @@ export class ShopComponent {
         }
       }
 
-      if (width !== null && product.width !== width) {
+      if (width !== null && width > 0 && product.width !== width) {
         return false;
       }
 
-      if (profile !== null && product.profile !== profile) {
+      if (profile !== null && profile > 0 && product.profile !== profile) {
         return false;
       }
 
-      if (diameter !== null && product.diameter !== diameter) {
+      if (diameter !== null && diameter > 0 && product.diameter !== diameter) {
         return false;
       }
 
@@ -149,6 +182,94 @@ export class ShopComponent {
       .subscribe(params => this.applyQueryParams(params));
 
     this.destroyRef.onDestroy(() => this.toggleBodyScroll(false));
+  }
+
+  ngOnInit(): void {
+    this.loadProducts();
+  }
+
+  /**
+   * Charge les produits depuis l'API
+   */
+  private loadProducts(): void {
+    this.isLoading.set(true);
+    
+    // Charger tous les produits actifs avec une grande taille de page pour avoir tous les produits
+    const params = new HttpParams()
+      .set('page', '0')
+      .set('size', '1000'); // Taille maximale pour récupérer tous les produits
+
+    this.http.get<ApiProductPage>(`${environment.apiUrl}/products/active`, { params })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          const mappedProducts = response.content.map(apiProduct => this.mapApiProductToProduct(apiProduct));
+          this.products.set(mappedProducts);
+          this.isLoading.set(false);
+        },
+        error: (error) => {
+          console.error('Erreur lors du chargement des produits:', error);
+          this.isLoading.set(false);
+          this.products.set([]);
+        }
+      });
+  }
+
+  /**
+   * Convertit un produit API en produit frontend
+   */
+  private mapApiProductToProduct(apiProduct: ApiProduct): Product {
+    const dimensions = this.parseDimensions(apiProduct.size);
+    
+    // Gérer le prix (BigDecimal de Java sérialisé en nombre)
+    const price = typeof apiProduct.price === 'number' 
+      ? apiProduct.price 
+      : parseFloat(String(apiProduct.price)) || 0;
+    
+    // Gérer la date de création
+    const createdAt = apiProduct.createdAt || apiProduct.createdDate || new Date().toISOString();
+    
+    return {
+      id: apiProduct.id,
+      name: apiProduct.name,
+      brand: apiProduct.brand || 'Autre',
+      price,
+      fromPrice: false,
+      width: dimensions.width,
+      profile: dimensions.profile,
+      diameter: dimensions.diameter,
+      image: apiProduct.imageUrl || '/assets/img/placeholder.png',
+      launchedAt: createdAt,
+      salesRank: 0
+    };
+  }
+
+  /**
+   * Parse les dimensions depuis le format "235/45R17" ou similaire
+   */
+  private parseDimensions(size: string | null): { width: number; profile: number; diameter: number } {
+    if (!size) {
+      return { width: 0, profile: 0, diameter: 0 };
+    }
+
+    // Formats possibles: "235/45R17", "235-45-17", "235/45/17", etc.
+    const patterns = [
+      /(\d+)\/(\d+)R?(\d+)/,  // 235/45R17 ou 235/4517
+      /(\d+)[-\/](\d+)[-\/](\d+)/, // 235-45-17 ou 235/45/17
+    ];
+
+    for (const pattern of patterns) {
+      const match = size.match(pattern);
+      if (match) {
+        return {
+          width: parseInt(match[1], 10) || 0,
+          profile: parseInt(match[2], 10) || 0,
+          diameter: parseInt(match[3], 10) || 0
+        };
+      }
+    }
+
+    return { width: 0, profile: 0, diameter: 0 };
   }
 
   toggleBrand(brand: string): void {
