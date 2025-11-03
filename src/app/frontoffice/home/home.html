@@ -6,27 +6,29 @@
   <main class="flex-1 page-shell">
     <!-- Hero Section -->
     <section
-      class="relative min-h-[600px] bg-black flex items-center overflow-hidden"
+      class="relative bg-black overflow-hidden pt-12 lg:pt-16 lg:min-h-[80vh]"
     >
       <div class="max-w-none px-6 w-full">
         <div
-          class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+          class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-start lg:items-start"
         >
           <!-- Image -->
           <div class="order-1 lg:order-2 w-full flex justify-center">
             <img
               src="/assets/img/font.png"
               alt="Supercar silhouette"
-              class="w-full max-w-[520px] max-h-[420px] sm:max-h-[480px] lg:max-h-[520px] object-cover rounded-[2.5rem] shadow-[0_35px_70px_rgba(0,0,0,0.45)]"
+              class="w-full max-w-[520px] max-h-[450px] sm:max-h-[500px] lg:max-h-[520px] object-cover rounded-[2.5rem] shadow-[0_35px_70px_rgba(0,0,0,0.45)]"
               decoding="async"
               loading="lazy"
             />
           </div>
 
           <!-- Left Content -->
-          <div class="order-2 lg:order-1 z-10 text-center lg:text-left">
+          <div
+            class="order-2 lg:order-1 z-10 text-center lg:text-left pb-4 lg:pb-0"
+          >
             <h1
-              class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 text-white"
+              class="text-4xl sm:text-5xl lg:text-7xl font-bold mb-4 lg:mb-8 text-white"
             >
               Browse our store
             </h1>
@@ -42,10 +44,14 @@
     </section>
 
     <!-- Search by Size Section -->
-    <section class="bg-black py-12">
+    <section class="bg-black py-8 lg:py-12">
       <div class="px-6">
-        <div class="border-2 border-primary rounded-lg p-8 max-w-4xl mx-auto">
-          <h3 class="text-primary text-xl font-semibold mb-6">
+        <div
+          class="border-2 border-primary rounded-lg p-6 lg:p-8 max-w-4xl mx-auto"
+        >
+          <h3
+            class="text-primary text-lg lg:text-xl font-semibold mb-4 lg:mb-6 text-center lg:text-left"
+          >
             Search by size
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -95,9 +101,13 @@
     </section>
 
     <!-- Popular Products Section -->
-    <section class="bg-black py-16">
+    <section class="bg-black py-8 lg:py-16">
       <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-bold text-white text-center mb-12">Popular</h2>
+        <h2
+          class="text-3xl lg:text-4xl font-bold text-white text-center mb-8 lg:mb-12"
+        >
+          Popular
+        </h2>
         <div
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
         >
@@ -153,9 +163,11 @@
     </section>
 
     <!-- Brands Section -->
-    <section class="bg-gray-900 py-16">
+    <section class="bg-gray-900 py-8 lg:py-16">
       <div class="container mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div
+          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-8"
+        >
           @for (brand of brands; track brand.name) {
           <div
             class="bg-black rounded-lg p-6 flex items-center justify-center hover:bg-gray-800 transition-all hover:shadow-lg hover:shadow-primary/10 border border-gray-800"

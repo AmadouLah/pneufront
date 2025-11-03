@@ -155,8 +155,8 @@
           </svg>
         </button>
 
-        <!-- User Icon -->
-        <div class="relative">
+        <!-- User Icon - Hidden on mobile, visible on desktop -->
+        <div class="relative hidden lg:block">
           @if (isAuthenticated()) {
           <!-- Avatar avec initiales ou icône -->
           <button
@@ -553,8 +553,29 @@
         (click)="navigateFromMobile(isAuthenticated() ? '/frontoffice/profil' : '/auth/login')"
         class="w-full flex items-center gap-3 text-left text-white font-medium hover:text-primary transition-colors"
       >
+        @if (isAuthenticated()) {
+        <div
+          class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold flex-shrink-0"
+        >
+          @if (hasUserName()) { {{ getUserInitials() }} } @else {
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+          }
+        </div>
+        } @else {
         <svg
-          class="w-5 h-5"
+          class="w-5 h-5 flex-shrink-0"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -566,6 +587,7 @@
             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
           />
         </svg>
+        }
         <span>{{ isAuthenticated() ? 'Mon compte' : 'Se connecter' }}</span>
       </button>
 
