@@ -17,7 +17,7 @@
       </svg>
     </summary>
     <ul class="filter-list">
-      @for (brand of brandList(); track brand) {
+      @for (brand of brandList(); track brand) { @if (brand) {
       <li>
         <label class="filter-option">
           <input
@@ -29,7 +29,7 @@
           <span class="filter-count">({{ getBrandCount(brand) }})</span>
         </label>
       </li>
-      }
+      } }
     </ul>
   </details>
 
@@ -295,7 +295,9 @@
                 />
               </div>
               <h3 class="product-card__name">{{ product.name }}</h3>
-              <p class="product-card__brand">{{ product.brand }}</p>
+              <p class="product-card__brand">
+                {{ product.brand?.name || 'Autre' }}
+              </p>
               <p class="product-card__price">
                 @if (product.fromPrice) { From {{ formatPrice(product.price) }}
                 } @else { {{ formatPrice(product.price) }} }

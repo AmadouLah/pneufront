@@ -9,8 +9,11 @@ interface ApiProduct {
   id: number;
   name: string;
   price: number | string;
-  brand: string | null;
+  brand: { id: number; name: string } | null;
   size: string | null;
+  width: { id: number; value: number } | null;
+  profile: { id: number; value: number } | null;
+  diameter: { id: number; value: number } | null;
   imageUrl: string | null;
 }
 
@@ -223,10 +226,12 @@ export class CartService {
           item,
           product: {
             name: product.name,
-            brand: product.brand || 'Autre',
+            brand: product.brand?.name || 'Autre',
             price: typeof product.price === 'number' ? product.price : parseFloat(String(product.price)) || 0,
             imageUrl: product.imageUrl || '/assets/img/placeholder.png',
-            size: product.size || null
+            width: product.width?.value || 0,
+            profile: product.profile?.value || 0,
+            diameter: product.diameter?.value || 0
           }
         })),
         catchError(() => of({ item, product: null }))
@@ -240,16 +245,15 @@ export class CartService {
             return item;
           }
 
-          const dimensions = this.parseDimensions(product.size);
           return {
             ...item,
             name: product.name,
             brand: product.brand,
             price: product.price,
             image: product.imageUrl,
-            width: dimensions.width || item.width,
-            profile: dimensions.profile || item.profile,
-            diameter: dimensions.diameter || item.diameter
+            width: product.width || item.width,
+            profile: product.profile || item.profile,
+            diameter: product.diameter || item.diameter
           };
         });
 

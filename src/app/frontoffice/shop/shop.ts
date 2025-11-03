@@ -30,8 +30,11 @@ interface ApiProduct {
   name: string;
   price: number | string;
   stock: number;
-  brand: string | null;
+  brand: { id: number; name: string } | null;
   size: string | null;
+  width: { id: number; value: number } | null;
+  profile: { id: number; value: number } | null;
+  diameter: { id: number; value: number } | null;
   season: string | null;
   vehicleType: string | null;
   imageUrl: string | null;
@@ -83,27 +86,31 @@ export class ShopComponent implements OnInit {
   readonly isDrawerOpen = signal(false);
 
   readonly brandList = computed(() =>
-    Array.from(new Set(this.products().map(product => product.brand).filter(b => b))).sort((a, b) =>
-      (a || '').localeCompare(b || '')
+    Array.from(new Set(this.products().map(product => product.brand?.name).filter((b): b is string => b !== null && b !== undefined))).sort((a, b) =>
+      a.localeCompare(b)
     )
   );
 
-  readonly widthOptions = computed(() =>
-    Array.from(new Set(this.products().map(product => product.width).filter(w => w !== null && w !== undefined && w > 0))).sort((a, b) => a - b) as number[]
-  );
+  readonly widthOptions = computed(() => {
+    const productWidths = new Set(this.products().map(product => product.width).filter(w => w !== null && w !== undefined && w > 0));
+    return Array.from(productWidths).sort((a, b) => a - b);
+  });
 
-  readonly profileOptions = computed(() =>
-    Array.from(new Set(this.products().map(product => product.profile).filter(p => p !== null && p !== undefined && p > 0))).sort((a, b) => a - b) as number[]
-  );
+  readonly profileOptions = computed(() => {
+    const productProfiles = new Set(this.products().map(product => product.profile).filter(p => p !== null && p !== undefined && p > 0));
+    return Array.from(productProfiles).sort((a, b) => a - b);
+  });
 
-  readonly diameterOptions = computed(() =>
-    Array.from(new Set(this.products().map(product => product.diameter).filter(d => d !== null && d !== undefined && d > 0))).sort((a, b) => a - b) as number[]
-  );
+  readonly diameterOptions = computed(() => {
+    const productDiameters = new Set(this.products().map(product => product.diameter).filter(d => d !== null && d !== undefined && d > 0));
+    return Array.from(productDiameters).sort((a, b) => a - b);
+  });
 
   readonly brandCountMap = computed(() => {
     const counts = new Map<string, number>();
     for (const product of this.products()) {
-      counts.set(product.brand, (counts.get(product.brand) ?? 0) + 1);
+      const brandName = product.brand?.name || 'Autre';
+      counts.set(brandName, (counts.get(brandName) ?? 0) + 1);
     }
     return counts;
   });
@@ -118,7 +125,7 @@ export class ShopComponent implements OnInit {
     const range = priceRangeId ? this.priceRanges.find(item => item.id === priceRangeId) : null;
 
     return this.products().filter(product => {
-      if (selectedBrands.size && !selectedBrands.has(product.brand)) {
+      if (selectedBrands.size && product.brand?.name && !selectedBrands.has(product.brand.name)) {
         return false;
       }
 
@@ -219,8 +226,6 @@ export class ShopComponent implements OnInit {
    * Convertit un produit API en produit frontend
    */
   private mapApiProductToProduct(apiProduct: ApiProduct): Product {
-    const dimensions = this.parseDimensions(apiProduct.size);
-    
     // Gérer le prix (BigDecimal de Java sérialisé en nombre)
     const price = typeof apiProduct.price === 'number' 
       ? apiProduct.price 
@@ -232,44 +237,16 @@ export class ShopComponent implements OnInit {
     return {
       id: apiProduct.id,
       name: apiProduct.name,
-      brand: apiProduct.brand || 'Autre',
+      brand: apiProduct.brand,
       price,
       fromPrice: false,
-      width: dimensions.width,
-      profile: dimensions.profile,
-      diameter: dimensions.diameter,
+      width: apiProduct.width?.value || 0,
+      profile: apiProduct.profile?.value || 0,
+      diameter: apiProduct.diameter?.value || 0,
       image: apiProduct.imageUrl || '/assets/img/placeholder.png',
       launchedAt: createdAt,
       salesRank: 0
     };
-  }
-
-  /**
-   * Parse les dimensions depuis le format "235/45R17" ou similaire
-   */
-  private parseDimensions(size: string | null): { width: number; profile: number; diameter: number } {
-    if (!size) {
-      return { width: 0, profile: 0, diameter: 0 };
-    }
-
-    // Formats possibles: "235/45R17", "235-45-17", "235/45/17", etc.
-    const patterns = [
-      /(\d+)\/(\d+)R?(\d+)/,  // 235/45R17 ou 235/4517
-      /(\d+)[-\/](\d+)[-\/](\d+)/, // 235-45-17 ou 235/45/17
-    ];
-
-    for (const pattern of patterns) {
-      const match = size.match(pattern);
-      if (match) {
-        return {
-          width: parseInt(match[1], 10) || 0,
-          profile: parseInt(match[2], 10) || 0,
-          diameter: parseInt(match[3], 10) || 0
-        };
-      }
-    }
-
-    return { width: 0, profile: 0, diameter: 0 };
   }
 
   toggleBrand(brand: string): void {
@@ -364,7 +341,7 @@ export class ShopComponent implements OnInit {
       {
         productId: product.id,
         name: product.name,
-        brand: product.brand,
+        brand: product.brand?.name || 'Autre',
         price: product.price,
         image: product.image,
         width: product.width,

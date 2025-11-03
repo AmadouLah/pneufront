@@ -23,7 +23,7 @@ export interface PriceRange {
 export interface Product {
   readonly id: number;
   readonly name: string;
-  readonly brand: string;
+  readonly brand: { id: number; name: string } | null;
   readonly price: number;
   readonly fromPrice?: boolean;
   readonly width: number;

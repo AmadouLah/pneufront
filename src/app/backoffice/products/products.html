@@ -300,7 +300,9 @@
                     {{ product.name }}
                   </div>
                   @if (product.brand) {
-                  <div class="text-sm text-gray-400">{{ product.brand }}</div>
+                  <div class="text-sm text-gray-400">
+                    {{ product.brand.name }}
+                  </div>
                   }
                 </div>
               </div>
@@ -539,17 +541,22 @@
           <label class="block text-sm font-medium text-gray-300 mb-2"
             >Marque</label
           >
-          <input
-            type="text"
-            formControlName="brand"
-            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            placeholder="Marque"
-          />
+          <select
+            formControlName="brandId"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Sélectionner une marque</option>
+            @for (brand of brands(); track brand.id) {
+            <option [value]="brand.id" class="bg-neutral-soft">
+              {{ brand.name }}
+            </option>
+            }
+          </select>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2"
-            >Taille</label
+            >Taille (optionnel)</label
           >
           <input
             type="text"
@@ -557,6 +564,57 @@
             class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             placeholder="Ex: 235/45R17"
           />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2"
+            >Largeur</label
+          >
+          <select
+            formControlName="widthId"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Sélectionner une largeur</option>
+            @for (width of widths(); track width.id) {
+            <option [value]="width.id" class="bg-neutral-soft">
+              {{ width.value }}
+            </option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2"
+            >Profil</label
+          >
+          <select
+            formControlName="profileId"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Sélectionner un profil</option>
+            @for (profile of profiles(); track profile.id) {
+            <option [value]="profile.id" class="bg-neutral-soft">
+              {{ profile.value }}
+            </option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2"
+            >Diamètre</label
+          >
+          <select
+            formControlName="diameterId"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="">Sélectionner un diamètre</option>
+            @for (diameter of diameters(); track diameter.id) {
+            <option [value]="diameter.id" class="bg-neutral-soft">
+              {{ diameter.value }}
+            </option>
+            }
+          </select>
         </div>
 
         <div>

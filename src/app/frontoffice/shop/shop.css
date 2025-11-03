@@ -234,20 +234,44 @@
 
 .toolbar-select select {
   appearance: none;
-  background: none;
+  background: transparent;
   border: none;
   font-size: 0.92rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   padding-right: 1.75rem;
   cursor: pointer;
-  @apply text-base-content;
+  color: #e2e8f0;
 }
 
 .toolbar-select select:focus {
   outline: none;
   text-decoration: underline;
   text-decoration-thickness: 1px;
+}
+
+/* Styles pour les options du select - Support multi-navigateurs */
+.toolbar-select select option {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  padding: 0.75rem 1rem;
+}
+
+.toolbar-select select option:checked,
+.toolbar-select select option:focus,
+.toolbar-select select option:hover {
+  background-color: #1e293b !important;
+  color: #00d9ff !important;
+}
+
+/* Fallback pour les navigateurs qui ne supportent pas le styling des options */
+@supports not (-webkit-appearance: none) {
+  .toolbar-select select {
+    background-color: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.75rem 0.5rem 0.5rem;
+  }
 }
 
 .toolbar-chevron {
@@ -415,6 +439,19 @@
   text-transform: uppercase;
   margin-bottom: 0.5rem;
   @apply text-base-content/60;
+}
+
+.mobile-sort .toolbar-select select option {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  padding: 0.75rem 1rem;
+}
+
+.mobile-sort .toolbar-select select option:checked,
+.mobile-sort .toolbar-select select option:focus,
+.mobile-sort .toolbar-select select option:hover {
+  background-color: #1e293b !important;
+  color: #00d9ff !important;
 }
 
 .filters-drawer {

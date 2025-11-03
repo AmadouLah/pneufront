@@ -10,8 +10,11 @@ interface Product {
   name: string;
   price: number;
   stock: number;
-  brand: string | null;
+  brand: { id: number; name: string } | null;
   size: string | null;
+  width: { id: number; value: number } | null;
+  profile: { id: number; value: number } | null;
+  diameter: { id: number; value: number } | null;
   season: 'ETE' | 'HIVER' | 'QUATRE_SAISONS' | 'TOUT_TERRAIN' | null;
   vehicleType: 'CITADINE' | 'BERLINE' | 'SUV' | 'PICKUP' | 'CAMION' | 'MOTO' | null;
   imageUrl: string | null;
@@ -26,6 +29,12 @@ interface Product {
 interface Category {
   id: number;
   name: string;
+}
+
+interface Brand {
+  id: number;
+  name: string;
+  active: boolean;
 }
 
 interface ProductPageResponse {
@@ -68,6 +77,14 @@ export class ProductsComponent implements OnInit {
   
   // Categories
   categories = signal<Category[]>([]);
+  
+  // Brands
+  brands = signal<Brand[]>([]);
+  
+  // Dimensions
+  widths = signal<Array<{id: number; value: number}>>([]);
+  profiles = signal<Array<{id: number; value: number}>>([]);
+  diameters = signal<Array<{id: number; value: number}>>([]);
   
   // Pagination
   currentPage = signal(0);
@@ -128,8 +145,11 @@ export class ProductsComponent implements OnInit {
       name: ['', [Validators.required, Validators.maxLength(150)]],
       price: ['', [Validators.required, Validators.min(0.01)]],
       stock: ['', [Validators.required, Validators.min(0)]],
-      brand: ['', Validators.maxLength(50)],
+      brandId: [''],
       size: ['', Validators.maxLength(50)],
+      widthId: [''],
+      profileId: [''],
+      diameterId: [''],
       season: [''],
       vehicleType: [''],
       description: ['', Validators.maxLength(1000)],
@@ -140,6 +160,8 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
+    this.loadBrands();
+    this.loadDimensions();
     this.loadProducts();
   }
 
@@ -150,6 +172,36 @@ export class ProductsComponent implements OnInit {
     this.http.get<Category[]>(`${environment.apiUrl}/categories/active`).subscribe({
       next: (categories) => this.categories.set(categories),
       error: () => this.categories.set([])
+    });
+  }
+
+  /**
+   * Charge les marques depuis l'API
+   */
+  loadBrands(): void {
+    this.http.get<Brand[]>(`${environment.apiUrl}/brands/active`).subscribe({
+      next: (brands) => this.brands.set(brands),
+      error: () => this.brands.set([])
+    });
+  }
+
+  /**
+   * Charge les dimensions depuis l'API
+   */
+  loadDimensions(): void {
+    this.http.get<Array<{id: number; value: number}>>(`${environment.apiUrl}/tire-dimensions/widths`).subscribe({
+      next: (widths) => this.widths.set(widths),
+      error: () => this.widths.set([])
+    });
+    
+    this.http.get<Array<{id: number; value: number}>>(`${environment.apiUrl}/tire-dimensions/profiles`).subscribe({
+      next: (profiles) => this.profiles.set(profiles),
+      error: () => this.profiles.set([])
+    });
+    
+    this.http.get<Array<{id: number; value: number}>>(`${environment.apiUrl}/tire-dimensions/diameters`).subscribe({
+      next: (diameters) => this.diameters.set(diameters),
+      error: () => this.diameters.set([])
     });
   }
 
@@ -303,8 +355,11 @@ export class ProductsComponent implements OnInit {
       name: '',
       price: '',
       stock: '',
-      brand: '',
+      brandId: '',
       size: '',
+      widthId: '',
+      profileId: '',
+      diameterId: '',
       season: '',
       vehicleType: '',
       description: '',
@@ -326,8 +381,11 @@ export class ProductsComponent implements OnInit {
       name: product.name,
       price: product.price,
       stock: product.stock,
-      brand: product.brand || '',
+      brandId: product.brand?.id || '',
       size: product.size || '',
+      widthId: product.width?.id || '',
+      profileId: product.profile?.id || '',
+      diameterId: product.diameter?.id || '',
       season: product.season || '',
       vehicleType: product.vehicleType || '',
       description: product.description || '',
@@ -372,8 +430,11 @@ export class ProductsComponent implements OnInit {
     formData.append('stock', formValue.stock.toString());
     formData.append('categoryId', formValue.categoryId.toString());
     
-    if (formValue.brand) formData.append('brand', formValue.brand);
+    if (formValue.brandId) formData.append('brandId', formValue.brandId.toString());
     if (formValue.size) formData.append('size', formValue.size);
+    if (formValue.widthId) formData.append('widthId', formValue.widthId.toString());
+    if (formValue.profileId) formData.append('profileId', formValue.profileId.toString());
+    if (formValue.diameterId) formData.append('diameterId', formValue.diameterId.toString());
     if (formValue.season) formData.append('season', formValue.season);
     if (formValue.vehicleType) formData.append('vehicleType', formValue.vehicleType);
     if (formValue.description) formData.append('description', formValue.description);

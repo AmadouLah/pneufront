@@ -1,4 +1,4 @@
-import { PriceRange, Product, SortOption } from './shop.model';
+import { PriceRange, SortOption } from './shop.model';
 
 export const SORT_OPTIONS: readonly SortOption[] = [
   { id: 'featured', label: 'Featured' },
@@ -19,6 +19,9 @@ export const PRICE_RANGES: readonly PriceRange[] = [
   { id: 'above200000', label: 'Plus de 200,000 FCFA', min: 200000 }
 ];
 
+// Les produits sont maintenant chargés depuis l'API, ces données statiques ne sont plus utilisées
+// mais conservées pour référence si nécessaire
+/*
 const continentalProducts: readonly Product[] = [
   {
     id: 1,
@@ -348,10 +351,13 @@ const pirelliProducts: readonly Product[] = [
   }
 ];
 
-export const PRODUCTS: readonly Product[] = [
-  ...continentalProducts,
-  ...generalTireProducts,
-  ...dunlopProducts,
-  ...pirelliProducts
-];
+export const PRODUCTS: readonly Product[] = []; // Les produits sont chargés depuis l'API
+// Anciennes données statiques commentées car non utilisées:
+// export const PRODUCTS: readonly Product[] = [
+//   ...continentalProducts,
+//   ...generalTireProducts,
+//   ...dunlopProducts,
+//   ...pirelliProducts
+// ];
+*/
 
