@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, signal, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { CartItem, CartItemPayload } from '../shared/types/cart';
@@ -15,6 +15,20 @@ interface ApiProduct {
   profile: { id: number; value: number } | null;
   diameter: { id: number; value: number } | null;
   imageUrl: string | null;
+}
+
+interface SyncResult {
+  item: CartItem;
+  product: {
+    name: string;
+    brand: string;
+    price: number;
+    imageUrl: string;
+    width: number;
+    profile: number;
+    diameter: number;
+  } | null;
+  shouldRemove: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -232,30 +246,38 @@ export class CartService {
             width: product.width?.value || 0,
             profile: product.profile?.value || 0,
             diameter: product.diameter?.value || 0
-          }
+          },
+          shouldRemove: false
         })),
-        catchError(() => of({ item, product: null }))
+        catchError((error: unknown) => {
+          // Si le produit n'existe plus (404), retourner null pour le supprimer du panier
+          const httpError = error as HttpErrorResponse;
+          const shouldRemove = httpError.status === 404;
+          return of({ item, product: null, shouldRemove });
+        })
       )
     );
 
     forkJoin(syncRequests).subscribe({
       next: (results) => {
-        const updatedItems = results.map(({ item, product }) => {
-          if (!product) {
-            return item;
-          }
+        const updatedItems = results
+          .filter((result: SyncResult) => !result.shouldRemove)
+          .map(({ item, product }: SyncResult) => {
+            if (!product) {
+              return item;
+            }
 
-          return {
-            ...item,
-            name: product.name,
-            brand: product.brand,
-            price: product.price,
-            image: product.imageUrl,
-            width: product.width || item.width,
-            profile: product.profile || item.profile,
-            diameter: product.diameter || item.diameter
-          };
-        });
+            return {
+              ...item,
+              name: product.name,
+              brand: product.brand,
+              price: product.price,
+              image: product.imageUrl,
+              width: product.width || item.width,
+              profile: product.profile || item.profile,
+              diameter: product.diameter || item.diameter
+            };
+          });
 
         this.itemsSignal.set(updatedItems);
         this.isSyncing = false;

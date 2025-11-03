@@ -1,9 +1,9 @@
 <!-- Header Navigation -->
 <header
-  class="bg-black/95 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 border-b border-gray-800"
+  class="bg-black/95 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 border-b border-gray-800 relative"
 >
-  <div class="container mx-auto px-6">
-    <div class="flex items-center justify-between h-20">
+  <div class="container mx-auto px-6 relative">
+    <div class="flex items-center justify-between h-20 relative">
       <!-- Mobile Menu Button -->
       <div class="lg:hidden">
         <button
@@ -28,8 +28,10 @@
       </div>
 
       <!-- Left Navigation - Desktop -->
-      <nav class="hidden lg:flex flex-1">
-        <ul class="flex items-center gap-6 text-white text-sm font-medium">
+      <nav class="hidden lg:flex flex-1 relative">
+        <ul
+          class="flex items-center gap-6 text-white text-sm font-medium relative"
+        >
           <li>
             <a
               routerLink="/"
@@ -47,21 +49,38 @@
               >SHOP</a
             >
           </li>
-          <li class="relative group">
-            <button class="hover:text-primary transition-colors">BRANDS</button>
-            <ul
-              class="absolute left-0 top-full mt-2 bg-black border border-gray-800 rounded-lg w-52 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+          <li class="brands-menu-item" [class.is-open]="brandsDropdownOpen()">
+            <button
+              type="button"
+              (click)="toggleBrandsDropdown()"
+              class="brands-trigger flex items-center gap-1 hover:text-primary transition-colors"
             >
+              <span>BRANDS</span>
+              <svg
+                class="brands-chevron w-3 h-3 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            @if (brands().length > 0 && brandsDropdownOpen()) {
+            <ul class="brands-dropdown">
               @for (brand of brands(); track brand) {
               <li>
-                <a
-                  (click)="filterByBrand(brand)"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-900 transition-colors cursor-pointer"
+                <a (click)="filterByBrand(brand)" class="brand-item"
                   >{{ brand }}</a
                 >
               </li>
               }
             </ul>
+            }
           </li>
           <li>
             <a
@@ -98,8 +117,13 @@
       </nav>
 
       <!-- Center Logo -->
-      <div class="absolute left-1/2 transform -translate-x-1/2">
-        <a routerLink="/" class="flex items-center app-logo-wrap">
+      <div
+        class="absolute left-1/2 transform -translate-x-1/2 z-40 pointer-events-none"
+      >
+        <a
+          routerLink="/"
+          class="flex items-center app-logo-wrap pointer-events-auto"
+        >
           <img
             src="/assets/img/logoPneuMali.png"
             alt="PneuMali"
@@ -317,6 +341,11 @@
 <!-- User Menu Overlay (to close when clicking outside) -->
 @if (userMenuOpen()) {
 <div class="fixed inset-0 z-40" (click)="closeUserMenu()"></div>
+}
+
+<!-- Brands Dropdown Overlay (to close when clicking outside) -->
+@if (brandsDropdownOpen()) {
+<div class="fixed inset-0 z-40" (click)="closeBrandsDropdown()"></div>
 }
 
 <!-- Mobile Menu Drawer -->

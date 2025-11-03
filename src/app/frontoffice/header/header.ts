@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit {
   mobileMenuSection = signal<'root' | 'brands'>('root');
   searchOpen = signal(false);
   userMenuOpen = signal(false);
+  brandsDropdownOpen = signal(false);
   isAuthenticated = signal(false);
   readonly cartItemCount = computed(() => this.cartService.totalItems());
   searchForm: FormGroup;
@@ -41,6 +42,12 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadBrands();
+    // Vérifier le chargement des marques après un court délai
+    setTimeout(() => {
+      if (this.brands().length === 0) {
+        console.warn('Aucune marque chargée depuis l\'API');
+      }
+    }, 1000);
   }
 
   /**
@@ -173,6 +180,20 @@ export class HeaderComponent implements OnInit {
   }
 
   /**
+   * Toggle du dropdown des marques
+   */
+  toggleBrandsDropdown(): void {
+    this.brandsDropdownOpen.set(!this.brandsDropdownOpen());
+  }
+
+  /**
+   * Ferme le dropdown des marques
+   */
+  closeBrandsDropdown(): void {
+    this.brandsDropdownOpen.set(false);
+  }
+
+  /**
    * Navigation vers la page de connexion
    */
   navigateToLogin(): void {
@@ -224,11 +245,23 @@ export class HeaderComponent implements OnInit {
    * Charge les marques depuis l'API
    */
   private loadBrands(): void {
-    this.http.get<string[]>(`${environment.apiUrl}/products/brands`).subscribe({
+    interface ApiBrand {
+      id: number;
+      name: string;
+      active: boolean;
+    }
+
+    this.http.get<ApiBrand[]>(`${environment.apiUrl}/brands/active`).subscribe({
       next: (brands) => {
-        this.brands.set(brands.sort((a, b) => a.localeCompare(b)));
+        const brandNames = brands
+          .filter(brand => brand.active)
+          .map(brand => brand.name)
+          .sort((a, b) => a.localeCompare(b));
+        this.brands.set(brandNames);
+        console.log('Marques chargées:', brandNames);
       },
-      error: () => {
+      error: (error) => {
+        console.error('Erreur lors du chargement des marques:', error);
         // En cas d'erreur, utiliser des marques par défaut
         this.brands.set(['Michelin', 'Bridgestone', 'Goodyear', 'Continental', 'Pirelli', 'Dunlop']);
       }
@@ -239,6 +272,7 @@ export class HeaderComponent implements OnInit {
    * Filtrer par marque
    */
   filterByBrand(brand: string): void {
+    this.closeBrandsDropdown();
     this.router.navigate(['/shop'], { queryParams: { brand } });
   }
 
