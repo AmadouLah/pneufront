@@ -1,7 +1,7 @@
 <ng-template #filtersContent>
   <details class="filter-block" open>
     <summary class="filter-summary">
-      <span>Brand</span>
+      <span>Marque</span>
       <svg
         class="filter-chevron"
         viewBox="0 0 24 24"
@@ -35,7 +35,7 @@
 
   <details class="filter-block">
     <summary class="filter-summary">
-      <span>Price</span>
+      <span>Prix</span>
       <svg
         class="filter-chevron"
         viewBox="0 0 24 24"
@@ -66,7 +66,7 @@
 
   <details class="filter-block">
     <summary class="filter-summary">
-      <span>Width</span>
+      <span>Largeur</span>
       <svg
         class="filter-chevron"
         viewBox="0 0 24 24"
@@ -97,7 +97,7 @@
 
   <details class="filter-block">
     <summary class="filter-summary">
-      <span>Profile</span>
+      <span>Profil</span>
       <svg
         class="filter-chevron"
         viewBox="0 0 24 24"
@@ -128,7 +128,7 @@
 
   <details class="filter-block">
     <summary class="filter-summary">
-      <span>Diameter</span>
+      <span>Diamètre</span>
       <svg
         class="filter-chevron"
         viewBox="0 0 24 24"
@@ -158,7 +158,7 @@
   </details>
 
   <div class="filter-block mobile-only mobile-sort">
-    <div class="mobile-sort__label">Sort by:</div>
+    <div class="mobile-sort__label">Trier par :</div>
     <div class="toolbar-select">
       <select [value]="selectedSort()" (change)="onSortChange($event)">
         @for (option of sortOptions; track option.id) {
@@ -187,7 +187,7 @@
 
   <main class="shop-main">
     <div class="shop-container">
-      <h1 class="shop-title">Products</h1>
+      <h1 class="shop-title">Produits</h1>
 
       <div class="products-toolbar mobile-only">
         <button class="filters-toggle" type="button" (click)="openFilters()">
@@ -204,21 +204,24 @@
               d="M3 4h18M4 12h16M6 20h12"
             />
           </svg>
-          <span>Filter and sort</span>
+          <span>Filtrer et trier</span>
         </button>
-        <span class="products-count">{{ totalProducts() }} products</span>
+        <span class="products-count"
+          >{{ totalProducts() }} produit{{ totalProducts() > 1 ? 's' : ''
+          }}</span
+        >
       </div>
 
       <div class="shop-layout">
         <aside class="filters-column desktop-only">
           <div class="filters-header">
-            <span class="filters-label">Filter:</span>
+            <span class="filters-label">Filtrer :</span>
             <button
               type="button"
               class="filters-reset"
               (click)="clearFilters()"
             >
-              Remove all
+              Tout supprimer
             </button>
           </div>
           <div class="filters-divider"></div>
@@ -229,7 +232,7 @@
         <section class="products-column">
           <div class="products-toolbar desktop-only">
             <div class="products-toolbar__meta">
-              <span class="toolbar-caption">Sort by:</span>
+              <span class="toolbar-caption">Trier par :</span>
               <div class="toolbar-select">
                 <select
                   [value]="selectedSort()"
@@ -254,7 +257,10 @@
                 </svg>
               </div>
             </div>
-            <span class="products-count">{{ totalProducts() }} products</span>
+            <span class="products-count"
+              >{{ totalProducts() }} produit{{ totalProducts() > 1 ? 's' : ''
+              }}</span
+            >
           </div>
 
           <div class="products-grid">
@@ -299,8 +305,9 @@
                 {{ product.brand?.name || 'Autre' }}
               </p>
               <p class="product-card__price">
-                @if (product.fromPrice) { From {{ formatPrice(product.price) }}
-                } @else { {{ formatPrice(product.price) }} }
+                @if (product.fromPrice) { À partir de {{
+                formatPrice(product.price) }} } @else { {{
+                formatPrice(product.price) }} }
               </p>
               <button
                 type="button"
@@ -326,9 +333,9 @@
     <div class="filters-drawer__panel">
       <header class="filters-drawer__header">
         <div>
-          <div class="filters-drawer__title">Filter and sort</div>
+          <div class="filters-drawer__title">Filtrer et trier</div>
           <div class="filters-drawer__subtitle">
-            {{ totalProducts() }} products
+            {{ totalProducts() }} produit{{ totalProducts() > 1 ? 's' : '' }}
           </div>
         </div>
         <button
@@ -357,14 +364,14 @@
           class="filters-drawer__action filters-drawer__action--ghost"
           (click)="clearFilters()"
         >
-          Remove all
+          Tout supprimer
         </button>
         <button
           type="button"
           class="filters-drawer__action"
           (click)="applyFilters()"
         >
-          Apply
+          Appliquer
         </button>
       </footer>
     </div>

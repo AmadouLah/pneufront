@@ -6,7 +6,7 @@
   <main class="flex-1 pt-20">
     <div class="container mx-auto px-6 py-12 max-w-4xl">
       <!-- Page Title -->
-      <h1 class="text-4xl font-bold text-white mb-12">Profile</h1>
+      <h1 class="text-4xl font-bold text-white mb-12">Profil</h1>
 
       <!-- Success Message -->
       @if (successMessage()) {
@@ -22,7 +22,7 @@
         <!-- Name -->
         <div class="mb-6">
           <div class="flex items-center gap-2 mb-2">
-            <span class="text-white text-lg">Name</span>
+            <span class="text-white text-lg">Nom</span>
             <button
               (click)="openEditModal()"
               class="text-primary hover:text-cyan-400 transition-colors"
@@ -63,7 +63,7 @@
       <div class="bg-gray-900 rounded-lg border border-gray-800 p-8">
         <!-- Addresses Header -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-white text-2xl font-semibold">Addresses</h2>
+          <h2 class="text-white text-2xl font-semibold">Adresses</h2>
           <button
             (click)="openAddAddressModal()"
             class="flex items-center gap-2 text-primary hover:text-cyan-400 transition-colors font-medium"
@@ -81,7 +81,7 @@
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            <span>Add</span>
+            <span>Ajouter</span>
           </button>
         </div>
 
@@ -104,7 +104,7 @@
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span class="text-gray-500 text-lg">No addresses added</span>
+          <span class="text-gray-500 text-lg">Aucune adresse ajoutée</span>
         </div>
         } @else {
         <!-- Grille des adresses : Default à gauche, Autres à droite -->
@@ -159,7 +159,7 @@
               </button>
             </div>
 
-            <div class="text-gray-400 text-sm mb-4">Default address</div>
+            <div class="text-gray-400 text-sm mb-4">Adresse par défaut</div>
             <div class="text-white space-y-1">
               @if (user()) {
               <div>{{ user().firstName }} {{ user().lastName }}</div>
@@ -260,7 +260,7 @@
     >
       <!-- Modal Header -->
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-white text-2xl font-bold">Edit profile</h2>
+        <h2 class="text-white text-2xl font-bold">Modifier le profil</h2>
         <button
           (click)="closeEditModal()"
           class="text-white hover:text-primary transition-colors"
@@ -295,22 +295,22 @@
         <!-- First Name & Last Name -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label class="block text-gray-400 mb-2">First name</label>
+            <label class="block text-gray-400 mb-2">Prénom</label>
             <input
               type="text"
               formControlName="firstName"
               class="w-full bg-gray-800 border-2 border-primary text-white px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
-              placeholder="First name"
+              placeholder="Prénom"
               autofocus
             />
           </div>
           <div>
-            <label class="block text-gray-400 mb-2">Last name</label>
+            <label class="block text-gray-400 mb-2">Nom</label>
             <input
               type="text"
               formControlName="lastName"
               class="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
-              placeholder="Last name"
+              placeholder="Nom"
             />
           </div>
         </div>
@@ -326,7 +326,8 @@
           />
         </div>
         <p class="text-gray-500 text-sm mb-6">
-          This email is used for sign-in and order updates.
+          Cet email est utilisé pour la connexion et les mises à jour de
+          commande.
         </p>
 
         <!-- Action Buttons -->
@@ -336,14 +337,14 @@
             (click)="closeEditModal()"
             class="px-6 py-3 border border-gray-600 text-primary rounded-lg hover:bg-gray-800 transition-colors"
           >
-            Cancel
+            Annuler
           </button>
           <button
             type="submit"
             [disabled]="isLoading() || editForm.invalid"
             class="px-6 py-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {{ isLoading() ? 'Saving...' : 'Save' }}
+            {{ isLoading() ? 'Enregistrement...' : 'Enregistrer' }}
           </button>
         </div>
       </form>
@@ -361,7 +362,7 @@
     >
       <!-- Modal Header -->
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-white text-2xl font-bold">Verify email</h2>
+        <h2 class="text-white text-2xl font-bold">Vérifier l'email</h2>
         <button
           (click)="closeVerifyModal()"
           class="text-white hover:text-primary transition-colors"
@@ -383,7 +384,7 @@
       </div>
 
       <p class="text-white mb-6">
-        Enter the code sent to {{ editForm.value.email }}
+        Entrez le code envoyé à {{ editForm.value.email }}
       </p>
 
       <!-- Error Message -->
@@ -412,7 +413,7 @@
             formControlName="code"
             maxlength="6"
             class="w-full bg-gray-800 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
-            placeholder="6-digit code"
+            placeholder="Code à 6 chiffres"
             autofocus
           />
         </div>
@@ -422,7 +423,7 @@
           (click)="resendCode()"
           class="text-primary hover:text-cyan-400 transition-colors mb-6"
         >
-          Resend code
+          Renvoyer le code
         </button>
 
         <!-- Action Buttons -->
@@ -432,14 +433,14 @@
             (click)="closeVerifyModal()"
             class="px-6 py-3 border border-gray-600 text-primary rounded-lg hover:bg-gray-800 transition-colors"
           >
-            Cancel
+            Annuler
           </button>
           <button
             type="submit"
             [disabled]="isLoading() || verifyForm.invalid"
             class="px-6 py-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {{ isLoading() ? 'Verifying...' : 'Verify' }}
+            {{ isLoading() ? 'Vérification...' : 'Vérifier' }}
           </button>
         </div>
       </form>
@@ -460,7 +461,8 @@
         class="flex items-center justify-between p-6 border-b border-gray-800"
       >
         <h2 class="text-white text-2xl font-semibold">
-          {{ editingAddressId() ? 'Modify address' : 'Add address' }}
+          {{ editingAddressId() ? 'Modifier l\'adresse' : 'Ajouter une adresse'
+          }}
         </h2>
         <button
           (click)="closeAddAddressModal()"
@@ -513,13 +515,13 @@
             formControlName="isDefault"
             class="w-5 h-5 rounded border-gray-700 bg-gray-800 text-primary focus:ring-primary focus:ring-offset-gray-900"
           />
-          <span class="text-gray-300">This is my default address</span>
+          <span class="text-gray-300">C'est mon adresse par défaut</span>
         </label>
 
         <!-- Country/Region -->
         <div>
           <label class="block text-gray-300 mb-2">
-            Country/region <span class="text-red-500">*</span>
+            Pays/Région <span class="text-red-500">*</span>
           </label>
           <select
             formControlName="country"
@@ -539,12 +541,12 @@
         <!-- Address/Street -->
         <div>
           <label class="block text-gray-300 mb-2">
-            Address <span class="text-red-500">*</span>
+            Adresse <span class="text-red-500">*</span>
           </label>
           <textarea
             formControlName="street"
             rows="3"
-            placeholder="Street address, house number, etc."
+            placeholder="Adresse, numéro de rue, etc."
             [class]="isFieldInvalid('street')
               ? 'w-full px-4 py-3 bg-gray-800 text-white border-2 border-red-500 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500'
               : 'w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500'"
@@ -561,12 +563,12 @@
           <!-- City -->
           <div>
             <label class="block text-gray-300 mb-2">
-              City <span class="text-red-500">*</span>
+              Ville <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
               formControlName="city"
-              placeholder="City"
+              placeholder="Ville"
               [class]="isFieldInvalid('city')
                 ? 'w-full px-4 py-3 bg-gray-800 text-white border-2 border-red-500 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500'
                 : 'w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500'"
@@ -579,7 +581,7 @@
           <!-- Region -->
           <div>
             <label class="block text-gray-300 mb-2">
-              Region <span class="text-red-500">*</span>
+              Région <span class="text-red-500">*</span>
             </label>
             <select
               formControlName="region"
@@ -598,11 +600,11 @@
 
           <!-- Postal Code (Optionnel) -->
           <div>
-            <label class="block text-gray-300 mb-2">Postal code</label>
+            <label class="block text-gray-300 mb-2">Code postal</label>
             <input
               type="text"
               formControlName="postalCode"
-              placeholder="Optional"
+              placeholder="Optionnel"
               class="w-full px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500"
             />
           </div>
@@ -611,7 +613,7 @@
         <!-- Phone Number with Country Prefix -->
         <div>
           <label class="block text-gray-300 mb-2">
-            Phone <span class="text-red-500">*</span>
+            Téléphone <span class="text-red-500">*</span>
           </label>
           <div class="flex gap-2">
             <div
@@ -622,7 +624,7 @@
             <input
               type="tel"
               formControlName="phoneNumber"
-              placeholder="Phone number"
+              placeholder="Numéro de téléphone"
               [class]="isFieldInvalid('phoneNumber')
                 ? 'flex-1 px-4 py-3 bg-gray-800 text-white border-2 border-red-500 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 placeholder-gray-500'
                 : 'flex-1 px-4 py-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-500'"
@@ -642,14 +644,14 @@
             (click)="closeAddAddressModal()"
             class="px-6 py-3 text-primary hover:text-cyan-400 transition-colors font-medium"
           >
-            Cancel
+            Annuler
           </button>
           <button
             type="submit"
             [disabled]="isLoading() || addressForm.invalid"
             class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
-            {{ isLoading() ? 'Saving...' : 'Save' }}
+            {{ isLoading() ? 'Enregistrement...' : 'Enregistrer' }}
           </button>
         </div>
       </form>

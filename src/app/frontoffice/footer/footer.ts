@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { LanguageService } from '../../shared/services/language.service';
 
 @Component({
   selector: 'app-footer',
@@ -10,12 +11,15 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./footer.css']
 })
 export class FooterComponent {
-  currentYear = new Date().getFullYear();
+  private readonly languageService = inject(LanguageService);
+  
+  readonly currentYear = new Date().getFullYear();
+  readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
   /**
    * Liens de navigation du footer
    */
-  footerLinks = [
+  readonly footerLinks = [
     { label: 'Recherche', path: '/search' },
     { label: 'Conditions Générales', path: '/frontoffice/legal/terms' },
     { label: 'Politique de Confidentialité', path: '/frontoffice/legal/privacy' },
@@ -25,7 +29,7 @@ export class FooterComponent {
   /**
    * Réseaux sociaux
    */
-  socialLinks = [
+  readonly socialLinks = [
     {
       name: 'Facebook',
       url: 'https://facebook.com',
@@ -43,6 +47,13 @@ export class FooterComponent {
    */
   openSocialLink(url: string): void {
     window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  /**
+   * Change la langue
+   */
+  switchLanguage(lang: 'fr' | 'en'): void {
+    this.languageService.setLanguage(lang);
   }
 }
 

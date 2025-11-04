@@ -15,6 +15,27 @@ header .container > div {
   position: relative;
 }
 
+/* Ajustement pour que la ligne secondaire ne chevauche pas le logo */
+header .container > nav:last-of-type {
+  margin-top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+  header .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  /* Tablette et petit desktop - ajuster les espacements */
+  header .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
 .app-logo-wrap {
   position: relative;
   display: inline-flex;
@@ -93,6 +114,7 @@ nav ul li a {
   left: 0;
   top: calc(100% + 4px);
   min-width: 220px;
+  max-width: 300px;
   width: max-content;
   background-color: #000000;
   border: 1px solid #374151;
@@ -108,6 +130,13 @@ nav ul li a {
   pointer-events: auto;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   display: block;
+}
+
+@media (max-width: 1279px) {
+  .brands-dropdown {
+    right: 0;
+    left: auto;
+  }
 }
 
 .brand-item {

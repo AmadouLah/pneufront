@@ -6,7 +6,7 @@
   <main class="flex-1 page-shell">
     <!-- Hero Section -->
     <section
-      class="relative bg-black overflow-hidden pt-12 lg:pt-16 lg:min-h-[80vh]"
+      class="relative bg-black overflow-hidden pt-20 sm:pt-24 lg:pt-16 lg:min-h-[80vh]"
     >
       <div class="max-w-none px-6 w-full">
         <div
@@ -30,13 +30,13 @@
             <h1
               class="text-4xl sm:text-5xl lg:text-7xl font-bold mb-4 lg:mb-8 text-white"
             >
-              Browse our store
+              Parcourez notre boutique
             </h1>
             <a
               routerLink="/shop"
               class="inline-block bg-primary hover:bg-cyan-400 text-black font-bold px-12 py-4 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg shadow-primary/50"
             >
-              SHOP
+              BOUTIQUE
             </a>
           </div>
         </div>
@@ -52,7 +52,7 @@
           <h3
             class="text-primary text-lg lg:text-xl font-semibold mb-4 lg:mb-6 text-center lg:text-left"
           >
-            Search by size
+            Rechercher par taille
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <select
@@ -60,7 +60,7 @@
               (change)="onWidthChange($event)"
               class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
             >
-              <option value="" disabled>Width</option>
+              <option value="" disabled>Largeur</option>
               @for (width of widths(); track width.id) {
               <option [value]="width.value">{{ width.value }}</option>
               }
@@ -70,7 +70,7 @@
               (change)="onProfileChange($event)"
               class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
             >
-              <option value="" disabled>Profile</option>
+              <option value="" disabled>Profil</option>
               @for (profile of profiles(); track profile.id) {
               <option [value]="profile.value">{{ profile.value }}</option>
               }
@@ -80,7 +80,7 @@
               (change)="onDiameterChange($event)"
               class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
             >
-              <option value="" disabled>Diameter</option>
+              <option value="" disabled>Diamètre</option>
               @for (diameter of diameters(); track diameter.id) {
               <option [value]="diameter.value">{{ diameter.value }}</option>
               }
@@ -89,7 +89,7 @@
               (click)="searchBySize()"
               class="btn bg-primary hover:bg-cyan-400 text-black border-none font-bold"
             >
-              Go
+              Rechercher
             </button>
           </div>
         </div>
@@ -102,7 +102,7 @@
         <h2
           class="text-3xl lg:text-4xl font-bold text-white text-center mb-8 lg:mb-12"
         >
-          Popular
+          Populaires
         </h2>
         <div
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
@@ -152,7 +152,7 @@
             routerLink="/shop"
             class="text-primary hover:text-cyan-400 font-semibold transition-colors"
           >
-            View all →
+            Voir tout →
           </a>
         </div>
       </div>

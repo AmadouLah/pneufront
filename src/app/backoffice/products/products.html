@@ -682,6 +682,28 @@
           }
         </div>
 
+        <!-- Tire Condition -->
+        <div>
+          <label
+            for="tireConditionId"
+            class="block text-sm font-medium text-gray-300 mb-1"
+            >État du pneu</label
+          >
+          <select
+            formControlName="tireConditionId"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          >
+            <option value="" class="bg-neutral-soft">
+              Sélectionner un état
+            </option>
+            @for (condition of tireConditions(); track condition.id) {
+            <option [value]="condition.id" class="bg-neutral-soft">
+              {{ condition.name }}
+            </option>
+            }
+          </select>
+        </div>
+
         <div class="md:col-span-2">
           <label class="block text-sm font-medium text-gray-300 mb-2"
             >Image du produit</label

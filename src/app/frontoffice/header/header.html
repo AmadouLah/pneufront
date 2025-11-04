@@ -2,139 +2,41 @@
 <header
   class="bg-black/95 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 border-b border-gray-800 relative"
 >
-  <div class="container mx-auto px-6 relative">
-    <div class="flex items-center justify-between h-20 relative">
+  <div class="container mx-auto px-4 sm:px-6 relative">
+    <!-- Mobile/Tablet Header -->
+    <div class="lg:hidden flex items-center justify-between h-16 sm:h-20">
       <!-- Mobile Menu Button -->
-      <div class="lg:hidden">
-        <button
-          (click)="toggleMobileMenu()"
-          class="btn btn-ghost btn-circle text-white"
-          aria-label="Menu"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Left Navigation - Desktop -->
-      <nav class="hidden lg:flex flex-1 relative">
-        <ul
-          class="flex items-center gap-6 text-white text-sm font-medium relative"
-        >
-          <li>
-            <a
-              routerLink="/"
-              routerLinkActive="text-primary"
-              [routerLinkActiveOptions]="{exact: true}"
-              class="hover:text-primary transition-colors"
-              >HOME</a
-            >
-          </li>
-          <li>
-            <a
-              routerLink="/shop"
-              routerLinkActive="text-primary"
-              class="hover:text-primary transition-colors"
-              >SHOP</a
-            >
-          </li>
-          <li class="brands-menu-item" [class.is-open]="brandsDropdownOpen()">
-            <button
-              type="button"
-              (click)="toggleBrandsDropdown()"
-              class="brands-trigger flex items-center gap-1 hover:text-primary transition-colors"
-            >
-              <span>BRANDS</span>
-              <svg
-                class="brands-chevron w-3 h-3 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            @if (brands().length > 0 && brandsDropdownOpen()) {
-            <ul class="brands-dropdown">
-              @for (brand of brands(); track brand) {
-              <li>
-                <a (click)="filterByBrand(brand)" class="brand-item"
-                  >{{ brand }}</a
-                >
-              </li>
-              }
-            </ul>
-            }
-          </li>
-          <li>
-            <a
-              routerLink="/about"
-              routerLinkActive="text-primary"
-              class="hover:text-primary transition-colors"
-              >ABOUT US</a
-            >
-          </li>
-          <li>
-            <a
-              routerLink="/blog"
-              routerLinkActive="text-primary"
-              class="hover:text-primary transition-colors"
-              >BLOG</a
-            >
-          </li>
-          <li>
-            <a
-              routerLink="/frontoffice/contact"
-              routerLinkActive="text-primary"
-              class="hover:text-primary transition-colors"
-              >CONTACT</a
-            >
-          </li>
-          <li>
-            <a
-              (click)="toggleSearch()"
-              class="hover:text-primary cursor-pointer transition-colors"
-              >SEARCH</a
-            >
-          </li>
-        </ul>
-      </nav>
-
-      <!-- Center Logo -->
-      <div
-        class="absolute left-1/2 transform -translate-x-1/2 z-40 pointer-events-none"
+      <button
+        (click)="toggleMobileMenu()"
+        class="btn btn-ghost btn-circle text-white p-2"
+        aria-label="Menu"
       >
-        <a
-          routerLink="/"
-          class="flex items-center app-logo-wrap pointer-events-auto"
+        <svg
+          class="w-5 h-5 sm:w-6 sm:h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          <img
-            src="/assets/img/logoPneuMali.png"
-            alt="PneuMali"
-            class="app-logo h-12 w-auto transition-transform hover:scale-110"
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
           />
-        </a>
-      </div>
+        </svg>
+      </button>
 
-      <!-- Right Icons -->
-      <div class="flex items-center gap-3 flex-1 justify-end">
-        <!-- Search Icon -->
+      <!-- Mobile Logo -->
+      <a routerLink="/" class="flex items-center app-logo-wrap">
+        <img
+          src="/assets/img/logoPneuMali.png"
+          alt="PneuMali"
+          class="app-logo h-8 sm:h-10 w-auto transition-transform hover:scale-110"
+        />
+      </a>
+
+      <!-- Mobile Right Actions -->
+      <div class="flex items-center gap-2 sm:gap-3">
         <button
           (click)="toggleSearch()"
           class="text-white hover:text-primary transition-colors p-2"
@@ -154,160 +56,6 @@
             />
           </svg>
         </button>
-
-        <!-- User Icon - Hidden on mobile, visible on desktop -->
-        <div class="relative hidden lg:block">
-          @if (isAuthenticated()) {
-          <!-- Avatar avec initiales ou icône -->
-          <button
-            (click)="toggleUserMenu()"
-            class="flex items-center gap-2 text-white hover:text-primary transition-colors"
-            aria-label="Compte utilisateur"
-          >
-            <div
-              class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold text-sm"
-            >
-              @if (hasUserName()) {
-              <!-- Afficher les initiales -->
-              {{ getUserInitials() }} } @else {
-              <!-- Afficher icône bonhomme par défaut -->
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-              }
-            </div>
-            <svg
-              class="w-4 h-4"
-              [class.rotate-180]="userMenuOpen()"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-          } @else {
-          <!-- Icône par défaut si non connecté -->
-          <button
-            (click)="navigateToLogin()"
-            class="text-white hover:text-primary transition-colors p-2"
-            aria-label="Se connecter"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </button>
-          }
-
-          <!-- Dropdown menu (only visible when authenticated and clicked) -->
-          @if (isAuthenticated() && userMenuOpen()) {
-          <div
-            class="absolute right-0 mt-2 w-72 bg-gray-900 border border-gray-800 rounded-lg shadow-xl z-50"
-          >
-            <!-- User Info Section -->
-            <div class="px-4 py-3 border-b border-gray-800">
-              <div class="flex items-center gap-3">
-                <!-- Avatar avec initiales ou icône -->
-                <div
-                  class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold"
-                >
-                  @if (hasUserName()) {
-                  <!-- Afficher les initiales -->
-                  {{ getUserInitials() }} } @else {
-                  <!-- Afficher icône bonhomme par défaut -->
-                  <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  }
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-white font-medium truncate">
-                    {{ getUserInfo()?.firstName }} {{ getUserInfo()?.lastName }}
-                  </p>
-                  <p class="text-gray-400 text-sm truncate">
-                    {{ getUserInfo()?.email }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Menu Options -->
-            <ul class="py-2">
-              @if (isAdminOrDeveloper()) {
-              <li>
-                <a
-                  (click)="navigateAndCloseMenu('/dashboard')"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
-                >
-                  Dashboard
-                </a>
-              </li>
-              }
-              <li>
-                <a
-                  (click)="navigateAndCloseMenu('/frontoffice/profil')"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
-                >
-                  Profile
-                </a>
-              </li>
-              <li>
-                <a
-                  (click)="navigateAndCloseMenu('/orders')"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
-                >
-                  Settings
-                </a>
-              </li>
-              <li>
-                <a
-                  (click)="logout()"
-                  class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
-                >
-                  Sign out
-                </a>
-              </li>
-            </ul>
-          </div>
-          }
-        </div>
-
-        <!-- Cart Icon with Badge -->
         <button
           (click)="navigateToCart()"
           class="text-white hover:text-primary transition-colors p-2 relative"
@@ -333,6 +81,325 @@
           >
           }
         </button>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <div class="hidden lg:block">
+      <div class="flex items-center justify-between h-20 relative">
+        <!-- Left Navigation -->
+        <nav class="flex flex-1 relative min-w-0">
+          <ul
+            class="flex items-center gap-2 lg:gap-3 xl:gap-4 2xl:gap-5 text-white text-xs lg:text-sm font-medium relative flex-wrap"
+          >
+            <li class="flex-shrink-0">
+              <a
+                routerLink="/"
+                routerLinkActive="text-primary"
+                [routerLinkActiveOptions]="{exact: true}"
+                class="hover:text-primary transition-colors whitespace-nowrap px-1 py-2"
+                >ACCUEIL</a
+              >
+            </li>
+            <li class="flex-shrink-0">
+              <a
+                routerLink="/shop"
+                routerLinkActive="text-primary"
+                class="hover:text-primary transition-colors whitespace-nowrap px-1 py-2"
+                >BOUTIQUE</a
+              >
+            </li>
+            <li
+              class="brands-menu-item flex-shrink-0"
+              [class.is-open]="brandsDropdownOpen()"
+            >
+              <button
+                type="button"
+                (click)="toggleBrandsDropdown()"
+                class="brands-trigger flex items-center gap-1 hover:text-primary transition-colors whitespace-nowrap px-1 py-2"
+              >
+                <span>MARQUES</span>
+                <svg
+                  class="brands-chevron w-3 h-3 transition-transform flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              @if (brands().length > 0 && brandsDropdownOpen()) {
+              <ul class="brands-dropdown">
+                @for (brand of brands(); track brand) {
+                <li>
+                  <a (click)="filterByBrand(brand)" class="brand-item"
+                    >{{ brand }}</a
+                  >
+                </li>
+                }
+              </ul>
+              }
+            </li>
+            <li class="hidden xl:flex flex-shrink-0">
+              <a
+                routerLink="/about"
+                routerLinkActive="text-primary"
+                class="hover:text-primary transition-colors whitespace-nowrap px-1 py-2"
+                >À PROPOS</a
+              >
+            </li>
+            <li class="hidden xl:flex flex-shrink-0">
+              <a
+                routerLink="/blog"
+                routerLinkActive="text-primary"
+                class="hover:text-primary transition-colors whitespace-nowrap px-1 py-2"
+                >BLOG</a
+              >
+            </li>
+            <li class="hidden xl:flex flex-shrink-0">
+              <a
+                routerLink="/frontoffice/contact"
+                routerLinkActive="text-primary"
+                class="hover:text-primary transition-colors whitespace-nowrap px-1 py-2"
+                >CONTACT</a
+              >
+            </li>
+            <li class="hidden lg:flex xl:hidden flex-shrink-0">
+              <a
+                (click)="toggleSearch()"
+                class="hover:text-primary cursor-pointer transition-colors whitespace-nowrap px-1 py-2"
+                >RECHERCHE</a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Center Logo -->
+        <div
+          class="absolute left-1/2 transform -translate-x-1/2 z-40 pointer-events-none px-2"
+        >
+          <a
+            routerLink="/"
+            class="flex items-center app-logo-wrap pointer-events-auto"
+          >
+            <img
+              src="/assets/img/logoPneuMali.png"
+              alt="PneuMali"
+              class="app-logo h-10 lg:h-12 xl:h-14 w-auto transition-transform hover:scale-110"
+            />
+          </a>
+        </div>
+
+        <!-- Right Icons -->
+        <div
+          class="flex items-center gap-2 lg:gap-3 flex-1 justify-end min-w-0"
+        >
+          <!-- Search Icon -->
+          <button
+            (click)="toggleSearch()"
+            class="text-white hover:text-primary transition-colors p-2"
+            aria-label="Recherche"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </button>
+
+          <!-- User Icon - Hidden on mobile, visible on desktop -->
+          <div class="relative hidden lg:block">
+            @if (isAuthenticated()) {
+            <!-- Avatar avec initiales ou icône -->
+            <button
+              (click)="toggleUserMenu()"
+              class="flex items-center gap-2 text-white hover:text-primary transition-colors"
+              aria-label="Compte utilisateur"
+            >
+              <div
+                class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold text-sm"
+              >
+                @if (hasUserName()) {
+                <!-- Afficher les initiales -->
+                {{ getUserInitials() }} } @else {
+                <!-- Afficher icône bonhomme par défaut -->
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                }
+              </div>
+              <svg
+                class="w-4 h-4"
+                [class.rotate-180]="userMenuOpen()"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            } @else {
+            <!-- Icône par défaut si non connecté -->
+            <button
+              (click)="navigateToLogin()"
+              class="text-white hover:text-primary transition-colors p-2"
+              aria-label="Se connecter"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </button>
+            }
+
+            <!-- Dropdown menu (only visible when authenticated and clicked) -->
+            @if (isAuthenticated() && userMenuOpen()) {
+            <div
+              class="absolute right-0 mt-2 w-64 lg:w-72 bg-gray-900 border border-gray-800 rounded-lg shadow-xl z-50"
+            >
+              <!-- User Info Section -->
+              <div class="px-4 py-3 border-b border-gray-800">
+                <div class="flex items-center gap-3">
+                  <!-- Avatar avec initiales ou icône -->
+                  <div
+                    class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold"
+                  >
+                    @if (hasUserName()) {
+                    <!-- Afficher les initiales -->
+                    {{ getUserInitials() }} } @else {
+                    <!-- Afficher icône bonhomme par défaut -->
+                    <svg
+                      class="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                    }
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-white font-medium truncate">
+                      {{ getUserInfo()?.firstName }} {{ getUserInfo()?.lastName
+                      }}
+                    </p>
+                    <p class="text-gray-400 text-sm truncate">
+                      {{ getUserInfo()?.email }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Menu Options -->
+              <ul class="py-2">
+                @if (isAdminOrDeveloper()) {
+                <li>
+                  <a
+                    (click)="navigateAndCloseMenu('/dashboard')"
+                    class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
+                  >
+                    Tableau de bord
+                  </a>
+                </li>
+                }
+                <li>
+                  <a
+                    (click)="navigateAndCloseMenu('/frontoffice/profil')"
+                    class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
+                  >
+                    Profil
+                  </a>
+                </li>
+                <li>
+                  <a
+                    (click)="navigateAndCloseMenu('/orders')"
+                    class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
+                  >
+                    Paramètres
+                  </a>
+                </li>
+                <li>
+                  <a
+                    (click)="logout()"
+                    class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
+                  >
+                    Déconnexion
+                  </a>
+                </li>
+              </ul>
+            </div>
+            }
+          </div>
+
+          <!-- Cart Icon with Badge -->
+          <button
+            (click)="navigateToCart()"
+            class="text-white hover:text-primary transition-colors p-2 relative"
+            aria-label="Panier"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+            @if (cartItemCount() > 0) {
+            <span
+              class="absolute -top-1 -right-1 bg-primary text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"
+              >{{ cartItemCount() }}</span
+            >
+            }
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -452,21 +519,21 @@
           (click)="navigateFromMobile('/')"
           class="w-full flex items-center justify-between px-2 py-3 text-left text-white font-medium rounded-lg hover:bg-gray-900 hover:text-primary transition-colors"
         >
-          <span>Home</span>
+          <span>Accueil</span>
         </button>
         <button
           type="button"
           (click)="navigateFromMobile('/shop')"
           class="w-full flex items-center justify-between px-2 py-3 text-left text-white font-medium rounded-lg hover:bg-gray-900 hover:text-primary transition-colors"
         >
-          <span>Shop</span>
+          <span>Boutique</span>
         </button>
         <button
           type="button"
           (click)="openMobileBrands()"
           class="w-full flex items-center justify-between px-2 py-3 text-left text-white font-medium rounded-lg hover:bg-gray-900 hover:text-primary transition-colors"
         >
-          <span>Brands</span>
+          <span>Marques</span>
           <svg
             class="w-4 h-4"
             fill="none"
@@ -486,7 +553,7 @@
           (click)="navigateFromMobile('/about')"
           class="w-full flex items-center justify-between px-2 py-3 text-left text-white font-medium rounded-lg hover:bg-gray-900 hover:text-primary transition-colors"
         >
-          <span>About Us</span>
+          <span>À propos</span>
         </button>
         <button
           type="button"
@@ -507,7 +574,7 @@
           (click)="openSearchFromMobile()"
           class="w-full flex items-center justify-between px-2 py-3 text-left text-white font-medium rounded-lg hover:bg-gray-900 hover:text-primary transition-colors"
         >
-          <span>Search</span>
+          <span>Recherche</span>
         </button>
       </nav>
       } @else {
@@ -530,7 +597,7 @@
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          <span class="font-medium">Brands</span>
+          <span class="font-medium">Marques</span>
         </button>
         <nav class="space-y-4">
           @for (brand of brands(); track brand) {
@@ -638,7 +705,7 @@
           type="text"
           formControlName="keyword"
           class="flex-1 bg-transparent text-white placeholder-gray-500 text-lg outline-none"
-          placeholder="Search"
+          placeholder="Rechercher"
           autocomplete="off"
         />
         <button

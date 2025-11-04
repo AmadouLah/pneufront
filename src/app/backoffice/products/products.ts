@@ -17,6 +17,7 @@ interface Product {
   diameter: { id: number; value: number } | null;
   season: 'ETE' | 'HIVER' | 'QUATRE_SAISONS' | 'TOUT_TERRAIN' | null;
   vehicleType: { id: number; name: string; category: { id: number; name: string } } | null;
+  tireCondition: { id: number; name: string } | null;
   imageUrl: string | null;
   description: string | null;
   active: boolean;
@@ -90,6 +91,9 @@ export class ProductsComponent implements OnInit {
   vehicleTypes = signal<Array<{id: number; name: string; category: { id: number; name: string } }>>([]);
   filteredVehicleTypes = signal<Array<{id: number; name: string; category: { id: number; name: string } }>>([]);
   
+  // Tire Conditions
+  tireConditions = signal<Array<{id: number; name: string}>>([]);
+  
   // Pagination
   currentPage = signal(0);
   pageSize = signal(10);
@@ -148,6 +152,7 @@ export class ProductsComponent implements OnInit {
       diameterId: [''],
       season: [''],
       vehicleTypeId: [''],
+      tireConditionId: [''],
       description: ['', Validators.maxLength(1000)],
       categoryId: ['', Validators.required],
       active: [true]
@@ -159,6 +164,7 @@ export class ProductsComponent implements OnInit {
     this.loadBrands();
     this.loadDimensions();
     this.loadVehicleTypes();
+    this.loadTireConditions();
     this.loadProducts();
     
     // Écouter les changements de catégorie pour filtrer les types de véhicules
@@ -217,6 +223,16 @@ export class ProductsComponent implements OnInit {
         this.filterVehicleTypes();
       },
       error: () => this.vehicleTypes.set([])
+    });
+  }
+
+  /**
+   * Charge les états de pneus depuis l'API
+   */
+  loadTireConditions(): void {
+    this.http.get<Array<{id: number; name: string}>>(`${environment.apiUrl}/tire-conditions/active`).subscribe({
+      next: (conditions) => this.tireConditions.set(conditions),
+      error: () => this.tireConditions.set([])
     });
   }
 
@@ -418,6 +434,7 @@ export class ProductsComponent implements OnInit {
       diameterId: '',
       season: '',
       vehicleTypeId: '',
+      tireConditionId: '',
       description: '',
       categoryId: '',
       active: true
@@ -444,6 +461,7 @@ export class ProductsComponent implements OnInit {
       diameterId: product.diameter?.id || '',
       season: product.season || '',
       vehicleTypeId: product.vehicleType?.id || '',
+      tireConditionId: product.tireCondition?.id || '',
       description: product.description || '',
       categoryId: product.category.id,
       active: product.active
@@ -495,6 +513,7 @@ export class ProductsComponent implements OnInit {
     if (formValue.diameterId) formData.append('diameterId', formValue.diameterId.toString());
     if (formValue.season) formData.append('season', formValue.season);
     if (formValue.vehicleTypeId) formData.append('vehicleTypeId', formValue.vehicleTypeId.toString());
+    if (formValue.tireConditionId) formData.append('tireConditionId', formValue.tireConditionId.toString());
     if (formValue.description) formData.append('description', formValue.description);
     
     formData.append('active', (formValue.active !== false).toString());

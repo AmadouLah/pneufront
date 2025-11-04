@@ -1,14 +1,14 @@
 import { PriceRange, SortOption } from './shop.model';
 
 export const SORT_OPTIONS: readonly SortOption[] = [
-  { id: 'featured', label: 'Featured' },
-  { id: 'bestSelling', label: 'Best selling' },
-  { id: 'alphabeticalAsc', label: 'Alphabetically, A-Z' },
-  { id: 'alphabeticalDesc', label: 'Alphabetically, Z-A' },
-  { id: 'priceLowHigh', label: 'Price, low to high' },
-  { id: 'priceHighLow', label: 'Price, high to low' },
-  { id: 'dateOldNew', label: 'Date, old to new' },
-  { id: 'dateNewOld', label: 'Date, new to old' }
+  { id: 'featured', label: 'En vedette' },
+  { id: 'bestSelling', label: 'Meilleures ventes' },
+  { id: 'alphabeticalAsc', label: 'Alphabétique, A-Z' },
+  { id: 'alphabeticalDesc', label: 'Alphabétique, Z-A' },
+  { id: 'priceLowHigh', label: 'Prix, croissant' },
+  { id: 'priceHighLow', label: 'Prix, décroissant' },
+  { id: 'dateOldNew', label: 'Date, ancien au récent' },
+  { id: 'dateNewOld', label: 'Date, récent à l\'ancien' }
 ];
 
 export const PRICE_RANGES: readonly PriceRange[] = [

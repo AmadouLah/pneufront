@@ -1,0 +1,95 @@
+{
+  "COMMON": {
+    "SEARCH": "Search",
+    "CART": "Cart",
+    "HOME": "Home",
+    "SHOP": "Shop",
+    "BRANDS": "Brands",
+    "ABOUT": "About",
+    "BLOG": "Blog",
+    "CONTACT": "Contact",
+    "PROFILE": "Profile",
+    "LOGOUT": "Logout",
+    "LOGIN": "Login",
+    "LOADING": "Loading...",
+    "PRODUCTS": "Products",
+    "PRODUCT": "product",
+    "APPLY": "Apply",
+    "RESET": "Reset",
+    "CLEAR_ALL": "Clear all",
+    "FILTER": "Filter",
+    "SORT": "Sort by",
+    "ADD_TO_CART": "Add to cart",
+    "FROM_PRICE": "From",
+    "NO_RESULTS": "No products match your filters.",
+    "LOADING_PRODUCTS": "Loading products...",
+    "WELCOME": "Welcome",
+    "DESIGNED_BY": "Designed by",
+    "COPYRIGHT": "© {{year}}, Pneu Mali",
+    "TERMS": "Terms & Conditions",
+    "PRIVACY": "Privacy Policy",
+    "DELIVERY": "Delivery & Returns"
+  },
+  "HEADER": {
+    "NAV": {
+      "HOME": "HOME",
+      "SHOP": "SHOP",
+      "BRANDS": "BRANDS",
+      "ABOUT": "ABOUT",
+      "BLOG": "BLOG",
+      "CONTACT": "CONTACT",
+      "SEARCH": "SEARCH"
+    },
+    "USER_MENU": {
+      "DASHBOARD": "Dashboard",
+      "PROFILE": "Profile",
+      "SETTINGS": "Settings",
+      "LOGOUT": "Logout"
+    },
+    "SEARCH_PLACEHOLDER": "Search",
+    "SEARCH_HINT": "Type at least two characters to search our catalog."
+  },
+  "HOME": {
+    "HERO_TITLE": "Browse our shop",
+    "HERO_CTA": "SHOP",
+    "SEARCH_BY_SIZE": "Search by size",
+    "WIDTH": "Width",
+    "PROFILE": "Profile",
+    "DIAMETER": "Diameter",
+    "SEARCH": "Search",
+    "POPULAR": "Popular",
+    "FROM_PRICE": "From 50,000 FCFA",
+    "VIEW_OPTIONS": "View Options",
+    "SEE_ALL": "See all →",
+    "NEWSLETTER_TITLE": "SUBSCRIBE FOR DISCOUNTS",
+    "NEWSLETTER_DESC": "Be the first to know about new collections and exclusive offers.",
+    "NEWSLETTER_EMAIL": "Email"
+  },
+  "SHOP": {
+    "TITLE": "Products",
+    "FILTER_AND_SORT": "Filter and sort",
+    "SORT_OPTIONS": {
+      "FEATURED": "Featured",
+      "BEST_SELLING": "Best selling",
+      "ALPHABETICAL_AZ": "Alphabetically, A-Z",
+      "ALPHABETICAL_ZA": "Alphabetically, Z-A",
+      "PRICE_LOW_HIGH": "Price, low to high",
+      "PRICE_HIGH_LOW": "Price, high to low",
+      "DATE_OLD_NEW": "Date, old to new",
+      "DATE_NEW_OLD": "Date, new to old"
+    },
+    "FILTERS": {
+      "BRAND": "Brand",
+      "PRICE": "Price",
+      "WIDTH": "Width",
+      "PROFILE": "Profile",
+      "DIAMETER": "Diameter"
+    }
+  },
+  "FOOTER": {
+    "LANGUAGE": "Language",
+    "FRENCH": "French",
+    "ENGLISH": "English"
+  }
+}
+

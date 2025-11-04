@@ -10,21 +10,21 @@ export type Differentiator = {
 
 const DEFAULT_DIFFERENTIATORS: Differentiator[] = [
   {
-    title: 'Our Mission',
+    title: 'Notre Mission',
     description:
       'Révolutionner le marché malien du pneu en ligne en offrant une expérience e-commerce fluide. Nous proposons une large gamme de pneus premium à des tarifs compétitifs et un service client irréprochable tout en soutenant des initiatives locales.',
     icon: '/assets/img/targeting-2.avif',
     alt: 'Icône mission'
   },
   {
-    title: 'Our Vision',
+    title: 'Notre Vision',
     description:
       'Devenir la référence digitale du pneu au Mali grâce à une sélection complète, des prix justes et un engagement constant pour la qualité et l’innovation. Nous voulons instaurer un modèle responsable en lien étroit avec nos clients et partenaires.',
     icon: '/assets/img/binoculars.avif',
     alt: 'Icône vision'
   },
   {
-    title: 'Our Promise',
+    title: 'Notre Promesse',
     description:
       'Nous savons combien votre véhicule est essentiel. Nous le traitons avec le plus grand soin grâce à des technologies avancées d’alignement, de permutation et de montage pour garantir des performances optimales et une sécurité maximale.',
     icon: '/assets/img/handshake-3.avif',

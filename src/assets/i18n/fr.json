@@ -1,0 +1,95 @@
+{
+  "COMMON": {
+    "SEARCH": "Recherche",
+    "CART": "Panier",
+    "HOME": "Accueil",
+    "SHOP": "Boutique",
+    "BRANDS": "Marques",
+    "ABOUT": "À propos",
+    "BLOG": "Blog",
+    "CONTACT": "Contact",
+    "PROFILE": "Profil",
+    "LOGOUT": "Déconnexion",
+    "LOGIN": "Se connecter",
+    "LOADING": "Chargement...",
+    "PRODUCTS": "Produits",
+    "PRODUCT": "produit",
+    "APPLY": "Appliquer",
+    "RESET": "Réinitialiser",
+    "CLEAR_ALL": "Tout supprimer",
+    "FILTER": "Filtrer",
+    "SORT": "Trier par",
+    "ADD_TO_CART": "Ajouter au panier",
+    "FROM_PRICE": "À partir de",
+    "NO_RESULTS": "Aucun produit ne correspond à vos filtres.",
+    "LOADING_PRODUCTS": "Chargement des produits...",
+    "WELCOME": "Bienvenue",
+    "DESIGNED_BY": "Conçu par",
+    "COPYRIGHT": "© {{year}}, Pneu Mali",
+    "TERMS": "Conditions Générales",
+    "PRIVACY": "Politique de Confidentialité",
+    "DELIVERY": "Livraison & Retours"
+  },
+  "HEADER": {
+    "NAV": {
+      "HOME": "ACCUEIL",
+      "SHOP": "BOUTIQUE",
+      "BRANDS": "MARQUES",
+      "ABOUT": "À PROPOS",
+      "BLOG": "BLOG",
+      "CONTACT": "CONTACT",
+      "SEARCH": "RECHERCHE"
+    },
+    "USER_MENU": {
+      "DASHBOARD": "Tableau de bord",
+      "PROFILE": "Profil",
+      "SETTINGS": "Paramètres",
+      "LOGOUT": "Déconnexion"
+    },
+    "SEARCH_PLACEHOLDER": "Rechercher",
+    "SEARCH_HINT": "Tapez au moins deux caractères pour lancer une recherche dans notre catalogue."
+  },
+  "HOME": {
+    "HERO_TITLE": "Parcourez notre boutique",
+    "HERO_CTA": "BOUTIQUE",
+    "SEARCH_BY_SIZE": "Rechercher par taille",
+    "WIDTH": "Largeur",
+    "PROFILE": "Profil",
+    "DIAMETER": "Diamètre",
+    "SEARCH": "Rechercher",
+    "POPULAR": "Populaires",
+    "FROM_PRICE": "À partir de 50,000 FCFA",
+    "VIEW_OPTIONS": "Voir Options",
+    "SEE_ALL": "Voir tout →",
+    "NEWSLETTER_TITLE": "ABONNEZ-VOUS POUR DES RÉDUCTIONS",
+    "NEWSLETTER_DESC": "Soyez le premier à connaître les nouvelles collections et les offres exclusives.",
+    "NEWSLETTER_EMAIL": "Email"
+  },
+  "SHOP": {
+    "TITLE": "Produits",
+    "FILTER_AND_SORT": "Filtrer et trier",
+    "SORT_OPTIONS": {
+      "FEATURED": "En vedette",
+      "BEST_SELLING": "Meilleures ventes",
+      "ALPHABETICAL_AZ": "Alphabétique, A-Z",
+      "ALPHABETICAL_ZA": "Alphabétique, Z-A",
+      "PRICE_LOW_HIGH": "Prix, croissant",
+      "PRICE_HIGH_LOW": "Prix, décroissant",
+      "DATE_OLD_NEW": "Date, ancien au récent",
+      "DATE_NEW_OLD": "Date, récent à l'ancien"
+    },
+    "FILTERS": {
+      "BRAND": "Marque",
+      "PRICE": "Prix",
+      "WIDTH": "Largeur",
+      "PROFILE": "Profil",
+      "DIAMETER": "Diamètre"
+    }
+  },
+  "FOOTER": {
+    "LANGUAGE": "Langue",
+    "FRENCH": "Français",
+    "ENGLISH": "Anglais"
+  }
+}
+

@@ -110,6 +110,10 @@ export const routes: Routes = [
       {
         path: 'brands',
         loadComponent: () => import('./backoffice/brands/brands').then(m => m.BrandsComponent)
+      },
+      {
+        path: 'tire-conditions',
+        loadComponent: () => import('./backoffice/tire-conditions/tire-conditions').then(m => m.TireConditionsComponent)
       }
     ]
   },
