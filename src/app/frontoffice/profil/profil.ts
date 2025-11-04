@@ -151,23 +151,31 @@ export class ProfilComponent implements OnInit {
     if (this.editForm.invalid) return;
 
     const formData = this.editForm.value;
-    const emailChanged = formData.email !== this.originalEmail;
+    const emailChanged = formData.email?.trim() && formData.email.trim() !== this.originalEmail;
 
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    // Toujours envoyer tous les champs pour garantir la mise à jour complète
-    const updateData = {
-      firstName: formData.firstName?.trim() || '',
-      lastName: formData.lastName?.trim() || '',
-      email: formData.email?.trim() || this.originalEmail
-    };
+    // Construire l'objet de mise à jour en ne conservant que les champs non vides
+    const updateData: any = {};
+    
+    if (formData.firstName?.trim()) {
+      updateData.firstName = formData.firstName.trim();
+    }
+    
+    if (formData.lastName?.trim()) {
+      updateData.lastName = formData.lastName.trim();
+    }
+    
+    if (formData.email?.trim()) {
+      updateData.email = formData.email.trim();
+    }
 
     this.http.put(`${environment.apiUrl}/users/profile`, updateData).subscribe({
       next: (response: any) => {
         this.isLoading.set(false);
         
-        if (emailChanged) {
+        if (emailChanged && response.user) {
           // Si l'email change, ouvrir le modal de vérification
           this.closeEditModal();
           this.showVerifyModal.set(true);
@@ -177,8 +185,8 @@ export class ProfilComponent implements OnInit {
             const updatedUserInfo = {
               id: response.user.id,
               email: response.user.email,
-              firstName: response.user.firstName,
-              lastName: response.user.lastName,
+              firstName: response.user.firstName || '',
+              lastName: response.user.lastName || '',
               role: response.user.role
             };
             
@@ -195,7 +203,7 @@ export class ProfilComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading.set(false);
-        this.errorMessage.set(error.error?.message || 'Erreur lors de la mise à jour');
+        this.errorMessage.set(this.extractErrorMessage(error, 'Erreur lors de la mise à jour'));
       }
     });
   }
@@ -239,7 +247,7 @@ export class ProfilComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading.set(false);
-        this.errorMessage.set(error.error?.message || 'Code invalide');
+        this.errorMessage.set(this.extractErrorMessage(error, 'Code invalide'));
       }
     });
   }
@@ -258,7 +266,7 @@ export class ProfilComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading.set(false);
-        this.errorMessage.set(error.error?.message || 'Erreur lors de l\'envoi du code');
+        this.errorMessage.set(this.extractErrorMessage(error, 'Erreur lors de l\'envoi du code'));
       }
     });
   }
@@ -347,7 +355,7 @@ export class ProfilComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading.set(false);
-        this.errorMessage.set(error.error?.message || 'Erreur lors de la suppression de l\'adresse');
+        this.errorMessage.set(this.extractErrorMessage(error, 'Erreur lors de la suppression de l\'adresse'));
       }
     });
   }
@@ -402,7 +410,7 @@ export class ProfilComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading.set(false);
-        this.errorMessage.set(error.error?.message || 'Erreur lors de l\'enregistrement de l\'adresse');
+        this.errorMessage.set(this.extractErrorMessage(error, 'Erreur lors de l\'enregistrement de l\'adresse'));
       }
     });
   }
@@ -413,6 +421,14 @@ export class ProfilComponent implements OnInit {
   isFieldInvalid(fieldName: string): boolean {
     const field = this.addressForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
+  }
+
+  /**
+   * Extrait le message d'erreur depuis la réponse d'erreur HTTP
+   * Gère à la fois les réponses ErrorResponse et les anciennes réponses Map
+   */
+  private extractErrorMessage(error: any, defaultMessage: string): string {
+    return error?.error?.message || error?.error?.error || defaultMessage;
   }
 }
 
