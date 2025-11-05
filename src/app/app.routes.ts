@@ -122,6 +122,10 @@ export const routes: Routes = [
       {
         path: 'influenceurs',
         loadComponent: () => import('./backoffice/influenceurs/influenceurs').then(m => m.InfluenceursComponent)
+      },
+      {
+        path: 'promotions',
+        loadComponent: () => import('./backoffice/promotions/promotions').then(m => m.PromotionsComponent)
       }
     ]
   },
