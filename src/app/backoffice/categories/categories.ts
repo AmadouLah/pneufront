@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
 import { FormHelperService } from '../../shared/services/form-helper.service';
@@ -15,7 +15,7 @@ interface Category {
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './categories.html',
   styleUrls: ['./categories.css']
 })
@@ -25,9 +25,11 @@ export class CategoriesComponent implements OnInit {
   readonly formHelper = inject(FormHelperService);
 
   categories = signal<Category[]>([]);
+  filteredCategories = signal<Category[]>([]);
   isLoading = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
+  searchTerm = signal('');
   
   showModal = signal(false);
   isEditMode = signal(false);
@@ -54,14 +56,40 @@ export class CategoriesComponent implements OnInit {
     this.http.get<Category[]>(`${environment.apiUrl}/categories`).subscribe({
       next: (categories) => {
         this.categories.set(categories);
+        this.applySearchFilter();
         this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Erreur lors du chargement des catégories:', error);
         this.categories.set([]);
+        this.filteredCategories.set([]);
         this.isLoading.set(false);
       }
     });
+  }
+
+  /**
+   * Applique le filtre de recherche
+   */
+  private applySearchFilter(): void {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) {
+      this.filteredCategories.set(this.categories());
+      return;
+    }
+    const filtered = this.categories().filter(category =>
+      category.name.toLowerCase().includes(term) ||
+      (category.description && category.description.toLowerCase().includes(term))
+    );
+    this.filteredCategories.set(filtered);
+  }
+
+  /**
+   * Gère le changement de recherche
+   */
+  onSearchChange(value: string): void {
+    this.searchTerm.set(value);
+    this.applySearchFilter();
   }
 
   /**

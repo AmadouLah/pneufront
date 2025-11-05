@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
 import { FormHelperService } from '../../shared/services/form-helper.service';
@@ -14,7 +14,7 @@ interface Brand {
 @Component({
   selector: 'app-brands',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './brands.html',
   styleUrls: ['./brands.css']
 })
@@ -24,9 +24,11 @@ export class BrandsComponent implements OnInit {
   readonly formHelper = inject(FormHelperService);
 
   brands = signal<Brand[]>([]);
+  filteredBrands = signal<Brand[]>([]);
   isLoading = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
+  searchTerm = signal('');
   
   showModal = signal(false);
   isEditMode = signal(false);
@@ -52,14 +54,39 @@ export class BrandsComponent implements OnInit {
     this.http.get<Brand[]>(`${environment.apiUrl}/brands`).subscribe({
       next: (brands) => {
         this.brands.set(brands);
+        this.applySearchFilter();
         this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Erreur lors du chargement des marques:', error);
         this.brands.set([]);
+        this.filteredBrands.set([]);
         this.isLoading.set(false);
       }
     });
+  }
+
+  /**
+   * Applique le filtre de recherche
+   */
+  private applySearchFilter(): void {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) {
+      this.filteredBrands.set(this.brands());
+      return;
+    }
+    const filtered = this.brands().filter(brand =>
+      brand.name.toLowerCase().includes(term)
+    );
+    this.filteredBrands.set(filtered);
+  }
+
+  /**
+   * Gère le changement de recherche
+   */
+  onSearchChange(value: string): void {
+    this.searchTerm.set(value);
+    this.applySearchFilter();
   }
 
   /**

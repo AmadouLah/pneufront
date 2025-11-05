@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
 import { FormHelperService } from '../../shared/services/form-helper.service';
@@ -20,7 +20,7 @@ interface Influenceur {
 @Component({
   selector: 'app-influenceurs',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './influenceurs.html',
   styleUrls: ['./influenceurs.css']
 })
@@ -30,9 +30,11 @@ export class InfluenceursComponent implements OnInit {
   readonly formHelper = inject(FormHelperService);
 
   influenceurs = signal<Influenceur[]>([]);
+  filteredInfluenceurs = signal<Influenceur[]>([]);
   isLoading = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
+  searchTerm = signal('');
   
   showModal = signal(false);
   influenceurForm: FormGroup;
@@ -56,16 +58,43 @@ export class InfluenceursComponent implements OnInit {
     this.http.get<Influenceur[]>(`${environment.apiUrl}/admin/influenceurs`).subscribe({
       next: (influenceurs) => {
         this.influenceurs.set(influenceurs);
+        this.applySearchFilter();
         this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Erreur lors du chargement des influenceurs:', error);
         this.influenceurs.set([]);
+        this.filteredInfluenceurs.set([]);
         this.isLoading.set(false);
         this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Erreur lors du chargement'));
         setTimeout(() => this.errorMessage.set(''), 5000);
       }
     });
+  }
+
+  /**
+   * Applique le filtre de recherche
+   */
+  private applySearchFilter(): void {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) {
+      this.filteredInfluenceurs.set(this.influenceurs());
+      return;
+    }
+    const filtered = this.influenceurs().filter(influenceur =>
+      influenceur.user.firstName.toLowerCase().includes(term) ||
+      influenceur.user.lastName.toLowerCase().includes(term) ||
+      influenceur.user.email.toLowerCase().includes(term)
+    );
+    this.filteredInfluenceurs.set(filtered);
+  }
+
+  /**
+   * Gère le changement de recherche
+   */
+  onSearchChange(value: string): void {
+    this.searchTerm.set(value);
+    this.applySearchFilter();
   }
 
   openCreateModal(): void {
