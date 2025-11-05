@@ -24,6 +24,13 @@ export type ResetPasswordRequest = Readonly<{
   confirmPassword: string;
 }>;
 
+export type SetInitialPasswordRequest = Readonly<{
+  email: string;
+  token: string;
+  password: string;
+  confirmPassword: string;
+}>;
+
 export type RefreshTokenRequest = Readonly<{ refreshToken: string }>;
 
 export type StartLoginResponse = Readonly<{

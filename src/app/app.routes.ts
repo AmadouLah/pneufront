@@ -43,6 +43,10 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/verify/verify').then(m => m.VerifyComponent),
     canActivate: [loginGuard]
   },
+  {
+    path: 'auth/set-password',
+    loadComponent: () => import('./auth/set-password/set-password').then(m => m.SetPasswordComponent)
+  },
   
   // Frontoffice Routes
   {

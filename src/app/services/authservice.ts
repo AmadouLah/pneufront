@@ -11,6 +11,7 @@ import {
   ResendVerificationRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
+  SetInitialPasswordRequest,
   RefreshTokenRequest,
   MessageResponse,
   StartLoginResponse,
@@ -109,6 +110,15 @@ export class Authservice {
    */
   forgotPasswordConfirm(payload: ResetPasswordRequest): Observable<MessageResponse> {
     return this.http.post<MessageResponse>(`${this.baseUrl}/forgot-password/confirm`, payload)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Définit le mot de passe initial avec le token reçu par email
+   * @param payload Email + token + mot de passe
+   */
+  setInitialPassword(payload: SetInitialPasswordRequest): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(`${this.baseUrl}/set-initial-password`, payload)
       .pipe(catchError(this.handleError));
   }
 
