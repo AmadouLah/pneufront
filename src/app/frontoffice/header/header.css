@@ -15,6 +15,39 @@ header .container > div {
   position: relative;
 }
 
+/* Grid layout pour garantir le centrage du logo */
+.header-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-grid__left {
+  display: flex;
+  justify-content: flex-start;
+  overflow: visible !important;
+}
+
+.header-grid__center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-grid__right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .header-grid__right {
+    gap: 0.75rem;
+  }
+}
+
 /* Ajustement pour que la ligne secondaire ne chevauche pas le logo */
 header .container > nav:last-of-type {
   margin-top: 0;

@@ -4,7 +4,7 @@ import { inject } from '@angular/core';
 
 /**
  * Guard pour protéger les routes d'administration
- * Autorise l'accès aux ADMIN et DEVELOPER uniquement
+ * Autorise l'accès aux ADMIN, DEVELOPER et INFLUENCEUR
  */
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(Authservice);
@@ -15,7 +15,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
     return router.createUrlTree(['/auth/login']);
   }
   
-  const rolesAutorises = ['ADMIN', 'DEVELOPER'];
+  const rolesAutorises = ['ADMIN', 'DEVELOPER', 'INFLUENCEUR'];
   return rolesAutorises.includes(user.role)
     ? true
     : router.createUrlTree(['/']);

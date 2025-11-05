@@ -114,6 +114,10 @@ export const routes: Routes = [
       {
         path: 'tire-conditions',
         loadComponent: () => import('./backoffice/tire-conditions/tire-conditions').then(m => m.TireConditionsComponent)
+      },
+      {
+        path: 'influenceurs',
+        loadComponent: () => import('./backoffice/influenceurs/influenceurs').then(m => m.InfluenceursComponent)
       }
     ]
   },

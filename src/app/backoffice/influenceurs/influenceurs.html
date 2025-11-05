@@ -1,0 +1,281 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-white">Gestion des influenceurs</h1>
+    <button
+      (click)="openCreateModal()"
+      class="px-4 py-2 bg-primary text-black font-semibold rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4"
+        />
+      </svg>
+      Créer un influenceur
+    </button>
+  </div>
+
+  <!-- Messages -->
+  @if (successMessage()) {
+  <div
+    class="mb-4 p-4 bg-green-900/50 border border-green-500 rounded-lg text-green-400"
+  >
+    {{ successMessage() }}
+  </div>
+  } @if (errorMessage()) {
+  <div
+    class="mb-4 p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-400"
+  >
+    {{ errorMessage() }}
+  </div>
+  }
+
+  <!-- Main Card -->
+  <div class="bg-gray-900 rounded-xl shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-700">
+        <thead class="bg-gray-800">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Nom complet
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Email
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Taux de commission
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Statut
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-gray-900 divide-y divide-gray-800">
+          @if (isLoading() && influenceurs().length === 0) {
+          <tr>
+            <td colspan="4" class="text-center py-4 text-gray-400">
+              <div class="flex items-center justify-center gap-2">
+                <svg
+                  class="animate-spin h-5 w-5 text-primary"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Chargement des influenceurs...
+              </div>
+            </td>
+          </tr>
+          } @else if (influenceurs().length === 0) {
+          <tr>
+            <td colspan="4" class="text-center py-8 text-gray-400">
+              Aucun influenceur trouvé.
+            </td>
+          </tr>
+          } @else { @for (influenceur of influenceurs(); track influenceur.id) {
+          <tr class="hover:bg-gray-800">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-white">
+                {{ influenceur.user.firstName }} {{ influenceur.user.lastName }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-300">
+                {{ influenceur.user.email }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-white">
+                {{ influenceur.commissionRate }}%
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                [ngClass]="{
+                  'bg-green-900/50 text-green-400 border border-green-500': influenceur.user.enabled,
+                  'bg-orange-900/50 text-orange-400 border border-orange-500': !influenceur.user.enabled
+                }"
+              >
+                {{ influenceur.user.enabled ? 'Actif' : 'En attente' }}
+              </span>
+            </td>
+          </tr>
+          } }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Influenceur Modal -->
+  @if (showModal()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    (click)="closeModal()"
+  >
+    <div
+      class="bg-gray-900 rounded-xl shadow-xl w-full max-w-md p-6"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="text-2xl font-bold text-white mb-6">Créer un influenceur</h2>
+
+      @if (errorMessage()) {
+      <div
+        class="mb-4 p-3 bg-red-900/50 border border-red-500 rounded-lg text-red-400"
+      >
+        {{ errorMessage() }}
+      </div>
+      }
+
+      <form
+        [formGroup]="influenceurForm"
+        (ngSubmit)="submitInfluenceur()"
+        class="space-y-4"
+      >
+        <!-- Prénom -->
+        <div>
+          <label
+            for="firstName"
+            class="block text-sm font-medium text-gray-300 mb-1"
+            >Prénom *</label
+          >
+          <input
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            [class.border-red-500]="formHelper.hasFieldError('firstName', influenceurForm)"
+            placeholder="Prénom de l'influenceur"
+          />
+          @if (formHelper.hasFieldError('firstName', influenceurForm)) {
+          <p class="text-red-500 text-xs mt-1">
+            {{ formHelper.getFieldError('firstName', influenceurForm) }}
+          </p>
+          }
+        </div>
+
+        <!-- Nom -->
+        <div>
+          <label
+            for="lastName"
+            class="block text-sm font-medium text-gray-300 mb-1"
+            >Nom *</label
+          >
+          <input
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            [class.border-red-500]="formHelper.hasFieldError('lastName', influenceurForm)"
+            placeholder="Nom de l'influenceur"
+          />
+          @if (formHelper.hasFieldError('lastName', influenceurForm)) {
+          <p class="text-red-500 text-xs mt-1">
+            {{ formHelper.getFieldError('lastName', influenceurForm) }}
+          </p>
+          }
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label
+            for="email"
+            class="block text-sm font-medium text-gray-300 mb-1"
+            >Email *</label
+          >
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            [class.border-red-500]="formHelper.hasFieldError('email', influenceurForm)"
+            placeholder="email@example.com"
+          />
+          @if (formHelper.hasFieldError('email', influenceurForm)) {
+          <p class="text-red-500 text-xs mt-1">
+            {{ formHelper.getFieldError('email', influenceurForm) }}
+          </p>
+          }
+        </div>
+
+        <!-- Taux de commission -->
+        <div>
+          <label
+            for="commissionRate"
+            class="block text-sm font-medium text-gray-300 mb-1"
+            >Taux de commission (%) *</label
+          >
+          <input
+            type="number"
+            id="commissionRate"
+            formControlName="commissionRate"
+            step="0.01"
+            min="0.01"
+            max="100"
+            class="w-full px-4 py-3 bg-neutral-soft border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            [class.border-red-500]="formHelper.hasFieldError('commissionRate', influenceurForm)"
+            placeholder="5.00"
+          />
+          @if (formHelper.hasFieldError('commissionRate', influenceurForm)) {
+          <p class="text-red-500 text-xs mt-1">
+            {{ formHelper.getFieldError('commissionRate', influenceurForm) }}
+          </p>
+          }
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-800">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-6 py-3 bg-gray-800 border border-gray-700 text-gray-300 font-semibold rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            Annuler
+          </button>
+          <button
+            type="submit"
+            [disabled]="isLoading() || influenceurForm.invalid"
+            class="px-6 py-3 bg-primary text-black font-semibold rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            @if (isLoading()) {
+            <span class="flex items-center gap-2">
+              <span
+                class="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-current"
+              ></span>
+              Création...
+            </span>
+            } @else { Créer }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+</div>

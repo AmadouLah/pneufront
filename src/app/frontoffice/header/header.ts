@@ -105,13 +105,13 @@ export class HeaderComponent implements OnInit {
   }
 
   /**
-   * Vérifie si l'utilisateur connecté est un administrateur ou développeur
-   * @returns true si ADMIN ou DEVELOPER, false sinon
+   * Vérifie si l'utilisateur connecté est un administrateur, développeur ou influenceur
+   * @returns true si ADMIN, DEVELOPER ou INFLUENCEUR, false sinon
    */
   isAdminOrDeveloper(): boolean {
     const user = this.getUserInfo();
     if (!user?.role) return false;
-    return user.role === 'ADMIN' || user.role === 'DEVELOPER';
+    return user.role === 'ADMIN' || user.role === 'DEVELOPER' || user.role === 'INFLUENCEUR';
   }
 
   /**

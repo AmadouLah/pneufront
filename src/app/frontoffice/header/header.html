@@ -86,11 +86,11 @@
 
     <!-- Desktop Navigation -->
     <div class="hidden lg:block">
-      <div class="flex items-center justify-between h-20 relative">
+      <div class="header-grid h-20">
         <!-- Left Navigation -->
-        <nav class="flex flex-1 relative min-w-0">
+        <nav class="header-grid__left">
           <ul
-            class="flex items-center gap-2 lg:gap-3 xl:gap-4 2xl:gap-5 text-white text-xs lg:text-sm font-medium relative flex-wrap"
+            class="flex items-center gap-2 lg:gap-3 xl:gap-4 2xl:gap-5 text-white text-xs lg:text-sm font-medium flex-wrap"
           >
             <li class="flex-shrink-0">
               <a
@@ -180,13 +180,8 @@
         </nav>
 
         <!-- Center Logo -->
-        <div
-          class="absolute left-1/2 transform -translate-x-1/2 z-40 pointer-events-none px-2"
-        >
-          <a
-            routerLink="/"
-            class="flex items-center app-logo-wrap pointer-events-auto"
-          >
+        <div class="header-grid__center">
+          <a routerLink="/" class="flex items-center app-logo-wrap">
             <img
               src="/assets/img/logoPneuMali.png"
               alt="PneuMali"
@@ -196,9 +191,7 @@
         </div>
 
         <!-- Right Icons -->
-        <div
-          class="flex items-center gap-2 lg:gap-3 flex-1 justify-end min-w-0"
-        >
+        <div class="header-grid__right">
           <!-- Search Icon -->
           <button
             (click)="toggleSearch()"
