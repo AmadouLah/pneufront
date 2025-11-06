@@ -1,8 +1,8 @@
-const defaultFormatter = new Intl.NumberFormat('en-ZA', {
+const defaultFormatter = new Intl.NumberFormat('fr-FR', {
   style: 'currency',
-  currency: 'ZAR',
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
+  currency: 'XOF',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
 });
 
 export function formatCurrency(value: number): string {

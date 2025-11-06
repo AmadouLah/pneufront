@@ -100,6 +100,66 @@
               <span>Sous-total</span>
               <strong>{{ formatPrice(subtotal()) }}</strong>
             </div>
+
+            <!-- Code promo -->
+            <div class="cart-promo">
+              @if (promoCode()) {
+              <div class="cart-promo__applied">
+                <div class="cart-promo__code">
+                  <span>Code: {{ promoCode() }}</span>
+                  <button
+                    type="button"
+                    class="cart-promo__remove"
+                    (click)="removePromoCode()"
+                    aria-label="Retirer le code promo"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div class="cart-summary__row">
+                  <span>Réduction</span>
+                  <strong class="cart-discount"
+                    >-{{ formatPrice(discountAmount()) }}</strong
+                  >
+                </div>
+              </div>
+              } @else {
+              <div class="cart-promo__input">
+                <input
+                  type="text"
+                  [value]="promoCodeInput()"
+                  (input)="promoCodeInput.set($any($event.target).value)"
+                  (keydown.enter)="applyPromoCode()"
+                  class="cart-promo__field"
+                  placeholder="Code promo"
+                  [disabled]="isApplyingPromo()"
+                />
+                <button
+                  type="button"
+                  class="cart-promo__apply"
+                  (click)="applyPromoCode()"
+                  [disabled]="isApplyingPromo() || !promoCodeInput().trim()"
+                >
+                  @if (isApplyingPromo()) {
+                  <span class="cart-promo__spinner"></span>
+                  } @else { Appliquer }
+                </button>
+              </div>
+              } @if (promoMessage()) {
+              <div
+                class="cart-promo__message"
+                [class.cart-promo__message--success]="promoMessage()?.type === 'success'"
+                [class.cart-promo__message--error]="promoMessage()?.type === 'error'"
+              >
+                {{ promoMessage()?.text }}
+              </div>
+              }
+            </div>
+
+            <div class="cart-summary__row cart-summary__total">
+              <span>Total</span>
+              <strong>{{ formatPrice(total()) }}</strong>
+            </div>
             <p class="cart-summary__note">
               Les taxes et frais de livraison seront calculés lors de la
               finalisation de la commande.

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
 import { Chart, registerables } from 'chart.js';
+import { formatCurrency as formatCurrencyUtil } from '../../shared/utils/currency';
 
 // Enregistrer tous les composants Chart.js
 Chart.register(...registerables);
@@ -319,10 +320,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
    * Formate un nombre en devise
    */
   formatCurrency(value: number): string {
-    if (value >= 1000) {
-      return `$${(value / 1000).toFixed(1)}k`;
-    }
-    return `$${value}`;
+    return formatCurrencyUtil(value);
   }
 
   /**

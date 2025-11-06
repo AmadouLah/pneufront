@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environment';
 import { FormHelperService } from '../../shared/services/form-helper.service';
+import { formatCurrency } from '../../shared/utils/currency';
 
 interface Product {
   id: number;
@@ -621,11 +622,7 @@ export class ProductsComponent implements OnInit {
    * Formate le prix
    */
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'XOF',
-      minimumFractionDigits: 0
-    }).format(price);
+    return formatCurrency(price);
   }
 
   /**
