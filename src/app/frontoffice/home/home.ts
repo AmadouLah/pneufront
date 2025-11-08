@@ -7,10 +7,19 @@ import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
 import { DifferentiatorsComponent } from '../../shared/differentiators/differentiators';
 import { environment } from '../../environment';
+import { formatCurrency } from '../../shared/utils/currency';
 
 interface TireDimension {
   id: number;
   value: number;
+}
+
+interface ProductPreview {
+  id: number;
+  name: string;
+  price: number;
+  imageUrl: string | null;
+  category?: { id: number; name: string };
 }
 
 @Component({
@@ -30,30 +39,10 @@ export class HomeComponent implements OnInit {
   readonly widths = signal<TireDimension[]>([]);
   readonly profiles = signal<TireDimension[]>([]);
   readonly diameters = signal<TireDimension[]>([]);
-  /**
-   * Catégories de pneus
-   */
-  categories = [
-    {
-      title: 'Pneus Voiture',
-      description: 'Large gamme de pneus pour véhicules légers',
-      icon: 'M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z',
-      path: '/shop/auto'
-    },
-    {
-      title: 'Pneus 4x4 & SUV',
-      description: 'Pneus robustes pour tous les terrains',
-      icon: 'M8 17a2 2 0 11-4 0 2 2 0 014 0zM20 17a2 2 0 11-4 0 2 2 0 014 0z',
-      path: '/shop/4x4'
-    },
-    {
-      title: 'Pneus Moto',
-      description: 'Performance et sécurité maximales',
-      icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
-      path: '/shop/moto'
-    }
-  ];
 
+  readonly latestProducts = signal<ProductPreview[]>([]);
+  readonly isLoadingLatest = signal(false);
+  readonly latestError = signal('');
   /**
    * Marques populaires (exemples)
    */
@@ -67,6 +56,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDimensions();
+    this.loadLatestProducts();
   }
 
   /**
@@ -87,6 +77,30 @@ export class HomeComponent implements OnInit {
       next: (diameters) => this.diameters.set(diameters),
       error: () => this.diameters.set([])
     });
+  }
+
+  /**
+   * Charge les derniers pneus ajoutés
+   */
+  private loadLatestProducts(): void {
+    this.isLoadingLatest.set(true);
+    this.latestError.set('');
+
+    this.http
+      .get<ProductPreview[]>(`${environment.apiUrl}/products/latest`, {
+        params: { limit: 3 }
+      })
+      .subscribe({
+        next: (products) => {
+          this.latestProducts.set(products ?? []);
+          this.isLoadingLatest.set(false);
+        },
+        error: () => {
+          this.latestProducts.set([]);
+          this.latestError.set('Impossible de charger les produits les plus récents pour le moment.');
+          this.isLoadingLatest.set(false);
+        }
+      });
   }
 
   /**
@@ -135,6 +149,13 @@ export class HomeComponent implements OnInit {
   onDiameterChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     this.selectedDiameter.set(select.value);
+  }
+
+  formatPrice(value: number | null | undefined): string {
+    if (typeof value !== 'number') {
+      return '-';
+    }
+    return formatCurrency(value);
   }
 }
 

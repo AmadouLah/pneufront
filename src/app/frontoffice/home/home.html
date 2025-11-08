@@ -47,18 +47,20 @@
     <section class="bg-black py-8 lg:py-12">
       <div class="px-6">
         <div
-          class="border-2 border-primary rounded-lg p-6 lg:p-8 max-w-4xl mx-auto"
+          class="max-w-4xl mx-auto bg-gray-900/75 border border-gray-800 rounded-2xl px-6 py-8 lg:px-10 lg:py-9"
         >
-          <h3
-            class="text-primary text-lg lg:text-xl font-semibold mb-4 lg:mb-6 text-center lg:text-left"
-          >
+          <h3 class="text-white text-xl lg:text-2xl font-semibold mb-2">
             Rechercher par taille
           </h3>
+          <p class="text-gray-400 text-sm lg:text-base mb-6">
+            Choisissez vos dimensions pour filtrer rapidement les pneus
+            compatibles.
+          </p>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <select
               [value]="selectedWidth()"
               (change)="onWidthChange($event)"
-              class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
+              class="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
             >
               <option value="" disabled>Largeur</option>
               @for (width of widths(); track width.id) {
@@ -68,7 +70,7 @@
             <select
               [value]="selectedProfile()"
               (change)="onProfileChange($event)"
-              class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
+              class="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
             >
               <option value="" disabled>Profil</option>
               @for (profile of profiles(); track profile.id) {
@@ -78,7 +80,7 @@
             <select
               [value]="selectedDiameter()"
               (change)="onDiameterChange($event)"
-              class="select select-bordered bg-black text-white border-gray-700 focus:border-primary w-full"
+              class="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
             >
               <option value="" disabled>Diamètre</option>
               @for (diameter of diameters(); track diameter.id) {
@@ -87,7 +89,7 @@
             </select>
             <button
               (click)="searchBySize()"
-              class="btn bg-primary hover:bg-cyan-400 text-black border-none font-bold"
+              class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary hover:bg-cyan-400 text-black font-semibold transition-colors shadow-sm"
             >
               Rechercher
             </button>
@@ -96,57 +98,85 @@
       </div>
     </section>
 
-    <!-- Popular Products Section -->
+    <!-- Latest Products Section -->
     <section class="bg-black py-8 lg:py-16">
       <div class="container mx-auto px-6">
         <h2
           class="text-3xl lg:text-4xl font-bold text-white text-center mb-8 lg:mb-12"
         >
-          Populaires
+          Nouveautés
         </h2>
+
+        @if (isLoadingLatest()) {
         <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"
+          class="py-12 flex flex-col items-center justify-center text-gray-400"
         >
-          @for (category of categories; track category.title) {
           <div
-            class="bg-gray-900 rounded-lg overflow-hidden hover:shadow-xl hover:shadow-primary/20 transition-all hover:-translate-y-2 border border-gray-800"
+            class="inline-block animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"
+          ></div>
+          <p class="mt-4">Chargement des nouveautés...</p>
+        </div>
+        } @else if (latestError()) {
+        <p class="text-center text-red-400">{{ latestError() }}</p>
+        } @else if (latestProducts().length === 0) {
+        <p class="text-center text-gray-400">
+          Aucun pneu n'a encore été ajouté. Revenez bientôt pour découvrir nos
+          nouveautés.
+        </p>
+        } @else {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          @for (product of latestProducts(); track product.id) {
+          <div
+            class="bg-gray-900 rounded-3xl overflow-hidden hover:shadow-xl hover:shadow-primary/20 transition-all hover:-translate-y-2 border border-gray-800 flex flex-col backdrop-blur-sm"
           >
             <div
-              class="aspect-square bg-gray-800 flex items-center justify-center"
+              class="aspect-[4/3] bg-gray-800 flex items-center justify-center overflow-hidden"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-24 w-24 text-gray-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              @if (product.imageUrl) {
+              <img
+                [src]="product.imageUrl"
+                [alt]="product.name"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+              } @else {
+              <div
+                class="w-full h-full flex items-center justify-center text-gray-600 text-sm"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1"
-                  [attr.d]="category.icon"
-                />
-              </svg>
+                Image indisponible
+              </div>
+              }
             </div>
-            <div class="p-4">
-              <h3 class="font-bold text-white mb-2">{{ category.title }}</h3>
-              <p class="text-gray-400 text-sm mb-3">
-                {{ category.description }}
+            <div class="p-5 flex-1 flex flex-col">
+              <div class="mb-3">
+                <h3
+                  class="font-bold text-white text-lg line-clamp-2 leading-snug"
+                >
+                  {{ product.name }}
+                </h3>
+                @if (product.category) {
+                <p class="text-gray-400 text-sm mt-1">
+                  {{ product.category.name }}
+                </p>
+                }
+              </div>
+              <p class="text-primary font-bold text-xl mb-4">
+                {{ formatPrice(product.price) }}
               </p>
-              <p class="text-primary font-bold text-lg mb-4">
-                À partir de 50,000 FCFA
-              </p>
-              <button
-                routerLink="/shop"
-                class="w-full btn btn-sm bg-primary hover:bg-cyan-400 text-black border-none"
-              >
-                Voir Options
-              </button>
+              <div class="mt-auto">
+                <button
+                  routerLink="/shop"
+                  class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-primary hover:bg-cyan-400 text-black font-semibold rounded-full transition-colors shadow-sm shadow-primary/30"
+                >
+                  Voir le produit
+                </button>
+              </div>
             </div>
           </div>
           }
         </div>
+        }
+
         <div class="text-center mt-12">
           <a
             routerLink="/shop"
@@ -182,24 +212,32 @@
     <!-- Newsletter Section -->
     <section class="bg-gray-900 py-16">
       <div class="container mx-auto px-6 text-center">
-        <h2 class="text-3xl font-bold text-white mb-4">
-          ABONNEZ-VOUS POUR DES RÉDUCTIONS
-        </h2>
-        <p class="text-gray-400 mb-8">
-          Soyez le premier à connaître les nouvelles collections et les offres
-          exclusives.
-        </p>
-        <div class="max-w-md mx-auto flex gap-2">
-          <input
-            type="email"
-            placeholder="Email"
-            class="input input-bordered bg-black text-white border-gray-700 flex-1 focus:border-primary"
-          />
-          <button
-            class="btn bg-primary hover:bg-cyan-400 text-black border-none px-8"
+        <div
+          class="max-w-3xl mx-auto bg-gray-800/60 border border-gray-700/80 rounded-3xl px-8 py-10 backdrop-blur-sm shadow-[0_25px_45px_rgba(0,0,0,0.35)]"
+        >
+          <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
+            Abonnez-vous pour des réductions
+          </h2>
+          <p class="text-gray-300 mb-8 leading-relaxed">
+            Recevez en avant-première nos nouvelles collections, offres
+            exclusives et conseils pour entretenir vos pneus.
+          </p>
+          <form
+            class="max-w-xl mx-auto flex flex-col sm:flex-row items-center gap-3"
           >
-            →
-          </button>
+            <input
+              type="email"
+              placeholder="Votre adresse email"
+              class="w-full sm:flex-1 px-5 py-3.5 rounded-full bg-black/70 text-white border border-gray-700 focus:border-primary focus:ring-2 focus:ring-primary/40 transition-colors placeholder-gray-500"
+              required
+            />
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary hover:bg-cyan-400 text-black font-semibold transition-all shadow-sm shadow-primary/30 w-full sm:w-auto"
+            >
+              Je m’inscris
+            </button>
+          </form>
         </div>
       </div>
     </section>
