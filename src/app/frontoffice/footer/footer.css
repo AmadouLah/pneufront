@@ -18,3 +18,11 @@
   width: 100%;
 }
 
+.hover-facebook:hover {
+  color: #1877f2;
+}
+
+.hover-instagram:hover {
+  color: #e1306c;
+}
+

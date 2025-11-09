@@ -20,7 +20,8 @@
       @for (social of socialLinks; track social.name) {
       <button
         (click)="openSocialLink(social.url)"
-        class="text-white hover:text-primary transition-colors p-2"
+        class="text-gray-300 transition-colors p-2"
+        [ngClass]="getSocialHoverClass(social.name)"
         [attr.aria-label]="social.name"
       >
         <svg

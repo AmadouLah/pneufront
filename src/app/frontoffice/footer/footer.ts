@@ -42,6 +42,17 @@ export class FooterComponent {
     }
   ];
 
+  getSocialHoverClass(name: string): string {
+    switch (name.toLowerCase()) {
+      case 'facebook':
+        return 'hover-facebook';
+      case 'instagram':
+        return 'hover-instagram';
+      default:
+        return '';
+    }
+  }
+
   /**
    * Ouvre un lien dans un nouvel onglet
    */
