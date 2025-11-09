@@ -92,12 +92,40 @@ export class HomeComponent implements OnInit {
       })
       .subscribe({
         next: (products) => {
-          this.latestProducts.set(products ?? []);
+          if (products && products.length > 0) {
+            this.latestProducts.set(products);
+            this.isLoadingLatest.set(false);
+          } else {
+            this.fetchLatestFallback(false);
+          }
+        },
+        error: () => {
+          this.fetchLatestFallback(true);
+        }
+      });
+  }
+
+  private fetchLatestFallback(showWarning: boolean): void {
+    this.http
+      .get<{ content: ProductPreview[] }>(`${environment.apiUrl}/products/active`, {
+        params: {
+          page: 0,
+          size: 3,
+          sort: 'createdAt,desc'
+        }
+      })
+      .subscribe({
+        next: (response) => {
+          const content = response?.content ?? [];
+          this.latestProducts.set(content);
+          if (showWarning && content.length === 0) {
+            this.latestError.set('Aucun pneu n’est encore disponible.');
+          }
           this.isLoadingLatest.set(false);
         },
         error: () => {
           this.latestProducts.set([]);
-          this.latestError.set('Impossible de charger les produits les plus récents pour le moment.');
+          this.latestError.set('Impossible de charger les pneus les plus récents pour le moment.');
           this.isLoadingLatest.set(false);
         }
       });
