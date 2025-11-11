@@ -18,6 +18,7 @@ export class Sidebar implements OnInit, OnDestroy {
   
   sidebarOpen = false;
   isAdminOrDeveloper = false;
+  isDeveloper = false;
   private toggleListener: any;
 
   // Compteurs pour les badges
@@ -30,6 +31,7 @@ export class Sidebar implements OnInit, OnDestroy {
     // Vérifier si l'utilisateur est admin ou développeur
     const user = this.auth.authUser();
     this.isAdminOrDeveloper = user?.role === 'ADMIN' || user?.role === 'DEVELOPER';
+    this.isDeveloper = user?.role === 'DEVELOPER';
     
     // Écouter les événements de toggle du sidebar
     this.toggleListener = (event: any) => {

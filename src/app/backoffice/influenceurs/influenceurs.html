@@ -92,6 +92,11 @@
             >
               Statut
             </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody class="bg-gray-900 divide-y divide-gray-800">
@@ -158,6 +163,125 @@
               >
                 {{ influenceur.user.enabled ? 'Actif' : 'En attente' }}
               </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center gap-3">
+                <button
+                  type="button"
+                  (click)="openEditModal(influenceur)"
+                  [disabled]="actionLoadingId() === influenceur.id"
+                  class="text-gray-400 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Modifier l'influenceur"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  (click)="toggleInfluenceurStatus(influenceur)"
+                  [disabled]="actionLoadingId() === influenceur.id"
+                  class="text-gray-400 hover:text-orange-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  [title]="influenceur.user.enabled ? 'Désactiver' : 'Réactiver'"
+                >
+                  @if (actionLoadingId() === influenceur.id && actionType() ===
+                  'toggle') {
+                  <svg
+                    class="w-5 h-5 animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V2C6.477 2 4 4.477 4 8v4zm2 5.291A7.962 7.962 0 014 12H2c0 3.042 1.135 5.824 3 7.938l1-2.647z"
+                    ></path>
+                  </svg>
+                  } @else {
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M18.364 5.636l-1.414 1.414A7 7 0 016.05 17.95l-1.414 1.414M5.636 5.636l1.414 1.414A7 7 0 0117.95 17.95l1.414 1.414"
+                    />
+                  </svg>
+                  }
+                </button>
+
+                @if (isDeveloper()) {
+                <button
+                  type="button"
+                  (click)="archiveInfluenceur(influenceur)"
+                  [disabled]="actionLoadingId() === influenceur.id"
+                  class="text-gray-400 hover:text-blue-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Archiver l'influenceur"
+                >
+                  @if (actionLoadingId() === influenceur.id && actionType() ===
+                  'archive') {
+                  <svg
+                    class="w-5 h-5 animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V2C6.477 2 4 4.477 4 8v4zm2 5.291A7.962 7.962 0 014 12H2c0 3.042 1.135 5.824 3 7.938l1-2.647z"
+                    ></path>
+                  </svg>
+                  } @else {
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M20 13V7a2 2 0 00-2-2h-4l-2-2-2 2H6a2 2 0 00-2 2v6m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4"
+                    />
+                  </svg>
+                  }
+                </button>
+                }
+              </div>
             </td>
           </tr>
           } }

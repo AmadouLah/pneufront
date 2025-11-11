@@ -4,10 +4,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } 
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environment';
 import { FormHelperService } from '../../shared/services/form-helper.service';
+import { Authservice } from '../../services/authservice';
 
 interface Influenceur {
   id: number;
   commissionRate: number;
+  archived: boolean;
   user: {
     id: number;
     email: string;
@@ -25,8 +27,9 @@ interface Influenceur {
   styleUrls: ['./influenceurs.css']
 })
 export class InfluenceursComponent implements OnInit {
-  private http = inject(HttpClient);
-  private fb = inject(FormBuilder);
+  private readonly http = inject(HttpClient);
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(Authservice);
   readonly formHelper = inject(FormHelperService);
 
   influenceurs = signal<Influenceur[]>([]);
@@ -35,7 +38,12 @@ export class InfluenceursComponent implements OnInit {
   errorMessage = signal('');
   successMessage = signal('');
   searchTerm = signal('');
-  
+  actionLoadingId = signal<number | null>(null);
+  actionType = signal<'toggle' | 'archive' | null>(null);
+  isEditMode = signal(false);
+  editingInfluenceurId = signal<number | null>(null);
+  currentUserRole = signal<string | null>(null);
+
   showModal = signal(false);
   influenceurForm: FormGroup;
 
@@ -47,6 +55,9 @@ export class InfluenceursComponent implements OnInit {
       commissionRate: ['', [Validators.required, Validators.min(0.01), Validators.max(100)]],
       active: [true]
     });
+
+    const userInfo = this.authService.authUser();
+    this.currentUserRole.set(userInfo?.role ?? null);
   }
 
   ngOnInit(): void {
@@ -81,7 +92,7 @@ export class InfluenceursComponent implements OnInit {
       this.filteredInfluenceurs.set(this.influenceurs());
       return;
     }
-    const filtered = this.influenceurs().filter(influenceur =>
+    const filtered = this.influenceurs().filter((influenceur) =>
       influenceur.user.firstName.toLowerCase().includes(term) ||
       influenceur.user.lastName.toLowerCase().includes(term) ||
       influenceur.user.email.toLowerCase().includes(term)
@@ -98,6 +109,8 @@ export class InfluenceursComponent implements OnInit {
   }
 
   openCreateModal(): void {
+    this.isEditMode.set(false);
+    this.editingInfluenceurId.set(null);
     this.influenceurForm.reset({
       firstName: '',
       lastName: '',
@@ -105,6 +118,27 @@ export class InfluenceursComponent implements OnInit {
       commissionRate: '',
       active: true
     });
+    this.influenceurForm.get('email')?.enable({ emitEvent: false });
+    this.showModal.set(true);
+  }
+
+  openEditModal(influenceur: Influenceur): void {
+    this.isEditMode.set(true);
+    this.editingInfluenceurId.set(influenceur.id);
+    this.influenceurForm.reset({
+      firstName: influenceur.user.firstName,
+      lastName: influenceur.user.lastName,
+      email: influenceur.user.email,
+      commissionRate: influenceur.commissionRate,
+      active: influenceur.user.enabled
+    });
+
+    if (this.isDeveloper()) {
+      this.influenceurForm.get('email')?.enable({ emitEvent: false });
+    } else {
+      this.influenceurForm.get('email')?.disable({ emitEvent: false });
+    }
+
     this.showModal.set(true);
   }
 
@@ -112,6 +146,9 @@ export class InfluenceursComponent implements OnInit {
     this.showModal.set(false);
     this.successMessage.set('');
     this.errorMessage.set('');
+    this.isEditMode.set(false);
+    this.editingInfluenceurId.set(null);
+    this.influenceurForm.get('email')?.enable({ emitEvent: false });
   }
 
   submitInfluenceur(): void {
@@ -123,16 +160,39 @@ export class InfluenceursComponent implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    const formValue = this.influenceurForm.value;
-    const payload = {
-      firstName: formValue.firstName.trim(),
-      lastName: formValue.lastName.trim(),
-      email: formValue.email.trim(),
-      commissionRate: parseFloat(formValue.commissionRate),
-      active: formValue.active !== false
-    };
+    const formValue = this.influenceurForm.getRawValue();
 
-    this.http.post<{ message: string; influenceur: Influenceur }>(`${environment.apiUrl}/admin/influenceurs`, payload).subscribe({
+    if (this.isEditMode()) {
+      const influenceurId = this.editingInfluenceurId();
+      if (!influenceurId) {
+        this.errorMessage.set('Influenceur introuvable');
+        this.isLoading.set(false);
+        return;
+      }
+
+      const payload = this.buildUpdatePayload(formValue);
+      this.http.put<{ message?: string }>(`${environment.apiUrl}/admin/influenceurs/${influenceurId}`, payload).subscribe({
+        next: (response) => {
+          this.successMessage.set(response.message || 'Influenceur mis à jour avec succès');
+          this.loadInfluenceurs();
+          setTimeout(() => {
+            this.closeModal();
+            this.successMessage.set('');
+          }, 2000);
+        },
+        error: (error) => {
+          this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Erreur lors de la mise à jour'));
+          this.isLoading.set(false);
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        }
+      });
+      return;
+    }
+
+    const payload = this.buildCreatePayload(formValue);
+    this.http.post<{ message?: string }>(`${environment.apiUrl}/admin/influenceurs`, payload).subscribe({
       next: (response) => {
         this.successMessage.set(response.message || 'Influenceur créé avec succès');
         this.loadInfluenceurs();
@@ -144,8 +204,100 @@ export class InfluenceursComponent implements OnInit {
       error: (error) => {
         this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Erreur lors de la création'));
         this.isLoading.set(false);
+      },
+      complete: () => {
+        this.isLoading.set(false);
       }
     });
+  }
+
+  toggleInfluenceurStatus(influenceur: Influenceur): void {
+    const active = !influenceur.user.enabled;
+    this.actionLoadingId.set(influenceur.id);
+    this.actionType.set('toggle');
+    this.errorMessage.set('');
+
+    this.http.put<{ message?: string }>(
+      `${environment.apiUrl}/admin/influenceurs/${influenceur.id}/status`,
+      null,
+      { params: { active: String(active) } }
+    ).subscribe({
+      next: (response) => {
+        this.successMessage.set(response.message || (active ? 'Influenceur activé avec succès' : 'Influenceur désactivé avec succès'));
+        this.loadInfluenceurs();
+        setTimeout(() => this.successMessage.set(''), 3000);
+      },
+      error: (error) => {
+        this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Erreur lors de la mise à jour du statut'));
+        setTimeout(() => this.errorMessage.set(''), 5000);
+        this.actionLoadingId.set(null);
+        this.actionType.set(null);
+      },
+      complete: () => {
+        this.actionLoadingId.set(null);
+        this.actionType.set(null);
+      }
+    });
+  }
+
+  archiveInfluenceur(influenceur: Influenceur): void {
+    if (!this.isDeveloper()) {
+      return;
+    }
+
+    if (!confirm('Confirmez-vous l\'archivage de cet influenceur ? Son compte sera désactivé.')) {
+      return;
+    }
+
+    this.actionLoadingId.set(influenceur.id);
+    this.actionType.set('archive');
+    this.errorMessage.set('');
+
+    this.http.put<{ message?: string }>(`${environment.apiUrl}/admin/influenceurs/${influenceur.id}/archive`, null).subscribe({
+      next: (response) => {
+        this.successMessage.set(response.message || 'Influenceur archivé avec succès');
+        this.loadInfluenceurs();
+        setTimeout(() => this.successMessage.set(''), 3000);
+      },
+      error: (error) => {
+        this.errorMessage.set(this.formHelper.extractErrorMessage(error, 'Erreur lors de l\'archivage'));
+        setTimeout(() => this.errorMessage.set(''), 5000);
+        this.actionLoadingId.set(null);
+        this.actionType.set(null);
+      },
+      complete: () => {
+        this.actionLoadingId.set(null);
+        this.actionType.set(null);
+      }
+    });
+  }
+
+  private buildCreatePayload(formValue: any) {
+    return {
+      firstName: formValue.firstName.trim(),
+      lastName: formValue.lastName.trim(),
+      email: formValue.email.trim(),
+      commissionRate: parseFloat(formValue.commissionRate),
+      active: formValue.active !== false
+    };
+  }
+
+  private buildUpdatePayload(formValue: any) {
+    const payload: any = {
+      firstName: formValue.firstName.trim(),
+      lastName: formValue.lastName.trim(),
+      commissionRate: parseFloat(formValue.commissionRate)
+    };
+
+    if (this.isDeveloper()) {
+      payload.email = formValue.email?.trim();
+    }
+
+    return payload;
+  }
+
+  isDeveloper(): boolean {
+    return this.currentUserRole()?.toUpperCase() === 'DEVELOPER';
   }
 }
 
