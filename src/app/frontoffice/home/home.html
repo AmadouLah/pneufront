@@ -60,7 +60,7 @@
             <select
               [value]="selectedWidth()"
               (change)="onWidthChange($event)"
-              class="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
+              class="home-select w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
             >
               <option value="" disabled>Largeur</option>
               @for (width of widths(); track width.id) {
@@ -70,7 +70,7 @@
             <select
               [value]="selectedProfile()"
               (change)="onProfileChange($event)"
-              class="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
+              class="home-select w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
             >
               <option value="" disabled>Profil</option>
               @for (profile of profiles(); track profile.id) {
@@ -80,7 +80,7 @@
             <select
               [value]="selectedDiameter()"
               (change)="onDiameterChange($event)"
-              class="w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
+              class="home-select w-full px-4 py-3 bg-black text-white border border-gray-700 rounded-xl focus:border-primary focus:ring-1 focus:ring-primary/40 transition-colors appearance-none"
             >
               <option value="" disabled>Diamètre</option>
               @for (diameter of diameters(); track diameter.id) {

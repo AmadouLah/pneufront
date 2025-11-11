@@ -185,6 +185,12 @@
 <div class="min-h-screen bg-black">
   <app-header></app-header>
 
+  @if (toastMessage()) {
+  <div class="shop-toast-container">
+    <div class="shop-toast">{{ toastMessage() }}</div>
+  </div>
+  }
+
   <main class="shop-main">
     <div class="shop-container">
       <h1 class="shop-title">Produits</h1>

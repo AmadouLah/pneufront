@@ -22,6 +22,10 @@
   }
 }
 
+.home-select:hover {
+  cursor: pointer;
+}
+
 /* Animation pour le loading spinner */
 @keyframes spin {
   to {

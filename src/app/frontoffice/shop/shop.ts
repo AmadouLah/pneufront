@@ -84,6 +84,7 @@ export class ShopComponent implements OnInit {
   readonly selectedProfile = signal<number | null>(null);
   readonly selectedDiameter = signal<number | null>(null);
   readonly isDrawerOpen = signal(false);
+  readonly toastMessage = signal<string | null>(null);
 
   readonly brandList = computed(() =>
     Array.from(new Set(this.products().map(product => product.brand?.name).filter((b): b is string => b !== null && b !== undefined))).sort((a, b) =>
@@ -183,12 +184,19 @@ export class ShopComponent implements OnInit {
 
   readonly totalProducts = computed(() => this.filteredProducts().length);
 
+  private toastTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
   constructor() {
     this.route.queryParamMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(params => this.applyQueryParams(params));
 
     this.destroyRef.onDestroy(() => this.toggleBodyScroll(false));
+    this.destroyRef.onDestroy(() => {
+      if (this.toastTimeoutId) {
+        clearTimeout(this.toastTimeoutId);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -350,6 +358,7 @@ export class ShopComponent implements OnInit {
       },
       1
     );
+    this.showToast('Produit ajouté au panier');
   }
 
   getBrandCount(brand: string): number {
@@ -405,6 +414,14 @@ export class ShopComponent implements OnInit {
       return;
     }
     document.body.style.overflow = disable ? 'hidden' : '';
+  }
+
+  private showToast(message: string): void {
+    if (this.toastTimeoutId) {
+      clearTimeout(this.toastTimeoutId);
+    }
+    this.toastMessage.set(message);
+    this.toastTimeoutId = setTimeout(() => this.toastMessage.set(null), 3000);
   }
 }
 
