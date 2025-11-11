@@ -212,6 +212,7 @@ export class HeaderComponent implements OnInit {
    */
   logout(): void {
     this.closeUserMenu();
+    this.closeMobileMenu();
     const refreshToken = localStorage.getItem('refreshToken');
     if (refreshToken) {
       this.authService.logout(refreshToken).subscribe({
