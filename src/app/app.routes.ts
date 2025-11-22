@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './guard/auth-guard-guard';
 import { loginGuard } from './guard/login-guard';
 import { adminGuard } from './guard/admin-guard';
+import { livreurGuard } from './guard/livreur-guard';
 
 export const routes: Routes = [
   // Home - Page d'accueil publique
@@ -68,6 +69,16 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'mon-compte/devis',
+    loadComponent: () => import('./frontoffice/account/quotes/quotes').then(m => m.AccountQuotesComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'demande-devis',
+    loadComponent: () => import('./frontoffice/quote-request/quote-request').then(m => m.QuoteRequestComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'frontoffice/favoris',
     loadComponent: () => import('./frontoffice/favoris/mes-favoris').then(m => m.MesFavorisComponent),
     canActivate: [authGuard]
@@ -130,6 +141,15 @@ export const routes: Routes = [
       {
         path: 'promotions',
         loadComponent: () => import('./backoffice/promotions/promotions').then(m => m.PromotionsComponent)
+      },
+      {
+        path: 'quotes',
+        loadComponent: () => import('./backoffice/quotes/quotes').then(m => m.QuotesComponent)
+      },
+      {
+        path: 'livreur',
+        loadComponent: () => import('./backoffice/livreur/livreur-dashboard').then(m => m.LivreurDashboardComponent),
+        canActivate: [livreurGuard]
       }
     ]
   },

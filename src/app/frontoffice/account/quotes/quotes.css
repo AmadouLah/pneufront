@@ -1,0 +1,196 @@
+.account-quotes {
+  padding: 6rem 1.5rem 4rem;
+  background: #000;
+  min-height: 100vh;
+  color: #e2e8f0;
+}
+
+.account-quotes h1 {
+  font-size: clamp(2rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.account-quotes__alert {
+  padding: 1rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-quotes__alert--success {
+  background: rgba(94, 234, 212, 0.1);
+  border: 1px solid rgba(94, 234, 212, 0.4);
+  color: #5eead4;
+}
+
+.account-quotes__alert--error {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+}
+
+.account-quotes__layout {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 960px) {
+  .account-quotes__layout {
+    grid-template-columns: 360px 1fr;
+  }
+}
+
+.account-quotes__list {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 1.25rem;
+  padding: 1rem;
+}
+
+.account-quotes__list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.account-quotes__list li button {
+  width: 100%;
+  border: none;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.95);
+  padding: 0.85rem;
+  text-align: left;
+  color: inherit;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.account-quotes__list li button:hover {
+  background: rgba(30, 41, 59, 0.95);
+}
+
+.account-quotes__number {
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-quotes__status {
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(94, 234, 212, 0.75);
+}
+
+.account-quotes__amount {
+  font-weight: 600;
+}
+
+.account-quotes__placeholder {
+  padding: 1.5rem;
+  text-align: center;
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.account-quotes__detail {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  min-height: 420px;
+}
+
+.account-quotes__detail-card header {
+  margin-bottom: 1rem;
+}
+
+.account-quotes__detail-card h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.account-quotes__items {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.account-quotes__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.08);
+}
+
+.account-quotes__item h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.account-quotes__item p {
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.7);
+}
+
+.account-quotes__total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.1rem;
+  background: rgba(94, 234, 212, 0.12);
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.account-quotes__total span {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(94, 234, 212, 0.8);
+}
+
+.account-quotes__total strong {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.account-quotes__cta {
+  width: 100%;
+  border: none;
+  border-radius: 1rem;
+  padding: 0.85rem 1.1rem;
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.account-quotes__cta:hover {
+  background: #0ea5e9;
+}
+
+.account-quotes__link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #38bdf8;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+

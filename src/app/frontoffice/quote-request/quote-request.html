@@ -1,0 +1,82 @@
+<div class="quote-shell">
+  <app-header></app-header>
+
+  <main class="quote-main">
+    <section class="quote-container">
+      <header class="quote-header">
+        <h1>Demande de devis</h1>
+        <p>
+          Vérifiez le contenu de votre panier et précisez vos besoins avant
+          d'envoyer la demande.
+        </p>
+      </header>
+
+      @if (errorMessage()) {
+      <div class="quote-alert quote-alert--error">{{ errorMessage() }}</div>
+      } @if (successMessage()) {
+      <div class="quote-alert quote-alert--success">{{ successMessage() }}</div>
+      }
+
+      <div class="quote-layout">
+        <section class="quote-items">
+          @for (item of items(); track item.productId) {
+          <article class="quote-item">
+            <div class="quote-item__content">
+              <div class="quote-item__header">
+                <h2>{{ item.name }}</h2>
+                <span class="quote-item__brand">{{ item.brand }}</span>
+              </div>
+              <div class="quote-item__meta">
+                <span>Quantité : {{ item.quantity }}</span>
+                @if (item.width) { <span>Largeur {{ item.width }}</span> } @if
+                (item.profile) { <span>Profil {{ item.profile }}</span> } @if
+                (item.diameter) { <span>Diamètre {{ item.diameter }}</span> }
+              </div>
+            </div>
+            <div class="quote-item__price">
+              {{ formatPrice(item.price * item.quantity) }}
+            </div>
+          </article>
+          }
+        </section>
+
+        <aside class="quote-summary">
+          <div class="quote-summary__card">
+            <h2>Résumé</h2>
+            <div class="quote-summary__row">
+              <span>Sous-total estimé</span>
+              <strong>{{ formatPrice(subtotal()) }}</strong>
+            </div>
+            <p class="quote-summary__note">
+              Les frais de livraison et remises éventuelles seront précisés dans
+              le devis envoyé par nos équipes.
+            </p>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="submit()" class="quote-form">
+            <label for="message">Précisez vos besoins</label>
+            <textarea
+              id="message"
+              formControlName="message"
+              rows="6"
+              placeholder="Quantité exacte, lieu de livraison, date souhaitée, remarques spécifiques..."
+            ></textarea>
+            <button
+              type="submit"
+              [disabled]="!hasItems() || isSubmitting()"
+              class="quote-submit"
+            >
+              @if (isSubmitting()) { Envoi en cours... } @else { Envoyer ma
+              demande de devis }
+            </button>
+            <button type="button" class="quote-back" (click)="goBack()">
+              Retour au panier
+            </button>
+          </form>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>

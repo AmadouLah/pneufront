@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Component, computed, OnInit, signal, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 
 import { HeaderComponent } from '../header/header';
 import { FooterComponent } from '../footer/footer';
@@ -27,6 +27,8 @@ export class CartComponent implements OnInit {
   promoCodeInput = signal('');
   isApplyingPromo = signal(false);
   promoMessage = signal<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  private readonly router = inject(Router);
 
   constructor(private readonly cartService: CartService) {}
 
@@ -59,6 +61,13 @@ export class CartComponent implements OnInit {
     this.cartService.clear();
     this.promoCodeInput.set('');
     this.promoMessage.set(null);
+  }
+
+  requestQuote(): void {
+    if (!this.hasItems()) {
+      return;
+    }
+    this.router.navigate(['/demande-devis']);
   }
 
   async applyPromoCode(): Promise<void> {

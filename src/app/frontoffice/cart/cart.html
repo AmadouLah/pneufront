@@ -167,9 +167,16 @@
             <button
               type="button"
               class="cart-button cart-button--primary"
+              (click)="requestQuote()"
+            >
+              Demander un devis
+            </button>
+            <button
+              type="button"
+              class="cart-button cart-button--ghost"
               disabled
             >
-              Passer la commande
+              Payer maintenant
             </button>
             <a routerLink="/shop" class="cart-button cart-button--ghost"
               >Continuer vos achats</a

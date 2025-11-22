@@ -1,0 +1,326 @@
+<div class="quotes-shell">
+  <section class="quotes-header">
+    <div>
+      <h1>Demandes de devis</h1>
+      <p>
+        Gérez les demandes clients, préparez les devis et pilotez les
+        livraisons.
+      </p>
+    </div>
+  </section>
+
+  <section class="quotes-filters">
+    <form
+      [formGroup]="filtersForm"
+      (ngSubmit)="onFilterChange()"
+      class="quotes-filters__form"
+    >
+      <label>Filtrer par statut :</label>
+      <div class="quotes-filters__chips">
+        @for (status of statusOptions; track status) {
+        <label class="chip">
+          <input
+            type="checkbox"
+            [checked]="filtersForm.value.statuses?.includes(status)"
+            (change)="onStatusToggle(status, $any($event.target).checked)"
+          />
+          <span>{{ status }}</span>
+        </label>
+        }
+      </div>
+      <button type="submit" class="quotes-filters__apply">Appliquer</button>
+    </form>
+  </section>
+
+  <section class="quotes-columns">
+    <div class="quotes-list">
+      @if (isLoadingList()) {
+      <div class="quotes-placeholder">Chargement des demandes…</div>
+      } @else if (listError()) {
+      <div class="quotes-placeholder quotes-placeholder--error">
+        {{ listError() }}
+      </div>
+      } @else if (quotes().length === 0) {
+      <div class="quotes-placeholder">
+        Aucune demande trouvée pour le moment.
+      </div>
+      } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>N° demande</th>
+            <th>Client</th>
+            <th>Statut</th>
+            <th>Total estimé</th>
+            <th>Dernière mise à jour</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (quote of quotes(); track quote.id) {
+          <tr>
+            <td>
+              <span class="quotes-list__number">{{ quote.requestNumber }}</span>
+              @if (quote.quoteNumber) {
+              <small>Devis {{ quote.quoteNumber }}</small>
+              }
+            </td>
+            <td>
+              <span class="quotes-list__client"> {{ quote.clientName }} </span>
+              <small class="quotes-list__email">{{ quote.clientEmail }}</small>
+            </td>
+            <td><span class="status-badge">{{ quote.status }}</span></td>
+            <td>
+              {{ formatPrice(quote.totalQuoted ?? quote.subtotalRequested) }}
+            </td>
+            <td>
+              {{ quote.updatedAt ? (quote.updatedAt | date:'short') : '' }}
+            </td>
+            <td>
+              <button class="quotes-action" (click)="selectQuote(quote)">
+                Ouvrir
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+    </div>
+
+    <div class="quotes-column">
+      <div
+        #detailPanel
+        class="quotes-detail"
+        [class.quotes-detail--visible]="selectedQuote()"
+      >
+        @if (selectedQuote()) {
+        <div class="quotes-detail__header">
+          <div>
+            <h2>Devis {{ selectedQuote()?.quoteNumber ?? 'à préparer' }}</h2>
+            <p>
+              Demande {{ selectedQuote()?.requestNumber }} — Statut : {{
+              selectedQuote()?.status }}
+            </p>
+          </div>
+          <button class="quotes-detail__close" (click)="resetSelection()">
+            ×
+          </button>
+        </div>
+
+        <div class="quotes-steps">
+          @for (step of workflowSteps; track step.status; let index = $index) {
+          <div
+            class="quotes-step"
+            [class.quotes-step--done]="stepState(step.status) === 'done'"
+            [class.quotes-step--active]="stepState(step.status) === 'active'"
+          >
+            <div class="quotes-step__index">{{ index + 1 }}</div>
+            <div>
+              <p class="quotes-step__title">{{ step.title }}</p>
+              <p class="quotes-step__desc">{{ step.description }}</p>
+            </div>
+          </div>
+          }
+        </div>
+
+        <div class="quotes-detail__section quotes-detail__section--summary">
+          <div class="quote-summary">
+            <div class="quote-summary__column">
+              <h3>Informations client</h3>
+              <dl>
+                <div>
+                  <dt>Nom</dt>
+                  <dd>{{ selectedQuote()?.clientName }}</dd>
+                </div>
+                <div>
+                  <dt>Email</dt>
+                  <dd>{{ selectedQuote()?.clientEmail }}</dd>
+                </div>
+                <div>
+                  <dt>Dernière mise à jour</dt>
+                  <dd>
+                    {{ selectedQuote()?.updatedAt ? (selectedQuote()?.updatedAt
+                    | date:'medium') : '—' }}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+            <div class="quote-summary__column">
+              <h3>Message du client</h3>
+              <p class="quote-summary__message">
+                {{ selectedQuote()?.clientMessage || 'Aucun message transmis.'
+                }}
+              </p>
+            </div>
+            <div class="quote-summary__column">
+              <h3>Notes internes</h3>
+              <p class="quote-summary__message">
+                {{ settingsForm.value.adminNotes || 'Renseignez vos notes
+                internes.' }}
+              </p>
+              <span class="quote-summary__hint"
+                >Les notes sont modifiables dans le formulaire ci-dessous.</span
+              >
+            </div>
+          </div>
+        </div>
+
+        @if (feedback()) {
+        <div
+          class="quotes-feedback"
+          [class.quotes-feedback--success]="feedback()?.type === 'success'"
+          [class.quotes-feedback--error]="feedback()?.type === 'error'"
+        >
+          {{ feedback()?.message }}
+        </div>
+        }
+
+        <div class="quotes-detail__section">
+          <h3>Articles du devis</h3>
+          <div class="quotes-items">
+            @for (item of editableItems(); track item.id ?? item.productName;
+            let index = $index) {
+            <div class="quotes-item">
+              <div class="quotes-item__info">
+                <h4>{{ item.productName }}</h4>
+                <p class="quotes-item__meta">
+                  Quantité :
+                  <input
+                    type="number"
+                    min="1"
+                    [value]="item.quantity"
+                    (input)="updateItem(index, 'quantity', $any($event.target).value)"
+                  />
+                  Prix unitaire :
+                  <input
+                    type="number"
+                    min="0"
+                    [value]="item.unitPrice"
+                    (input)="updateItem(index, 'unitPrice', $any($event.target).value)"
+                  />
+                </p>
+              </div>
+              <div class="quotes-item__total">
+                {{ formatPrice(item.unitPrice * item.quantity) }}
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="quotes-detail__section">
+          <h3>Paramètres du devis</h3>
+          <form [formGroup]="settingsForm" class="quotes-settings">
+            <label>
+              Validité
+              <input type="date" formControlName="validUntil" />
+            </label>
+            <label>
+              Remises (FCFA)
+              <input type="number" formControlName="discountTotal" min="0" />
+            </label>
+            <label>
+              Notes internes
+              <textarea rows="3" formControlName="adminNotes"></textarea>
+            </label>
+            <label>
+              Instructions livraison
+              <textarea rows="3" formControlName="deliveryDetails"></textarea>
+            </label>
+          </form>
+          <div class="quotes-totals">
+            <span class="quotes-totals__label">Total devis</span>
+            <span class="quotes-totals__value"
+              >{{ formatPrice(getTotal()) }}</span
+            >
+          </div>
+          @if (selectedQuote()?.quotePdfUrl) {
+          <a
+            class="quotes-download"
+            [href]="selectedQuote()?.quotePdfUrl ?? ''"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Télécharger le devis PDF
+          </a>
+          }
+        </div>
+
+        <div class="quotes-detail__section">
+          <div class="quotes-detail__section-header">
+            <h3>Aperçu PDF Carbone</h3>
+            <button
+              type="button"
+              class="quotes-refresh"
+              (click)="refreshPreview()"
+              [disabled]="isPdfLoading() || isProcessing()"
+            >
+              {{ isPdfLoading() ? 'Génération…' : 'Régénérer' }}
+            </button>
+          </div>
+          @if (isPdfLoading()) {
+          <div class="quotes-placeholder">Génération du PDF…</div>
+          } @else if (pdfError()) {
+          <div class="quotes-placeholder quotes-placeholder--error">{{ pdfError() }}</div>
+          } @else if (selectedQuote()?.quotePdfUrl) {
+          <div class="quotes-pdf">
+            <ngx-extended-pdf-viewer
+              [src]="selectedQuote()?.quotePdfUrl ?? ''"
+              useBrowserLocale="true"
+              height="640px"
+              [showBorders]="false"
+              [textLayer]="true"
+            ></ngx-extended-pdf-viewer>
+          </div>
+          } @else {
+          <div class="quotes-placeholder">Aucun PDF généré pour ce devis.</div>
+          }
+        </div>
+
+        <div class="quotes-detail__section">
+          <h3>Assignation livreur</h3>
+          <div class="quotes-delivery">
+            <select formControlName="livreurId">
+              <option [ngValue]="null">Choisir un livreur</option>
+              @for (livreur of livreurs(); track livreur.id) {
+              <option [ngValue]="livreur.id">
+                {{ livreur.name }} ({{ livreur.email }})
+              </option>
+              }
+            </select>
+            <button
+              class="quotes-action"
+              (click)="assignLivreur()"
+              [disabled]="isProcessing()"
+            >
+              Assigner
+            </button>
+          </div>
+        </div>
+
+        <div class="quotes-actions">
+          <button
+            class="quotes-action"
+            (click)="saveDraft()"
+            [disabled]="isProcessing()"
+          >
+            Enregistrer le brouillon
+          </button>
+          <button
+            class="quotes-action quotes-action--primary"
+            (click)="sendQuote()"
+            [disabled]="isProcessing()"
+          >
+            Envoyer le devis
+          </button>
+        </div>
+        } @else {
+        <div class="quotes-placeholder">
+          Sélectionnez une demande pour commencer.
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,76 @@
+<div class="livreur-shell">
+  <section class="livreur-header">
+    <div>
+      <h1>Espace livreur</h1>
+      <p>Consultez vos missions et confirmez les livraisons réalisées.</p>
+    </div>
+    @if (feedback()) {
+    <div
+      class="livreur-feedback"
+      [class.livreur-feedback--success]="feedback()?.type === 'success'"
+      [class.livreur-feedback--error]="feedback()?.type === 'error'"
+    >
+      {{ feedback()?.message }}
+    </div>
+    }
+  </section>
+
+  <section class="livreur-section">
+    <h2>Devis à livrer</h2>
+    @if (loadingQuotes()) {
+    <div class="livreur-placeholder">Chargement des devis…</div>
+    } @else if (quotes().length === 0) {
+    <div class="livreur-placeholder">Aucun devis en cours de livraison.</div>
+    } @else {
+    <div class="livreur-grid">
+      @for (quote of quotes(); track quote.id) {
+      <article class="livreur-card">
+        <header>
+          <h3>{{ quote.quoteNumber ?? quote.requestNumber }}</h3>
+          <span class="status">{{ quote.status }}</span>
+        </header>
+        <p class="livreur-card__client">
+          {{ quote.clientName }} — {{ quote.clientEmail }}
+        </p>
+        <p class="livreur-card__total">
+          {{ formatPrice(quote.totalQuoted ?? quote.subtotalRequested) }}
+        </p>
+        <button class="livreur-action" (click)="completeQuote(quote)">
+          Confirmer la livraison
+        </button>
+        @if (quote.deliveryDetails) {
+        <p class="livreur-notes">{{ quote.deliveryDetails }}</p>
+        }
+      </article>
+      }
+    </div>
+    }
+  </section>
+
+  <section class="livreur-section">
+    <h2>Livraisons assignées</h2>
+    @if (loadingDeliveries()) {
+    <div class="livreur-placeholder">Chargement…</div>
+    } @else if (deliveries().length === 0) {
+    <div class="livreur-placeholder">Aucune livraison en attente.</div>
+    } @else {
+    <div class="livreur-grid">
+      @for (delivery of deliveries(); track delivery.id) {
+      <article class="livreur-card">
+        <header>
+          <h3>Livraison #{{ delivery.id }}</h3>
+          <span class="status">{{ delivery.status }}</span>
+        </header>
+        <p class="livreur-card__meta">
+          Zone : {{ delivery.zone ?? '—' }}<br />
+          Frais : {{ formatPrice(delivery.shippingFee ?? 0) }}
+        </p>
+        <button class="livreur-action" (click)="completeDelivery(delivery)">
+          Marquer comme livrée
+        </button>
+      </article>
+      }
+    </div>
+    }
+  </section>
+</div>

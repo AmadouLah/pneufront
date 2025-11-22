@@ -1,0 +1,99 @@
+<div class="account-quotes">
+  <h1>Mes devis</h1>
+
+  @if (feedback()) {
+  <div
+    class="account-quotes__alert"
+    [class.account-quotes__alert--success]="feedback()?.type === 'success'"
+    [class.account-quotes__alert--error]="feedback()?.type === 'error'"
+  >
+    {{ feedback()?.message }}
+  </div>
+  }
+
+  <div class="account-quotes__layout">
+    <section class="account-quotes__list">
+      @if (loading()) {
+      <div class="account-quotes__placeholder">Chargement des devis…</div>
+      } @else if (quotes().length === 0) {
+      <div class="account-quotes__placeholder">
+        Vous n'avez pas encore de devis. Utilisez le bouton « Demander un devis
+        » depuis votre panier.
+      </div>
+      } @else {
+      <ul>
+        @for (quote of quotes(); track quote.id) {
+        <li>
+          <button type="button" (click)="openQuote(quote)">
+            <span class="account-quotes__number"
+              >{{ quote.quoteNumber ?? quote.requestNumber }}</span
+            >
+            <span class="account-quotes__status">{{ quote.status }}</span>
+            <span class="account-quotes__amount">
+              {{ formatPrice(quote.totalQuoted ?? quote.subtotalRequested) }}
+            </span>
+          </button>
+        </li>
+        }
+      </ul>
+      }
+    </section>
+
+    <section class="account-quotes__detail">
+      @if (selected()) {
+      <div class="account-quotes__detail-card">
+        <header>
+          <h2>
+            Devis {{ selected()?.quoteNumber ?? selected()?.requestNumber }}
+          </h2>
+          <p>Statut : {{ selected()?.status }}</p>
+        </header>
+
+        <div class="account-quotes__items">
+          @for (item of selected()?.items ?? []; track item.id ??
+          item.productName) {
+          <div class="account-quotes__item">
+            <div>
+              <h3>{{ item.productName }}</h3>
+              <p>
+                Quantité {{ item.quantity }} — Prix unitaire {{
+                formatPrice(item.unitPrice) }}
+              </p>
+            </div>
+            <strong>{{ formatPrice(item.unitPrice * item.quantity) }}</strong>
+          </div>
+          }
+        </div>
+
+        <div class="account-quotes__total">
+          <span>Total devis</span>
+          <strong
+            >{{ formatPrice(selected()?.totalQuoted ??
+            selected()?.subtotalRequested ?? 0) }}</strong
+          >
+        </div>
+
+        @if (selected()?.status === 'EN_ATTENTE_VALIDATION' ||
+        selected()?.status === 'DEVIS_ENVOYE') {
+        <button class="account-quotes__cta" (click)="validateQuote()">
+          Valider et confirmer ma commande
+        </button>
+        } @if (selected()?.quotePdfUrl) {
+        <a
+          class="account-quotes__link"
+          [href]="selected()?.quotePdfUrl ?? ''"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Télécharger le devis PDF
+        </a>
+        }
+      </div>
+      } @else {
+      <div class="account-quotes__placeholder">
+        Sélectionnez un devis pour afficher les détails.
+      </div>
+      }
+    </section>
+  </div>
+</div>

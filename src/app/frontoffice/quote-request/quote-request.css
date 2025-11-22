@@ -1,0 +1,220 @@
+.quote-shell {
+  min-height: 100vh;
+  background: #000;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.quote-main {
+  flex: 1;
+  padding: 6rem 1.5rem 4rem;
+}
+
+.quote-container {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.quote-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.quote-header h1 {
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.quote-header p {
+  color: rgba(226, 232, 240, 0.7);
+}
+
+.quote-alert {
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.quote-alert--success {
+  background: rgba(0, 217, 255, 0.08);
+  border: 1px solid rgba(0, 217, 255, 0.4);
+  color: #7df6ff;
+}
+
+.quote-alert--error {
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+}
+
+.quote-layout {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .quote-layout {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+.quote-items {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  display: grid;
+  gap: 1rem;
+  backdrop-filter: blur(8px);
+}
+
+.quote-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.quote-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.quote-item__header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.quote-item__brand {
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.8);
+}
+
+.quote-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+.quote-item__price {
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.quote-summary__card {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 1.5rem;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.quote-summary__card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.quote-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.quote-summary__row strong {
+  font-size: 1.15rem;
+  letter-spacing: 0.12em;
+}
+
+.quote-summary__note {
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.75);
+  line-height: 1.6;
+}
+
+.quote-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quote-form label {
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.quote-form textarea {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 1rem;
+  padding: 1rem;
+  color: #e2e8f0;
+  resize: vertical;
+  min-height: 160px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quote-form textarea:focus {
+  outline: none;
+  border-color: rgba(0, 217, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.15);
+}
+
+.quote-submit {
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.5rem;
+  background: #00d9ff;
+  color: #000;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quote-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 35px rgba(0, 217, 255, 0.18);
+}
+
+.quote-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quote-back {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 999px;
+  padding: 0.85rem 1.5rem;
+  background: transparent;
+  color: #e2e8f0;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.quote-back:hover {
+  border-color: rgba(0, 217, 255, 0.6);
+  color: #00d9ff;
+}
+
