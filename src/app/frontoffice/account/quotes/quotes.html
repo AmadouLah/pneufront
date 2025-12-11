@@ -1,5 +1,8 @@
 <div class="account-quotes">
-  <h1>Mes devis</h1>
+  <div class="account-quotes__header">
+    <h1 class="account-quotes__title">Mes devis</h1>
+    <p class="account-quotes__subtitle">Consultez et gérez tous vos devis en un seul endroit</p>
+  </div>
 
   @if (feedback()) {
   <div
@@ -7,93 +10,271 @@
     [class.account-quotes__alert--success]="feedback()?.type === 'success'"
     [class.account-quotes__alert--error]="feedback()?.type === 'error'"
   >
-    {{ feedback()?.message }}
+    <span class="account-quotes__alert-icon">
+      @if (feedback()?.type === 'success') {
+        ✓
+      } @else {
+        ⚠
+      }
+    </span>
+    <span>{{ feedback()?.message }}</span>
   </div>
   }
 
   <div class="account-quotes__layout">
-    <section class="account-quotes__list">
+    <aside class="account-quotes__sidebar">
+      <div class="account-quotes__sidebar-header">
+        <h2>Mes devis</h2>
+        <span class="account-quotes__count">{{ quotes().length }}</span>
+      </div>
+
       @if (loading()) {
-      <div class="account-quotes__placeholder">Chargement des devis…</div>
+      <div class="account-quotes__loading">
+        <div class="account-quotes__spinner"></div>
+        <span>Chargement des devis…</span>
+      </div>
       } @else if (quotes().length === 0) {
-      <div class="account-quotes__placeholder">
-        Vous n'avez pas encore de devis. Utilisez le bouton « Demander un devis
-        » depuis votre panier.
+      <div class="account-quotes__empty">
+        <div class="account-quotes__empty-icon">📋</div>
+        <p class="account-quotes__empty-title">Aucun devis</p>
+        <p class="account-quotes__empty-text">
+          Vous n'avez pas encore de devis. Utilisez le bouton « Demander un devis » depuis votre panier.
+        </p>
       </div>
       } @else {
-      <ul>
+      <nav class="account-quotes__nav">
         @for (quote of quotes(); track quote.id) {
-        <li>
-          <button type="button" (click)="openQuote(quote)">
-            <span class="account-quotes__number"
-              >{{ quote.quoteNumber ?? quote.requestNumber }}</span
+        <button
+          type="button"
+          class="account-quotes__nav-item"
+          [class.account-quotes__nav-item--active]="selected()?.id === quote.id"
+          (click)="openQuote(quote)"
+        >
+          <div class="account-quotes__nav-item-header">
+            <span class="account-quotes__nav-number">{{ quote.quoteNumber ?? quote.requestNumber }}</span>
+            <span
+              class="account-quotes__status-badge"
+              [class.account-quotes__status-badge--info]="getStatusColor(quote.status) === 'info'"
+              [class.account-quotes__status-badge--warning]="getStatusColor(quote.status) === 'warning'"
+              [class.account-quotes__status-badge--success]="getStatusColor(quote.status) === 'success'"
+              [class.account-quotes__status-badge--error]="getStatusColor(quote.status) === 'error'"
             >
-            <span class="account-quotes__status">{{ quote.status }}</span>
-            <span class="account-quotes__amount">
-              {{ formatPrice(quote.totalQuoted ?? quote.subtotalRequested) }}
+              {{ getStatusLabel(quote.status) }}
             </span>
-          </button>
-        </li>
+          </div>
+          <div class="account-quotes__nav-item-footer">
+            <span class="account-quotes__nav-date">{{ formatDate(quote.updatedAt) }}</span>
+            <span class="account-quotes__nav-amount">{{ formatPrice(quote.totalQuoted ?? quote.subtotalRequested) }}</span>
+          </div>
+        </button>
         }
-      </ul>
+      </nav>
       }
-    </section>
+    </aside>
 
-    <section class="account-quotes__detail">
+    <main class="account-quotes__main">
       @if (selected()) {
-      <div class="account-quotes__detail-card">
-        <header>
-          <h2>
-            Devis {{ selected()?.quoteNumber ?? selected()?.requestNumber }}
-          </h2>
-          <p>Statut : {{ selected()?.status }}</p>
+      <article class="account-quotes__detail-card">
+        <header class="account-quotes__detail-header">
+          <div>
+            <h2 class="account-quotes__detail-title">
+              Devis {{ selected()?.quoteNumber ?? selected()?.requestNumber }}
+            </h2>
+            <div class="account-quotes__detail-meta">
+              <span
+                class="account-quotes__status-badge account-quotes__status-badge--large"
+                [class.account-quotes__status-badge--info]="getStatusColor(selected()!.status) === 'info'"
+                [class.account-quotes__status-badge--warning]="getStatusColor(selected()!.status) === 'warning'"
+                [class.account-quotes__status-badge--success]="getStatusColor(selected()!.status) === 'success'"
+                [class.account-quotes__status-badge--error]="getStatusColor(selected()!.status) === 'error'"
+              >
+                {{ getStatusLabel(selected()!.status) }}
+              </span>
+              @if (selected()?.requestedDeliveryDate) {
+              <span class="account-quotes__meta-item">
+                <span class="account-quotes__meta-label">Date de livraison souhaitée :</span>
+                <strong>{{ formatDate(selected()?.requestedDeliveryDate) }}</strong>
+              </span>
+              }
+              @if (selected()?.validatedAt) {
+              <span class="account-quotes__meta-item">
+                <span class="account-quotes__meta-label">Validé le :</span>
+                <strong>{{ formatDate(selected()?.validatedAt) }}</strong>
+              </span>
+              }
+            </div>
+          </div>
         </header>
 
-        <div class="account-quotes__items">
-          @for (item of selected()?.items ?? []; track item.id ??
-          item.productName) {
-          <div class="account-quotes__item">
-            <div>
-              <h3>{{ item.productName }}</h3>
-              <p>
-                Quantité {{ item.quantity }} — Prix unitaire {{
-                formatPrice(item.unitPrice) }}
-              </p>
-            </div>
-            <strong>{{ formatPrice(item.unitPrice * item.quantity) }}</strong>
-          </div>
-          }
+        @if (selected()?.clientMessage) {
+        <div class="account-quotes__message">
+          <h3 class="account-quotes__message-title">Votre message</h3>
+          <p class="account-quotes__message-text">{{ selected()?.clientMessage }}</p>
         </div>
+        }
+
+        @if (selected()?.adminNotes) {
+        <div class="account-quotes__admin-notes">
+          <h3 class="account-quotes__admin-notes-title">Notes de l'administrateur</h3>
+          <p class="account-quotes__admin-notes-text">{{ selected()?.adminNotes }}</p>
+        </div>
+        }
+
+        <div class="account-quotes__items-section">
+          <h3 class="account-quotes__section-title">Articles</h3>
+          <div class="account-quotes__items">
+            @for (item of selected()?.items ?? []; track item.id ?? item.productName) {
+            <div class="account-quotes__item">
+              <div class="account-quotes__item-content">
+                <h4 class="account-quotes__item-title">{{ item.productName }}</h4>
+                @if (item.brand || item.width || item.profile || item.diameter) {
+                <p class="account-quotes__item-specs">
+                  @if (item.brand) {
+                    <span>{{ item.brand }}</span>
+                  }
+                  @if (item.width && item.profile && item.diameter) {
+                    <span>{{ item.width }}/{{ item.profile }} R{{ item.diameter }}</span>
+                  }
+                </p>
+                }
+                <p class="account-quotes__item-details">
+                  Quantité : <strong>{{ item.quantity }}</strong> × {{ formatPrice(item.unitPrice) }}
+                </p>
+              </div>
+              <div class="account-quotes__item-total">
+                {{ formatPrice(item.lineTotal) }}
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+
+        @if (selected()?.discountTotal && (selected()?.discountTotal ?? 0) > 0) {
+        <div class="account-quotes__summary">
+          <div class="account-quotes__summary-row">
+            <span>Sous-total</span>
+            <span>{{ formatPrice(selected()?.subtotalRequested) }}</span>
+          </div>
+          <div class="account-quotes__summary-row account-quotes__summary-row--discount">
+            <span>Remise</span>
+            <span>- {{ formatPrice(selected()?.discountTotal) }}</span>
+          </div>
+        </div>
+        }
 
         <div class="account-quotes__total">
-          <span>Total devis</span>
-          <strong
-            >{{ formatPrice(selected()?.totalQuoted ??
-            selected()?.subtotalRequested ?? 0) }}</strong
-          >
+          <span class="account-quotes__total-label">Total du devis</span>
+          <span class="account-quotes__total-value">
+            {{ formatPrice(selected()?.totalQuoted ?? selected()?.subtotalRequested ?? 0) }}
+          </span>
         </div>
 
-        @if (selected()?.status === 'EN_ATTENTE_VALIDATION' ||
-        selected()?.status === 'DEVIS_ENVOYE') {
-        <button class="account-quotes__cta" (click)="validateQuote()">
-          Valider et confirmer ma commande
-        </button>
-        } @if (selected()?.quotePdfUrl) {
-        <a
-          class="account-quotes__link"
-          [href]="selected()?.quotePdfUrl ?? ''"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Télécharger le devis PDF
-        </a>
+        @if (selected()?.validUntil) {
+        <div class="account-quotes__validity">
+          <span class="account-quotes__validity-icon">⏰</span>
+          <span>Valable jusqu'au {{ formatDate(selected()?.validUntil) }}</span>
+        </div>
         }
-      </div>
+
+        <div class="account-quotes__actions">
+          @if (selected()?.status === 'EN_ATTENTE_VALIDATION' || selected()?.status === 'DEVIS_ENVOYE') {
+          <button class="account-quotes__action account-quotes__action--primary" (click)="openDeliveryDateModal()">
+            <span>✓</span>
+            Valider et confirmer ma commande
+          </button>
+          }
+          @if (selected()?.status === 'LIVRE_EN_ATTENTE_CONFIRMATION') {
+          <button class="account-quotes__action account-quotes__action--primary" (click)="confirmDelivery()">
+            <span>✓</span>
+            Confirmer la livraison
+          </button>
+          }
+          <div class="account-quotes__action-group">
+            @if (selected()?.quotePdfUrl) {
+            <a
+              class="account-quotes__action account-quotes__action--secondary"
+              [href]="selected()?.quotePdfUrl ?? ''"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>📄</span>
+              Télécharger le devis PDF
+            </a>
+            }
+            @if (selected()?.validatedPdfUrl) {
+            <a
+              class="account-quotes__action account-quotes__action--secondary"
+              [href]="selected()?.validatedPdfUrl ?? ''"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>🔒</span>
+              Devis validé (preuve)
+            </a>
+            }
+          </div>
+        </div>
+      </article>
       } @else {
-      <div class="account-quotes__placeholder">
-        Sélectionnez un devis pour afficher les détails.
+      <div class="account-quotes__empty-state">
+        <div class="account-quotes__empty-state-icon">📋</div>
+        <h3 class="account-quotes__empty-state-title">Sélectionnez un devis</h3>
+        <p class="account-quotes__empty-state-text">
+          Choisissez un devis dans la liste pour consulter ses détails, télécharger le PDF ou effectuer une action.
+        </p>
       </div>
       }
-    </section>
+    </main>
   </div>
+
+  @if (showDeliveryDateModal()) {
+  <div class="account-quotes__modal-overlay" (click)="closeDeliveryDateModal()">
+    <div class="account-quotes__modal" (click)="$event.stopPropagation()">
+      <header class="account-quotes__modal-header">
+        <h3 class="account-quotes__modal-title">Sélectionner la date de livraison</h3>
+        <button type="button" class="account-quotes__modal-close" (click)="closeDeliveryDateModal()" aria-label="Fermer">
+          ×
+        </button>
+      </header>
+      <div class="account-quotes__modal-body">
+        <p class="account-quotes__modal-text">
+          Veuillez choisir la date à laquelle vous souhaitez recevoir votre commande. La date minimale est demain.
+        </p>
+        <div class="account-quotes__modal-input-group">
+          <label for="delivery-date" class="account-quotes__modal-label">Date de livraison souhaitée</label>
+          <input
+            id="delivery-date"
+            type="date"
+            [value]="requestedDeliveryDate()"
+            (input)="requestedDeliveryDate.set($any($event.target).value)"
+            [min]="getMinDeliveryDate()"
+            class="account-quotes__date-input"
+          />
+        </div>
+      </div>
+      <footer class="account-quotes__modal-footer">
+        <button
+          type="button"
+          class="account-quotes__modal-action account-quotes__modal-action--secondary"
+          (click)="closeDeliveryDateModal()"
+        >
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="account-quotes__modal-action account-quotes__modal-action--primary"
+          (click)="validateQuote()"
+          [disabled]="loading() || !requestedDeliveryDate()"
+        >
+          @if (loading()) {
+          <span class="account-quotes__spinner account-quotes__spinner--inline"></span>
+          Validation en cours...
+          } @else {
+          Valider le devis
+          }
+        </button>
+      </footer>
+    </div>
+  </div>
+  }
 </div>

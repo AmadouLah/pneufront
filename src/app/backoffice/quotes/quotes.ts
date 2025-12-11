@@ -36,6 +36,8 @@ export class QuotesComponent implements OnInit {
     'EN_ATTENTE_VALIDATION',
     'VALIDE_PAR_CLIENT',
     'EN_COURS_LIVRAISON',
+    'LIVRE_EN_ATTENTE_CONFIRMATION',
+    'CLIENT_ABSENT',
     'TERMINE'
   ];
 
@@ -71,6 +73,16 @@ export class QuotesComponent implements OnInit {
       description: 'Le livreur est assigné et la livraison est en cours.'
     },
     {
+      status: 'LIVRE_EN_ATTENTE_CONFIRMATION' as QuoteStatus,
+      title: 'Livré - En attente',
+      description: 'Le livreur a marqué la livraison comme effectuée, en attente de confirmation du client.'
+    },
+    {
+      status: 'CLIENT_ABSENT' as QuoteStatus,
+      title: 'Client absent',
+      description: 'Le client n\'était pas présent lors de la livraison.'
+    },
+    {
       status: 'TERMINE' as QuoteStatus,
       title: 'Terminé',
       description: 'Livraison confirmée, dossier clôturé.'
@@ -92,6 +104,8 @@ export class QuotesComponent implements OnInit {
     'EN_ATTENTE_VALIDATION',
     'VALIDE_PAR_CLIENT',
     'EN_COURS_LIVRAISON',
+    'LIVRE_EN_ATTENTE_CONFIRMATION',
+    'CLIENT_ABSENT',
     'TERMINE'
   ];
 

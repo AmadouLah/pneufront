@@ -5,6 +5,8 @@ export type QuoteStatus =
   | 'EN_ATTENTE_VALIDATION'
   | 'VALIDE_PAR_CLIENT'
   | 'EN_COURS_LIVRAISON'
+  | 'LIVRE_EN_ATTENTE_CONFIRMATION'
+  | 'CLIENT_ABSENT'
   | 'TERMINE'
   | 'ANNULE';
 
@@ -33,6 +35,10 @@ export interface QuoteResponse {
   quotePdfUrl: string | null;
   validatedAt: string | null;
   validatedIp: string | null;
+  validatedDeviceInfo: string | null;
+  validatedPdfUrl: string | null;
+  requestedDeliveryDate: string | null;
+  clientAbsentCount: number | null;
   clientEmail: string;
   clientName: string;
   clientMessage: string | null;

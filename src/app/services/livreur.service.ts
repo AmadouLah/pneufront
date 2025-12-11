@@ -24,8 +24,21 @@ export class LivreurService {
     return this.http.get<QuoteResponse[]>(this.baseQuotes);
   }
 
-  completeQuote(id: number) {
-    return this.http.post<QuoteResponse>(`${this.baseQuotes}/${id}/complete`, {});
+  completeQuote(id: number, payload: {
+    latitude: number;
+    longitude: number;
+    photoBase64?: string;
+    signatureData?: string;
+    deliveryNotes?: string;
+  }) {
+    return this.http.post<QuoteResponse>(`${this.baseQuotes}/${id}/complete`, payload);
+  }
+
+  markClientAbsent(id: number, payload: {
+    photoBase64?: string;
+    notes?: string;
+  }) {
+    return this.http.post<QuoteResponse>(`${this.baseQuotes}/${id}/client-absent`, payload);
   }
 
   getAssignedDeliveries() {

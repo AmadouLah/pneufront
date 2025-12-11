@@ -19,11 +19,11 @@
     <h2>Devis à livrer</h2>
     @if (loadingQuotes()) {
     <div class="livreur-placeholder">Chargement des devis…</div>
-    } @else if (quotes().length === 0) {
+    } @else if (filteredQuotes().length === 0) {
     <div class="livreur-placeholder">Aucun devis en cours de livraison.</div>
     } @else {
     <div class="livreur-grid">
-      @for (quote of quotes(); track quote.id) {
+      @for (quote of filteredQuotes(); track quote.id) {
       <article class="livreur-card">
         <header>
           <h3>{{ quote.quoteNumber ?? quote.requestNumber }}</h3>
@@ -35,9 +35,17 @@
         <p class="livreur-card__total">
           {{ formatPrice(quote.totalQuoted ?? quote.subtotalRequested) }}
         </p>
-        <button class="livreur-action" (click)="completeQuote(quote)">
-          Confirmer la livraison
-        </button>
+        @if (quote.requestedDeliveryDate) {
+        <p class="livreur-card__date">Date souhaitée : {{ quote.requestedDeliveryDate | date:'dd/MM/yyyy' }}</p>
+        }
+        <div class="livreur-actions">
+          <button class="livreur-action livreur-action--primary" (click)="openDeliveryModal(quote)">
+            Marquer comme livré
+          </button>
+          <button class="livreur-action livreur-action--secondary" (click)="openAbsentModal(quote)">
+            Client absent
+          </button>
+        </div>
         @if (quote.deliveryDetails) {
         <p class="livreur-notes">{{ quote.deliveryDetails }}</p>
         }
@@ -74,3 +82,124 @@
     }
   </section>
 </div>
+
+<!-- Modal de livraison -->
+@if (showDeliveryModal()) {
+<div class="modal-overlay" (click)="closeDeliveryModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Confirmer la livraison</h2>
+    <div class="modal-body">
+      <div class="proof-section">
+        <label>Géolocalisation</label>
+        @if (location()) {
+        <div class="proof-success">
+          ✓ Capturée : {{ location()!.latitude.toFixed(6) }}, {{ location()!.longitude.toFixed(6) }}
+        </div>
+        } @else {
+        <div class="proof-warning">En attente de capture...</div>
+        }
+      </div>
+
+      <div class="proof-section">
+        <label>Photo de preuve</label>
+        @if (photoPreview()) {
+        <div class="photo-preview">
+          <img [src]="photoPreview()!" alt="Photo de preuve" />
+          <button type="button" class="btn-secondary" (click)="capturePhoto()">Reprendre la photo</button>
+        </div>
+        } @else {
+        <button type="button" class="btn-primary" (click)="capturePhoto()">Prendre une photo</button>
+        }
+      </div>
+
+      <div class="proof-section">
+        <label>Signature du client</label>
+        <div class="signature-container">
+          <canvas 
+            #signatureCanvas
+            width="400" 
+            height="200"
+            (mousedown)="onSignatureStart($event)"
+            (mousemove)="onSignatureMove($event)"
+            (mouseup)="onSignatureEnd()"
+            (mouseleave)="onSignatureEnd()"
+            (touchstart)="onSignatureStart($event)"
+            (touchmove)="onSignatureMove($event)"
+            (touchend)="onSignatureEnd()"
+          ></canvas>
+          @if (signatureData()) {
+          <button type="button" class="btn-secondary" (click)="clearSignature()">Effacer</button>
+          }
+        </div>
+        <p class="proof-hint">Le client doit signer ici avec son doigt</p>
+      </div>
+
+      <div class="proof-section">
+        <label>Notes de livraison (optionnel)</label>
+        <textarea 
+          [(ngModel)]="deliveryNotes"
+          rows="3"
+          placeholder="Ajouter des notes sur la livraison..."
+        ></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="closeDeliveryModal()" [disabled]="isProcessing()">
+        Annuler
+      </button>
+      <button type="button" class="btn-primary" (click)="completeQuote()" [disabled]="isProcessing()">
+        @if (isProcessing()) {
+        Enregistrement...
+        } @else {
+        Confirmer la livraison
+        }
+      </button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Modal client absent -->
+@if (showAbsentModal()) {
+<div class="modal-overlay" (click)="closeAbsentModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Client absent</h2>
+    <div class="modal-body">
+      <p class="modal-text">Le client n'était pas présent lors de la livraison.</p>
+      
+      <div class="proof-section">
+        <label>Photo du lieu (optionnel)</label>
+        @if (absentPhotoPreview()) {
+        <div class="photo-preview">
+          <img [src]="absentPhotoPreview()!" alt="Photo du lieu" />
+          <button type="button" class="btn-secondary" (click)="captureAbsentPhoto()">Reprendre la photo</button>
+        </div>
+        } @else {
+        <button type="button" class="btn-primary" (click)="captureAbsentPhoto()">Prendre une photo</button>
+        }
+      </div>
+
+      <div class="proof-section">
+        <label>Notes (optionnel)</label>
+        <textarea 
+          [(ngModel)]="absentNotes"
+          rows="3"
+          placeholder="Ajouter des notes sur l'absence du client..."
+        ></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="closeAbsentModal()" [disabled]="isProcessing()">
+        Annuler
+      </button>
+      <button type="button" class="btn-primary" (click)="markClientAbsent()" [disabled]="isProcessing()">
+        @if (isProcessing()) {
+        Enregistrement...
+        } @else {
+        Enregistrer l'absence
+        }
+      </button>
+    </div>
+  </div>
+</div>
+}

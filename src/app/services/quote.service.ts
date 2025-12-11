@@ -29,8 +29,18 @@ export class QuoteService {
     return this.http.get<QuoteResponse>(`${environment.apiUrl}/quotes/${id}`);
   }
 
-  validateQuote(id: number) {
-    return this.http.post<QuoteResponse>(`${environment.apiUrl}/quotes/${id}/validate`, {});
+  validateQuote(id: number, requestedDeliveryDate?: string) {
+    const deviceInfo = typeof navigator !== 'undefined' 
+      ? `${navigator.userAgent} - ${navigator.platform}`
+      : 'Unknown device';
+    return this.http.post<QuoteResponse>(`${environment.apiUrl}/quotes/${id}/validate`, {
+      requestedDeliveryDate: requestedDeliveryDate || null,
+      deviceInfo: deviceInfo
+    });
+  }
+
+  confirmDelivery(id: number) {
+    return this.http.post<QuoteResponse>(`${environment.apiUrl}/quotes/${id}/confirm-delivery`, {});
   }
 }
 
