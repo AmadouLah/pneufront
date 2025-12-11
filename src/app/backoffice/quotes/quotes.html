@@ -175,6 +175,11 @@
         >
           {{ feedback()?.message }}
         </div>
+        } @if (!canEditQuote()) {
+        <div class="quotes-feedback quotes-feedback--warning">
+          ⚠️ Ce devis ne peut plus être modifié : une fois validé par le client,
+          aucune modification n'est autorisée.
+        </div>
         }
 
         <div class="quotes-detail__section">
@@ -191,6 +196,7 @@
                     type="number"
                     min="1"
                     [value]="item.quantity"
+                    [disabled]="!canEditQuote()"
                     (input)="updateItem(index, 'quantity', $any($event.target).value)"
                   />
                   Prix unitaire :
@@ -198,6 +204,7 @@
                     type="number"
                     min="0"
                     [value]="item.unitPrice"
+                    [disabled]="!canEditQuote()"
                     (input)="updateItem(index, 'unitPrice', $any($event.target).value)"
                   />
                 </p>
@@ -215,11 +222,18 @@
           <form [formGroup]="settingsForm" class="quotes-settings">
             <label>
               Validité
-              <input type="date" formControlName="validUntil" />
+              <input
+                type="date"
+                formControlName="validUntil"
+                [disabled]="!canEditQuote()"
+              />
             </label>
             <label>
               Type de remise
-              <select formControlName="discountType">
+              <select
+                formControlName="discountType"
+                [disabled]="!canEditQuote()"
+              >
                 <option value="amount">Montant fixe (FCFA)</option>
                 <option value="percentage">Pourcentage (%)</option>
               </select>
@@ -236,6 +250,7 @@
                 [min]="0"
                 [max]="getDiscountMax()"
                 [step]="settingsForm.value.discountType === 'percentage' ? 0.01 : 1"
+                [disabled]="!canEditQuote()"
               />
             </label>
             @if (hasDiscount()) {
@@ -250,11 +265,19 @@
             }
             <label>
               Notes internes
-              <textarea rows="3" formControlName="adminNotes"></textarea>
+              <textarea
+                rows="3"
+                formControlName="adminNotes"
+                [disabled]="!canEditQuote()"
+              ></textarea>
             </label>
             <label>
               Instructions livraison
-              <textarea rows="3" formControlName="deliveryDetails"></textarea>
+              <textarea
+                rows="3"
+                formControlName="deliveryDetails"
+                [disabled]="!canEditQuote()"
+              ></textarea>
             </label>
           </form>
           <div class="quotes-totals">
@@ -352,6 +375,19 @@
                 réassigner à un autre livreur.
               </p>
             </div>
+            } @else if (!canAssignLivreur()) {
+            <div class="quotes-placeholder">
+              @if (selectedQuote()?.status !== 'VALIDE_PAR_CLIENT') {
+              <p>
+                Le devis doit être validé par le client avant de pouvoir
+                assigner un livreur.
+              </p>
+              } @else {
+              <p>
+                Impossible d'assigner un livreur dans l'état actuel du devis.
+              </p>
+              }
+            </div>
             } @else if (livreurs().length === 0) {
             <div class="quotes-placeholder">
               Aucun livreur disponible. Veuillez créer un livreur depuis la page
@@ -369,7 +405,7 @@
             <button
               class="quotes-action"
               (click)="assignLivreur()"
-              [disabled]="isProcessing() || isLivreurAssigned()"
+              [disabled]="isProcessing() || !canAssignLivreur()"
             >
               Assigner
             </button>
@@ -381,19 +417,18 @@
           <button
             class="quotes-action"
             (click)="saveDraft()"
-            [disabled]="isProcessing()"
+            [disabled]="isProcessing() || !canEditQuote()"
           >
             Enregistrer le brouillon
           </button>
           <button
             class="quotes-action quotes-action--primary"
             (click)="sendQuote()"
-            [disabled]="isProcessing() || isSendingQuote() || selectedQuote()?.status === 'DEVIS_ENVOYE' || selectedQuote()?.status === 'EN_ATTENTE_VALIDATION'"
+            [disabled]="isProcessing() || isSendingQuote() || !canSendQuote() || !canEditQuote()"
           >
             @if (isSendingQuote()) {
             <span>Envoi en cours...</span>
-            } @else if (selectedQuote()?.status === 'DEVIS_ENVOYE' ||
-            selectedQuote()?.status === 'EN_ATTENTE_VALIDATION') {
+            } @else if (!canSendQuote()) {
             <span>Déjà envoyé</span>
             } @else {
             <span>Envoyer le devis</span>

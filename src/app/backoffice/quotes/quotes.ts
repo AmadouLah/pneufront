@@ -8,6 +8,7 @@ import { AdminQuoteService, QuoteAdminItemPayload, QuoteAdminUpdatePayload } fro
 import { QuoteItem, QuoteResponse, QuoteStatus } from '../../shared/types/quote';
 import { environment } from '../../environment';
 import { formatCurrency } from '../../shared/utils/currency';
+import { Authservice } from '../../services/authservice';
 
 interface LivreurOption {
   id: number;
@@ -26,6 +27,7 @@ export class QuotesComponent implements OnInit {
   private readonly adminQuoteService = inject(AdminQuoteService);
   private readonly http = inject(HttpClient);
   private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(Authservice);
 
   @ViewChild('detailPanel') private detailPanel?: ElementRef<HTMLDivElement>;
 
@@ -298,10 +300,19 @@ export class QuotesComponent implements OnInit {
       return;
     }
 
-    if (quote.status === 'DEVIS_ENVOYE' || quote.status === 'EN_ATTENTE_VALIDATION') {
+    // Vérifier si le devis a déjà été envoyé (statuts indiquant un envoi précédent)
+    const isAlreadySent = quote.status === 'DEVIS_ENVOYE' 
+        || quote.status === 'EN_ATTENTE_VALIDATION'
+        || quote.status === 'VALIDE_PAR_CLIENT'
+        || quote.status === 'EN_COURS_LIVRAISON'
+        || quote.status === 'LIVRE_EN_ATTENTE_CONFIRMATION'
+        || quote.status === 'CLIENT_ABSENT'
+        || quote.status === 'TERMINE';
+
+    if (isAlreadySent) {
       this.feedback.set({ 
         type: 'error', 
-        message: 'Ce devis a déjà été envoyé au client.' 
+        message: 'Ce devis a déjà été envoyé au client. Une fois envoyé, il ne peut plus être réenvié.' 
       });
       return;
     }
@@ -338,6 +349,22 @@ export class QuotesComponent implements OnInit {
     const livreurId = this.settingsForm.value.livreurId;
     
     if (!quote) {
+      return;
+    }
+
+    // Vérifier que l'assignation est possible
+    if (!this.canAssignLivreur()) {
+      if (quote.status !== 'VALIDE_PAR_CLIENT') {
+        this.feedback.set({ 
+          type: 'error', 
+          message: 'Impossible d\'assigner un livreur : le devis doit être validé par le client avant l\'assignation.' 
+        });
+      } else {
+        this.feedback.set({ 
+          type: 'error', 
+          message: 'Impossible d\'assigner un livreur dans l\'état actuel du devis.' 
+        });
+      }
       return;
     }
     
@@ -382,6 +409,55 @@ export class QuotesComponent implements OnInit {
   isLivreurAssigned(): boolean {
     const quote = this.selectedQuote();
     return !!quote?.assignedLivreur && !!quote?.livreurAssignmentEmailSent;
+  }
+
+  canAssignLivreur(): boolean {
+    const quote = this.selectedQuote();
+    if (!quote) {
+      return false;
+    }
+    
+    // Cas de réassignation : livreur assigné mais email non envoyé et statut EN_COURS_LIVRAISON
+    const isReassignmentAfterEmailFailure = !!quote.assignedLivreur 
+        && !quote.livreurAssignmentEmailSent 
+        && quote.status === 'EN_COURS_LIVRAISON';
+    
+    // L'assignation initiale n'est possible que lorsque le devis est validé par le client
+    // La réassignation est possible uniquement en cas d'échec d'envoi d'email
+    return (quote.status === 'VALIDE_PAR_CLIENT' && !this.isLivreurAssigned()) || isReassignmentAfterEmailFailure;
+  }
+
+  isCurrentUserDeveloper(): boolean {
+    const user = this.authService.authUser();
+    return user?.role === 'DEVELOPER';
+  }
+
+  canEditQuote(): boolean {
+    const quote = this.selectedQuote();
+    if (!quote) {
+      return true; // Par défaut, permettre l'édition si aucun devis n'est sélectionné
+    }
+
+    // Si le devis est validé par le client ou dans un stade supérieur,
+    // personne ne peut plus modifier le devis (ni admin, ni développeur)
+    const isQuoteValidatedOrBeyond = quote.status === 'VALIDE_PAR_CLIENT' ||
+      quote.status === 'EN_COURS_LIVRAISON' ||
+      quote.status === 'LIVRE_EN_ATTENTE_CONFIRMATION' ||
+      quote.status === 'CLIENT_ABSENT' ||
+      quote.status === 'TERMINE';
+
+    return !isQuoteValidatedOrBeyond;
+  }
+
+  canSendQuote(): boolean {
+    const quote = this.selectedQuote();
+    if (!quote) {
+      return false;
+    }
+
+    // Le devis ne peut être envoyé que s'il n'a pas déjà été envoyé
+    // Statuts autorisés pour l'envoi : EN_ATTENTE, DEVIS_EN_PREPARATION
+    return quote.status === 'EN_ATTENTE' || quote.status === 'DEVIS_EN_PREPARATION';
   }
 
   formatPrice(value: number): string {
