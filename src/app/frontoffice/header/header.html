@@ -327,13 +327,13 @@
 
               <!-- Menu Options -->
               <ul class="py-2">
-                @if (isAdminOrDeveloper()) {
+                @if (isAdminOrDeveloper() || isLivreur()) {
                 <li>
                   <a
-                    (click)="navigateAndCloseMenu('/dashboard')"
+                    (click)="navigateAndCloseMenu(getDashboardRoute())"
                     class="block px-4 py-2 text-white hover:text-primary hover:bg-gray-800 transition-colors cursor-pointer"
                   >
-                    Tableau de bord
+                    Dashboard
                   </a>
                 </li>
                 }
@@ -562,13 +562,13 @@
         >
           <span>Contact</span>
         </button>
-        @if (isAdminOrDeveloper()) {
+        @if (isAdminOrDeveloper() || isLivreur()) {
         <button
           type="button"
-          (click)="navigateFromMobile('/dashboard')"
+          (click)="navigateFromMobile(getDashboardRoute())"
           class="w-full flex items-center justify-between px-2 py-3 text-left text-white font-medium rounded-lg hover:bg-gray-900 hover:text-primary transition-colors"
         >
-          <span>Tableau de bord</span>
+          <span>Dashboard</span>
         </button>
         }
         <button

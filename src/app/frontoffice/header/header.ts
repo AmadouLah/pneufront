@@ -115,6 +115,21 @@ export class HeaderComponent implements OnInit {
   }
 
   /**
+   * Vérifie si l'utilisateur est un livreur
+   */
+  isLivreur(): boolean {
+    const user = this.getUserInfo();
+    return user?.role === 'LIVREUR';
+  }
+
+  /**
+   * Retourne la route du dashboard selon le rôle de l'utilisateur
+   */
+  getDashboardRoute(): string {
+    return this.isLivreur() ? '/dashboard/livreur' : '/dashboard';
+  }
+
+  /**
    * Toggle du menu mobile
    */
   toggleMobileMenu(): void {

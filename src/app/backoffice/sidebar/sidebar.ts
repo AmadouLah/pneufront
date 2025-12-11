@@ -20,6 +20,7 @@ export class Sidebar implements OnInit, OnDestroy {
   isAdminOrDeveloper = false;
   isDeveloper = false;
   isLivreur = false;
+  isInfluenceur = false;
   private toggleListener: any;
 
   // Compteurs pour les badges
@@ -29,11 +30,12 @@ export class Sidebar implements OnInit, OnDestroy {
   countPendingOrders: number | null = null;
 
   ngOnInit(): void {
-    // Vérifier si l'utilisateur est admin ou développeur
+    // Vérifier le rôle de l'utilisateur
     const user = this.auth.authUser();
     this.isAdminOrDeveloper = user?.role === 'ADMIN' || user?.role === 'DEVELOPER';
     this.isDeveloper = user?.role === 'DEVELOPER';
     this.isLivreur = user?.role === 'LIVREUR';
+    this.isInfluenceur = user?.role === 'INFLUENCEUR';
     
     // Écouter les événements de toggle du sidebar
     this.toggleListener = (event: any) => {
@@ -78,9 +80,14 @@ export class Sidebar implements OnInit, OnDestroy {
   }
 
   /**
-   * Charge les compteurs depuis l'API
+   * Charge les compteurs depuis l'API (uniquement pour les admins/developers)
    */
   private async loadCounters(): Promise<void> {
+    // Les livreurs et influenceurs n'ont pas besoin de compteurs
+    if (this.isLivreur || this.isInfluenceur) {
+      return;
+    }
+
     try {
       const base = environment.apiUrl;
       
