@@ -59,5 +59,9 @@ export class AdminQuoteService {
   generatePreview(id: number) {
     return this.http.post<QuoteResponse>(`${this.baseUrl}/${id}/preview`, {});
   }
+
+  getPreviewPdfUrl(id: number): string {
+    return `${this.baseUrl}/${id}/preview-pdf`;
+  }
 }
 

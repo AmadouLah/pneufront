@@ -96,7 +96,8 @@ export class QuotesComponent implements OnInit {
   ];
 
   readonly isProcessing = signal(false);
-  readonly feedback = signal<{ type: 'success' | 'error'; message: string } | null>(null);
+  readonly isSendingQuote = signal(false);
+  readonly feedback = signal<{ type: 'success' | 'error' | 'warning'; message: string } | null>(null);
   readonly isPdfLoading = signal(false);
   readonly pdfError = signal('');
 
@@ -106,7 +107,8 @@ export class QuotesComponent implements OnInit {
 
   readonly settingsForm = this.fb.group({
     validUntil: [''],
-    discountTotal: [0],
+    discountType: ['amount' as 'amount' | 'percentage'],
+    discountValue: [0],
     adminNotes: [''],
     deliveryDetails: [''],
     livreurId: [null as number | null]
@@ -120,8 +122,49 @@ export class QuotesComponent implements OnInit {
     const itemsTotal = this.editableItems()
       .map((item) => item.unitPrice * item.quantity)
       .reduce((sum, value) => sum + value, 0);
-    const discount = Number(this.settingsForm.value.discountTotal ?? 0);
+    const discount = this.calculateDiscount(itemsTotal);
     return Math.max(0, itemsTotal - discount);
+  }
+
+  calculateDiscount(subtotal: number): number {
+    const discountType = this.settingsForm.value.discountType ?? 'amount';
+    const discountValue = Number(this.settingsForm.value.discountValue ?? 0);
+    
+    if (discountValue <= 0) {
+      return 0;
+    }
+    
+    if (discountType === 'percentage') {
+      const percentageDiscount = (subtotal * discountValue) / 100;
+      return Math.min(percentageDiscount, subtotal);
+    }
+    
+    return Math.min(discountValue, subtotal);
+  }
+
+  getDiscountDisplay(): string {
+    const discountType = this.settingsForm.value.discountType ?? 'amount';
+    const discountValue = Number(this.settingsForm.value.discountValue ?? 0);
+    
+    if (discountValue <= 0) {
+      return '0 FCFA';
+    }
+    
+    const subtotal = this.editableItems()
+      .map((item) => item.unitPrice * item.quantity)
+      .reduce((sum, value) => sum + value, 0);
+    
+    const discount = this.calculateDiscount(subtotal);
+    return this.formatPrice(discount);
+  }
+
+  getDiscountMax(): number | null {
+    return this.settingsForm.value.discountType === 'percentage' ? 100 : null;
+  }
+
+  hasDiscount(): boolean {
+    const discountValue = Number(this.settingsForm.value.discountValue ?? 0);
+    return discountValue > 0;
   }
 
   loadQuotes(): void {
@@ -160,13 +203,38 @@ export class QuotesComponent implements OnInit {
       next: (full) => {
         this.selectedQuote.set(full);
         this.editableItems.set(full.items.map((item) => ({ ...item })));
+        const discountTotal = full.discountTotal ?? 0;
+        const subtotal = full.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+        
+        let discountType: 'amount' | 'percentage' = 'amount';
+        let discountValue = discountTotal;
+        
+        if (subtotal > 0 && discountTotal > 0) {
+          const percentage = (discountTotal / subtotal) * 100;
+          const roundedPercentage = Math.round(percentage * 100) / 100;
+          const calculatedAmount = (subtotal * roundedPercentage) / 100;
+          const difference = Math.abs(discountTotal - calculatedAmount);
+          
+          if (percentage <= 100 && difference < 0.01) {
+            discountType = 'percentage';
+            discountValue = roundedPercentage;
+          }
+        }
+        
         this.settingsForm.patchValue({
           validUntil: full.validUntil ?? '',
-          discountTotal: full.discountTotal ?? 0,
+          discountType: discountType as 'amount' | 'percentage',
+          discountValue: discountValue,
           adminNotes: full.adminNotes ?? '',
           deliveryDetails: full.deliveryDetails ?? '',
           livreurId: null
         });
+        
+        if (full.assignedLivreur && full.livreurAssignmentEmailSent) {
+          this.settingsForm.get('livreurId')?.disable();
+        } else {
+          this.settingsForm.get('livreurId')?.enable();
+        }
         this.feedback.set(null);
         this.loadLivreurs();
         this.fetchQuotePreview(full.id);
@@ -212,22 +280,40 @@ export class QuotesComponent implements OnInit {
 
   sendQuote(): void {
     const quote = this.selectedQuote();
-    if (!quote) {
+    if (!quote || this.isSendingQuote()) {
       return;
     }
+
+    if (quote.status === 'DEVIS_ENVOYE' || quote.status === 'EN_ATTENTE_VALIDATION') {
+      this.feedback.set({ 
+        type: 'error', 
+        message: 'Ce devis a déjà été envoyé au client.' 
+      });
+      return;
+    }
+
+    this.isSendingQuote.set(true);
     this.isProcessing.set(true);
+    this.feedback.set(null);
+    
     const payload = this.buildPayload();
     const frontendUrl = typeof window !== 'undefined' ? `${window.location.origin}/mon-compte/devis` : undefined;
+    
     this.adminQuoteService.sendQuote(quote.id, payload, frontendUrl).subscribe({
       next: (updated) => {
         this.selectedQuote.set(updated);
-        this.feedback.set({ type: 'success', message: 'Devis envoyé au client.' });
+        this.feedback.set({ 
+          type: 'success', 
+          message: 'Devis envoyé au client avec succès !' 
+        });
+        this.isSendingQuote.set(false);
         this.isProcessing.set(false);
         this.loadQuotes();
       },
       error: (error) => {
         const message = error?.error?.error || 'Impossible d\'envoyer le devis.';
         this.feedback.set({ type: 'error', message });
+        this.isSendingQuote.set(false);
         this.isProcessing.set(false);
       }
     });
@@ -236,16 +322,38 @@ export class QuotesComponent implements OnInit {
   assignLivreur(): void {
     const quote = this.selectedQuote();
     const livreurId = this.settingsForm.value.livreurId;
-    if (!quote || !livreurId) {
+    
+    if (!quote) {
+      return;
+    }
+    
+    if (quote.assignedLivreur && quote.livreurAssignmentEmailSent) {
+      this.feedback.set({ 
+        type: 'error', 
+        message: 'Ce devis est déjà assigné à un livreur et l\'email a été envoyé avec succès. La réassignation n\'est pas autorisée.' 
+      });
+      return;
+    }
+    
+    if (!livreurId) {
       this.feedback.set({ type: 'error', message: 'Veuillez sélectionner un livreur.' });
       return;
     }
+    
     this.isProcessing.set(true);
     this.adminQuoteService.assignLivreur(quote.id, livreurId, this.settingsForm.value.deliveryDetails ?? undefined)
       .subscribe({
         next: (updated) => {
           this.selectedQuote.set(updated);
-          this.feedback.set({ type: 'success', message: 'Livreur assigné et livraison lancée.' });
+          if (updated.livreurAssignmentEmailSent) {
+            this.settingsForm.get('livreurId')?.disable();
+            this.feedback.set({ type: 'success', message: 'Livreur assigné et email envoyé avec succès.' });
+          } else {
+            this.feedback.set({ 
+              type: 'warning', 
+              message: 'Livreur assigné mais l\'email n\'a pas pu être envoyé. Vous pouvez réassigner si nécessaire.' 
+            });
+          }
           this.isProcessing.set(false);
           this.loadQuotes();
         },
@@ -257,17 +365,28 @@ export class QuotesComponent implements OnInit {
       });
   }
 
+  isLivreurAssigned(): boolean {
+    const quote = this.selectedQuote();
+    return !!quote?.assignedLivreur && !!quote?.livreurAssignmentEmailSent;
+  }
+
   formatPrice(value: number): string {
     return formatCurrency(value);
   }
 
   resetSelection(): void {
+    const current = this.selectedQuote();
+    if (current?.quotePdfUrl && current.quotePdfUrl.startsWith('blob:')) {
+      window.URL.revokeObjectURL(current.quotePdfUrl);
+    }
     this.selectedQuote.set(null);
     this.editableItems.set([]);
     this.settingsForm.reset();
+    this.settingsForm.get('livreurId')?.enable();
     this.feedback.set(null);
     this.isPdfLoading.set(false);
     this.pdfError.set('');
+    this.isSendingQuote.set(false);
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -286,7 +405,10 @@ export class QuotesComponent implements OnInit {
     }));
 
     const validUntil = this.settingsForm.value.validUntil;
-    const discountTotal = Number(this.settingsForm.value.discountTotal ?? 0);
+    const itemsTotal = this.editableItems()
+      .map((item) => item.unitPrice * item.quantity)
+      .reduce((sum, value) => sum + value, 0);
+    const discountTotal = this.calculateDiscount(itemsTotal);
 
     return {
       items,
@@ -302,15 +424,29 @@ export class QuotesComponent implements OnInit {
     const url = `${environment.apiUrl}/admin/users/role/LIVREUR`;
     this.http.get<any[]>(url).subscribe({
       next: (users) => {
-        const options = (users ?? []).map((user) => ({
-          id: user.id,
-          name: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || user.email,
-          email: user.email
-        }));
+        if (!users || users.length === 0) {
+          console.warn('Aucun livreur trouvé dans la base de données');
+          this.livreurs.set([]);
+          return;
+        }
+        const options = users.map((user) => {
+          const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
+          return {
+            id: user.id,
+            name: fullName || user.email || `Livreur #${user.id}`,
+            email: user.email || 'Email non disponible'
+          };
+        });
+        console.debug(`Chargement de ${options.length} livreur(s)`, options);
         this.livreurs.set(options);
       },
-      error: () => {
+      error: (error) => {
+        console.error('Erreur lors du chargement des livreurs:', error);
         this.livreurs.set([]);
+        this.feedback.set({ 
+          type: 'error', 
+          message: 'Impossible de charger la liste des livreurs.' 
+        });
       }
     });
   }
@@ -353,20 +489,77 @@ export class QuotesComponent implements OnInit {
   private fetchQuotePreview(id: number): void {
     this.isPdfLoading.set(true);
     this.pdfError.set('');
-    this.adminQuoteService.generatePreview(id).subscribe({
-      next: (updated) => {
+    
+    const quote = this.selectedQuote();
+    if (!quote) {
+      this.isPdfLoading.set(false);
+      return;
+    }
+
+    const pdfUrl = this.adminQuoteService.getPreviewPdfUrl(id);
+    this.http.get(pdfUrl, { 
+      responseType: 'blob',
+      observe: 'response',
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    }).subscribe({
+      next: (response) => {
+        if (!response.body || response.body.size === 0) {
+          this.pdfError.set('Le PDF généré est vide.');
+          this.isPdfLoading.set(false);
+          return;
+        }
+
+        const contentType = response.headers.get('content-type');
+        if (contentType && !contentType.includes('application/pdf')) {
+          console.error('Type de contenu inattendu:', contentType);
+          this.pdfError.set('Le serveur n\'a pas retourné un PDF valide.');
+          this.isPdfLoading.set(false);
+          return;
+        }
+
+        const blob = new Blob([response.body!], { type: 'application/pdf' });
+        if (blob.size === 0) {
+          this.pdfError.set('Le blob créé est vide.');
+          this.isPdfLoading.set(false);
+          return;
+        }
+
+        const url = window.URL.createObjectURL(blob);
+        
         this.selectedQuote.update((current) => {
           if (!current) {
-            return updated;
+            return current;
           }
-          return { ...current, quotePdfUrl: updated.quotePdfUrl };
+          if (current.quotePdfUrl && current.quotePdfUrl.startsWith('blob:')) {
+            window.URL.revokeObjectURL(current.quotePdfUrl);
+          }
+          return { ...current, quotePdfUrl: url };
         });
+        
         this.isPdfLoading.set(false);
       },
       error: (error) => {
-        const message = error?.error?.error || 'Impossible de générer le PDF via Carbone.';
-        this.pdfError.set(message);
-        this.isPdfLoading.set(false);
+        console.error('Erreur lors du chargement du PDF:', error);
+        let message = 'Impossible de charger le PDF du devis.';
+        if (error?.error instanceof Blob) {
+          error.error.text().then((text: string) => {
+            try {
+              const json = JSON.parse(text);
+              message = json.message || json.error || message;
+            } catch {
+              message = text || message;
+            }
+            this.pdfError.set(message);
+            this.isPdfLoading.set(false);
+          });
+        } else {
+          message = error?.error?.message || error?.message || message;
+          this.pdfError.set(message);
+          this.isPdfLoading.set(false);
+        }
       }
     });
   }

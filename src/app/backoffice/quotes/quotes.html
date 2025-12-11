@@ -171,6 +171,7 @@
           class="quotes-feedback"
           [class.quotes-feedback--success]="feedback()?.type === 'success'"
           [class.quotes-feedback--error]="feedback()?.type === 'error'"
+          [class.quotes-feedback--warning]="feedback()?.type === 'warning'"
         >
           {{ feedback()?.message }}
         </div>
@@ -217,9 +218,36 @@
               <input type="date" formControlName="validUntil" />
             </label>
             <label>
-              Remises (FCFA)
-              <input type="number" formControlName="discountTotal" min="0" />
+              Type de remise
+              <select formControlName="discountType">
+                <option value="amount">Montant fixe (FCFA)</option>
+                <option value="percentage">Pourcentage (%)</option>
+              </select>
             </label>
+            <label>
+              <span>Valeur de la remise</span>
+              <span class="quotes-discount-hint">
+                @if (settingsForm.value.discountType === 'percentage') { (en %)
+                } @else { (en FCFA) }
+              </span>
+              <input
+                type="number"
+                formControlName="discountValue"
+                [min]="0"
+                [max]="getDiscountMax()"
+                [step]="settingsForm.value.discountType === 'percentage' ? 0.01 : 1"
+              />
+            </label>
+            @if (hasDiscount()) {
+            <div class="quotes-discount-preview">
+              <span class="quotes-discount-preview__label"
+                >Remise appliquée :</span
+              >
+              <span class="quotes-discount-preview__value"
+                >{{ getDiscountDisplay() }}</span
+              >
+            </div>
+            }
             <label>
               Notes internes
               <textarea rows="3" formControlName="adminNotes"></textarea>
@@ -249,7 +277,7 @@
 
         <div class="quotes-detail__section">
           <div class="quotes-detail__section-header">
-            <h3>Aperçu PDF Carbone</h3>
+            <h3>Aperçu PDF du Devis</h3>
             <button
               type="button"
               class="quotes-refresh"
@@ -262,15 +290,25 @@
           @if (isPdfLoading()) {
           <div class="quotes-placeholder">Génération du PDF…</div>
           } @else if (pdfError()) {
-          <div class="quotes-placeholder quotes-placeholder--error">{{ pdfError() }}</div>
+          <div class="quotes-placeholder quotes-placeholder--error">
+            {{ pdfError() }}
+          </div>
           } @else if (selectedQuote()?.quotePdfUrl) {
           <div class="quotes-pdf">
             <ngx-extended-pdf-viewer
               [src]="selectedQuote()?.quotePdfUrl ?? ''"
-              useBrowserLocale="true"
               height="640px"
               [showBorders]="false"
               [textLayer]="true"
+              [showSidebarButton]="false"
+              [showFindButton]="true"
+              [showPagingButtons]="true"
+              [showZoomButtons]="true"
+              [showPresentationModeButton]="false"
+              [showOpenFileButton]="false"
+              [showPrintButton]="true"
+              [showDownloadButton]="true"
+              [showSecondaryToolbarButton]="false"
             ></ngx-extended-pdf-viewer>
           </div>
           } @else {
@@ -280,7 +318,46 @@
 
         <div class="quotes-detail__section">
           <h3>Assignation livreur</h3>
-          <div class="quotes-delivery">
+          <div class="quotes-delivery" [formGroup]="settingsForm">
+            @if (isLivreurAssigned()) {
+            <div class="quotes-assigned-livreur">
+              <div class="quotes-assigned-livreur__info">
+                <span class="quotes-assigned-livreur__label"
+                  >Livreur assigné :</span
+                >
+                <span class="quotes-assigned-livreur__value"
+                  >{{ selectedQuote()?.assignedLivreur }}</span
+                >
+              </div>
+              <p class="quotes-assigned-livreur__hint">
+                Ce devis est déjà assigné et l'email a été envoyé avec succès.
+                La réassignation n'est pas autorisée.
+              </p>
+            </div>
+            } @else if (selectedQuote()?.assignedLivreur &&
+            !selectedQuote()?.livreurAssignmentEmailSent) {
+            <div
+              class="quotes-assigned-livreur quotes-assigned-livreur--warning"
+            >
+              <div class="quotes-assigned-livreur__info">
+                <span class="quotes-assigned-livreur__label"
+                  >Livreur assigné :</span
+                >
+                <span class="quotes-assigned-livreur__value"
+                  >{{ selectedQuote()?.assignedLivreur }}</span
+                >
+              </div>
+              <p class="quotes-assigned-livreur__hint">
+                L'email d'assignation n'a pas pu être envoyé. Vous pouvez
+                réassigner à un autre livreur.
+              </p>
+            </div>
+            } @else if (livreurs().length === 0) {
+            <div class="quotes-placeholder">
+              Aucun livreur disponible. Veuillez créer un livreur depuis la page
+              de gestion des livreurs.
+            </div>
+            } @else {
             <select formControlName="livreurId">
               <option [ngValue]="null">Choisir un livreur</option>
               @for (livreur of livreurs(); track livreur.id) {
@@ -292,10 +369,11 @@
             <button
               class="quotes-action"
               (click)="assignLivreur()"
-              [disabled]="isProcessing()"
+              [disabled]="isProcessing() || isLivreurAssigned()"
             >
               Assigner
             </button>
+            }
           </div>
         </div>
 
@@ -310,9 +388,16 @@
           <button
             class="quotes-action quotes-action--primary"
             (click)="sendQuote()"
-            [disabled]="isProcessing()"
+            [disabled]="isProcessing() || isSendingQuote() || selectedQuote()?.status === 'DEVIS_ENVOYE' || selectedQuote()?.status === 'EN_ATTENTE_VALIDATION'"
           >
-            Envoyer le devis
+            @if (isSendingQuote()) {
+            <span>Envoi en cours...</span>
+            } @else if (selectedQuote()?.status === 'DEVIS_ENVOYE' ||
+            selectedQuote()?.status === 'EN_ATTENTE_VALIDATION') {
+            <span>Déjà envoyé</span>
+            } @else {
+            <span>Envoyer le devis</span>
+            }
           </button>
         </div>
         } @else {

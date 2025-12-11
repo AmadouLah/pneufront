@@ -319,6 +319,12 @@
   color: #fca5a5;
 }
 
+.quotes-feedback--warning {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+}
+
 .quotes-detail__section {
   margin-bottom: 1.5rem;
 }
@@ -382,6 +388,7 @@
 
 .quotes-settings input,
 .quotes-settings textarea,
+.quotes-settings select,
 .quotes-delivery select {
   width: 100%;
   background: rgba(15, 23, 42, 0.8);
@@ -389,6 +396,38 @@
   border-radius: 0.75rem;
   padding: 0.6rem 0.75rem;
   color: #f8fafc;
+}
+
+.quotes-discount-hint {
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.6);
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.quotes-discount-preview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(94, 234, 212, 0.08);
+  border: 1px solid rgba(94, 234, 212, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.quotes-discount-preview__label {
+  font-size: 0.85rem;
+  color: rgba(94, 234, 212, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.quotes-discount-preview__value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5eead4;
 }
 
 .quotes-totals {
@@ -427,6 +466,58 @@
   display: flex;
   gap: 0.75rem;
   align-items: center;
+}
+
+.quotes-assigned-livreur {
+  background: rgba(94, 234, 212, 0.08);
+  border: 1px solid rgba(94, 234, 212, 0.2);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+.quotes-assigned-livreur__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.quotes-assigned-livreur__label {
+  font-size: 0.85rem;
+  color: rgba(94, 234, 212, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.quotes-assigned-livreur__value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5eead4;
+}
+
+.quotes-assigned-livreur__hint {
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.7);
+  margin: 0;
+  font-style: italic;
+}
+
+.quotes-assigned-livreur--warning {
+  background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.quotes-assigned-livreur--warning .quotes-assigned-livreur__label {
+  color: rgba(251, 191, 36, 0.9);
+}
+
+.quotes-assigned-livreur--warning .quotes-assigned-livreur__value {
+  color: #fbbf24;
+}
+
+.quotes-assigned-livreur--warning .quotes-assigned-livreur__hint {
+  color: rgba(251, 191, 36, 0.8);
 }
 
 .quotes-actions {

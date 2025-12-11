@@ -39,6 +39,7 @@ export interface QuoteResponse {
   adminNotes: string | null;
   deliveryDetails: string | null;
   assignedLivreur: string | null;
+  livreurAssignmentEmailSent: boolean | null;
   updatedAt: string | null;
   items: QuoteItem[];
 }
