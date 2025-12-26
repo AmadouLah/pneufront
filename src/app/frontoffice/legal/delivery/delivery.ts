@@ -10,5 +10,6 @@ import { LegalLayoutComponent } from '../legal-layout';
 })
 export class DeliveryComponent {
   readonly currentYear = new Date().getFullYear();
+  readonly contactEmail = 'contact@pneumali.com';
 }
 

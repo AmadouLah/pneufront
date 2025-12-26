@@ -8,4 +8,6 @@ import { LegalLayoutComponent } from '../legal-layout';
   imports: [CommonModule, LegalLayoutComponent],
   templateUrl: './mentions.html'
 })
-export class MentionsComponent {}
+export class MentionsComponent {
+  readonly contactEmail = 'contact@pneumali.com';
+}
