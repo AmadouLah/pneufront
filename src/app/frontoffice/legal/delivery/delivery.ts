@@ -8,5 +8,7 @@ import { LegalLayoutComponent } from '../legal-layout';
   imports: [CommonModule, LegalLayoutComponent],
   templateUrl: './delivery.html'
 })
-export class DeliveryComponent {}
+export class DeliveryComponent {
+  readonly currentYear = new Date().getFullYear();
+}
 

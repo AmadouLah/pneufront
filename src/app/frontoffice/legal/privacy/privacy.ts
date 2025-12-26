@@ -8,4 +8,6 @@ import { LegalLayoutComponent } from '../legal-layout';
   imports: [CommonModule, LegalLayoutComponent],
   templateUrl: './privacy.html'
 })
-export class PrivacyComponent {}
+export class PrivacyComponent {
+  readonly currentYear = new Date().getFullYear();
+}

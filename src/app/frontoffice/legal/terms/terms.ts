@@ -8,4 +8,6 @@ import { LegalLayoutComponent } from '../legal-layout';
   imports: [CommonModule, LegalLayoutComponent],
   templateUrl: './terms.html'
 })
-export class TermsComponent {}
+export class TermsComponent {
+  readonly currentYear = new Date().getFullYear();
+}
