@@ -347,10 +347,7 @@
             <span class="font-medium text-sm">Promotions</span>
           </a>
         </li>
-        }
-        }
-
-        @if (!isLivreur && !isInfluenceur) {
+        } } @if (!isLivreur && !isInfluenceur) {
         <!-- Orders -->
         <li>
           <a
@@ -436,8 +433,7 @@
             <span class="font-medium text-sm">Income</span>
           </a>
         </li>
-        }
-        }
+        } }
       </ul>
 
       <!-- Divider -->
@@ -451,6 +447,32 @@
       </div>
 
       <ul class="space-y-1">
+        @if (isAdminOrDeveloper) {
+        <!-- Broadcast Email -->
+        <li>
+          <a
+            routerLink="/dashboard/broadcast-email"
+            routerLinkActive="bg-gray-900 text-primary border-l-4 border-primary"
+            class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-900 hover:text-primary transition-colors duration-200 group"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+            <span class="font-medium text-sm">Email à tous</span>
+          </a>
+        </li>
+        }
+
         <!-- Settings -->
         <li>
           <a

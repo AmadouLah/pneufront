@@ -151,6 +151,10 @@ export const routes: Routes = [
         loadComponent: () => import('./backoffice/quotes/quotes').then(m => m.QuotesComponent)
       },
       {
+        path: 'broadcast-email',
+        loadComponent: () => import('./backoffice/broadcast-email/broadcast-email').then(m => m.BroadcastEmailComponent)
+      },
+      {
         path: 'livreur',
         loadComponent: () => import('./backoffice/livreur/livreur-dashboard').then(m => m.LivreurDashboardComponent),
         canActivate: [livreurGuard]

@@ -1,0 +1,208 @@
+<div class="min-h-screen bg-black text-white p-6">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-primary mb-2">
+        Envoi d'email à tous les utilisateurs
+      </h1>
+      <p class="text-gray-400">
+        Envoyez un message à tous les utilisateurs de l'application. Vous ne
+        recevrez pas cet email.
+      </p>
+    </div>
+
+    <!-- Success Message -->
+    @if (successMessage()) {
+    <div class="mb-6 p-4 bg-green-900/30 border border-green-500 rounded-lg">
+      <div class="flex items-center gap-2">
+        <svg
+          class="w-5 h-5 text-green-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          />
+        </svg>
+        <p class="text-green-400">{{ successMessage() }}</p>
+      </div>
+    </div>
+    }
+
+    <!-- Error Message -->
+    @if (errorMessage()) {
+    <div class="mb-6 p-4 bg-red-900/30 border border-red-500 rounded-lg">
+      <div class="flex items-center gap-2">
+        <svg
+          class="w-5 h-5 text-red-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <p class="text-red-400">{{ errorMessage() }}</p>
+      </div>
+    </div>
+    }
+
+    <!-- Form -->
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="bg-gray-900 rounded-lg p-6 space-y-6"
+    >
+      <!-- Subject -->
+      <div>
+        <label
+          for="subject"
+          class="block text-sm font-medium text-gray-300 mb-2"
+        >
+          Sujet <span class="text-red-400">*</span>
+        </label>
+        <input
+          type="text"
+          id="subject"
+          formControlName="subject"
+          class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          placeholder="Ex: Maintenance programmée - Application indisponible"
+        />
+        @if (subject?.invalid && subject?.touched) {
+        <p class="mt-1 text-sm text-red-400">
+          @if (subject?.errors?.['required']) { Le sujet est obligatoire } @else
+          if (subject?.errors?.['minlength']) { Le sujet doit contenir au moins
+          3 caractères } @else if (subject?.errors?.['maxlength']) { Le sujet ne
+          doit pas dépasser 200 caractères }
+        </p>
+        }
+      </div>
+
+      <!-- Message -->
+      <div>
+        <label
+          for="message"
+          class="block text-sm font-medium text-gray-300 mb-2"
+        >
+          Message <span class="text-red-400">*</span>
+        </label>
+        <textarea
+          id="message"
+          formControlName="message"
+          rows="12"
+          class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-y"
+          placeholder="Ex: Cher(e)s utilisateurs,&#10;&#10;Nous vous informons qu'une maintenance est prévue le [date] de [heure] à [heure]. L'application sera temporairement indisponible pendant cette période.&#10;&#10;Nous vous remercions de votre compréhension.&#10;&#10;Cordialement,&#10;L'équipe PneuMali"
+        ></textarea>
+        @if (message?.invalid && message?.touched) {
+        <p class="mt-1 text-sm text-red-400">
+          @if (message?.errors?.['required']) { Le message est obligatoire }
+          @else if (message?.errors?.['minlength']) { Le message doit contenir
+          au moins 10 caractères } @else if (message?.errors?.['maxlength']) {
+          Le message ne doit pas dépasser 10000 caractères }
+        </p>
+        }
+        <p class="mt-1 text-sm text-gray-500">
+          {{ message?.value?.length || 0 }} / 10000 caractères
+        </p>
+      </div>
+
+      <!-- Info Box -->
+      <div class="bg-blue-900/20 border border-blue-500/50 rounded-lg p-4">
+        <div class="flex items-start gap-3">
+          <svg
+            class="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <div class="text-sm text-gray-300">
+            <p class="font-medium text-blue-400 mb-1">Information importante</p>
+            <ul class="list-disc list-inside space-y-1 text-gray-400">
+              <li>
+                Cet email sera envoyé à tous les utilisateurs actifs de
+                l'application
+              </li>
+              <li>
+                Vous ne recevrez pas cet email (l'expéditeur est automatiquement
+                exclu)
+              </li>
+              <li>Le message peut contenir du HTML pour la mise en forme</li>
+              <li>Les retours à la ligne seront préservés</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex justify-end gap-4">
+        <button
+          type="button"
+          (click)="form.reset()"
+          class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
+          [disabled]="isLoading()"
+        >
+          Réinitialiser
+        </button>
+        <button
+          type="submit"
+          class="px-6 py-3 bg-primary hover:bg-cyan-500 text-black rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          [disabled]="isLoading() || form.invalid"
+        >
+          @if (isLoading()) {
+          <svg
+            class="animate-spin h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span>Envoi en cours...</span>
+          } @else {
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+          <span>Envoyer à tous les utilisateurs</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
