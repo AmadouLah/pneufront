@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { NgClass } from '@angular/common';
 
+export const LOGO_PATH = '/img/logoPneuMali.png';
+
 @Component({
   selector: 'app-logo',
   standalone: true,
@@ -21,7 +23,7 @@ import { NgClass } from '@angular/common';
 })
 export class LogoComponent {
   @Input() size = 40;
-  @Input() src = '/assets/img/logoPneuMali.png';
+  @Input() src = LOGO_PATH;
   @Input() alt = 'PneuMali';
   @Input() roundedClass = 'rounded-xl';
 }

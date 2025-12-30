@@ -129,7 +129,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       {
         id: 1,
         name: 'Pneu Michelin Primacy 4',
-        image: '/assets/img/logoPneuMali.png',
+        image: '/img/logoPneuMali.png',
         rating: 4.7,
         sold: 210,
         profit: 22200
@@ -137,7 +137,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       {
         id: 2,
         name: 'Bridgestone Turanza T005',
-        image: '/assets/img/logoPneuMali.png',
+        image: '/img/logoPneuMali.png',
         rating: 4.5,
         sold: 185,
         profit: 19500
@@ -145,7 +145,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       {
         id: 3,
         name: 'Continental PremiumContact 6',
-        image: '/assets/img/logoPneuMali.png',
+        image: '/img/logoPneuMali.png',
         rating: 4.8,
         sold: 165,
         profit: 18300
