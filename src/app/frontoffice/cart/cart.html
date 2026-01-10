@@ -38,7 +38,7 @@
       } @else {
       <div class="cart-layout">
         <section class="cart-items">
-          @for (item of items(); track trackByProductId) {
+          @for (item of items(); track item.productId) {
           <article class="cart-item">
             <div class="cart-item__image">
               <img [src]="item.image" [alt]="item.name" loading="lazy" />
@@ -174,10 +174,25 @@
             <button
               type="button"
               class="cart-button cart-button--ghost"
-              disabled
+              (click)="payNow()"
+              [disabled]="isProcessingPayment() || !hasItems()"
             >
-              Payer maintenant
+              @if (isProcessingPayment()) {
+                <span class="cart-promo__spinner"></span>
+                Paiement en cours...
+              } @else {
+                Payer maintenant
+              }
             </button>
+            @if (paymentMessage()) {
+              <div
+                class="cart-promo__message"
+                [class.cart-promo__message--success]="paymentMessage()?.type === 'success'"
+                [class.cart-promo__message--error]="paymentMessage()?.type === 'error'"
+              >
+                {{ paymentMessage()?.text }}
+              </div>
+            }
             <a routerLink="/shop" class="cart-button cart-button--ghost"
               >Continuer vos achats</a
             >
