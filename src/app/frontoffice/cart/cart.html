@@ -174,25 +174,11 @@
             <button
               type="button"
               class="cart-button cart-button--ghost"
-              (click)="payNow()"
-              [disabled]="isProcessingPayment() || !hasItems()"
+              (click)="openPaymentModal()"
+              [disabled]="!hasItems()"
             >
-              @if (isProcessingPayment()) {
-                <span class="cart-promo__spinner"></span>
-                Paiement en cours...
-              } @else {
-                Payer maintenant
-              }
+              Payer maintenant
             </button>
-            @if (paymentMessage()) {
-              <div
-                class="cart-promo__message"
-                [class.cart-promo__message--success]="paymentMessage()?.type === 'success'"
-                [class.cart-promo__message--error]="paymentMessage()?.type === 'error'"
-              >
-                {{ paymentMessage()?.text }}
-              </div>
-            }
             <a routerLink="/shop" class="cart-button cart-button--ghost"
               >Continuer vos achats</a
             >
@@ -208,3 +194,187 @@
 
   <app-footer></app-footer>
 </div>
+
+<!-- Payment Modal -->
+@if (showPaymentModal()) {
+<div class="cart-modal-overlay" (click)="closePaymentModal()">
+  <div class="cart-modal-content" (click)="$event.stopPropagation()">
+    <header class="cart-modal-header">
+      <h2 class="cart-modal-title">Finaliser le paiement</h2>
+      <button type="button" class="cart-modal-close" (click)="closePaymentModal()" aria-label="Fermer">
+        ×
+      </button>
+    </header>
+
+    <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()" class="cart-modal-body">
+      @if (paymentMessage()) {
+        <div
+          class="cart-promo__message"
+          [class.cart-promo__message--success]="paymentMessage()?.type === 'success'"
+          [class.cart-promo__message--error]="paymentMessage()?.type === 'error'"
+        >
+          {{ paymentMessage()?.text }}
+        </div>
+      }
+
+      <!-- Adresse de livraison -->
+      <div class="cart-modal-field">
+        <label for="addressId" class="cart-modal-label">
+          Adresse de livraison <span class="cart-modal-required">*</span>
+        </label>
+        @if (isLoadingAddresses()) {
+          <div class="cart-modal-loading">Chargement des adresses...</div>
+        } @else if (addresses().length === 0) {
+          <div class="cart-modal-empty">
+            Aucune adresse trouvée. Veuillez <a routerLink="/account/addresses" class="cart-modal-link">ajouter une adresse</a>.
+          </div>
+        } @else {
+          <select
+            id="addressId"
+            formControlName="addressId"
+            class="cart-modal-input"
+            [class.cart-modal-input--error]="paymentForm.get('addressId')?.invalid && paymentForm.get('addressId')?.touched"
+          >
+            @for (address of addresses(); track address.id) {
+              <option [value]="address.id">
+                {{ address.street }}, {{ address.city }}, {{ address.region }}
+                @if (address.default) {
+                  (Par défaut)
+                }
+              </option>
+            }
+          </select>
+        }
+        @if (paymentForm.get('addressId')?.invalid && paymentForm.get('addressId')?.touched) {
+          <p class="cart-modal-error">Veuillez sélectionner une adresse</p>
+        }
+      </div>
+
+      <!-- Zone de livraison -->
+      <div class="cart-modal-field">
+        <label for="zone" class="cart-modal-label">
+          Zone de livraison <span class="cart-modal-required">*</span>
+        </label>
+        <input
+          type="text"
+          id="zone"
+          formControlName="zone"
+          class="cart-modal-input"
+          [class.cart-modal-input--error]="paymentForm.get('zone')?.invalid && paymentForm.get('zone')?.touched"
+          placeholder="Ex: Bamako-Centre"
+        />
+        @if (paymentForm.get('zone')?.invalid && paymentForm.get('zone')?.touched) {
+          <p class="cart-modal-error">
+            @if (paymentForm.get('zone')?.errors?.['required']) {
+              La zone est obligatoire
+            } @else if (paymentForm.get('zone')?.errors?.['minlength']) {
+              La zone doit contenir au moins 3 caractères
+            }
+          </p>
+        }
+      </div>
+
+      <!-- Informations compte de test Paydunya -->
+      <div class="cart-modal-section">
+        <h3 class="cart-modal-section-title">Compte de test Paydunya SoftPay</h3>
+        <p class="cart-modal-section-text">Veuillez entrer les informations du compte de test pour effectuer le paiement en sandbox.</p>
+
+        <!-- Email -->
+        <div class="cart-modal-field">
+          <label for="testEmail" class="cart-modal-label">
+            Email <span class="cart-modal-required">*</span>
+          </label>
+          <input
+            type="email"
+            id="testEmail"
+            formControlName="testEmail"
+            class="cart-modal-input"
+            [class.cart-modal-input--error]="paymentForm.get('testEmail')?.invalid && paymentForm.get('testEmail')?.touched"
+            placeholder="[email protected]"
+          />
+          @if (paymentForm.get('testEmail')?.invalid && paymentForm.get('testEmail')?.touched) {
+            <p class="cart-modal-error">
+              @if (paymentForm.get('testEmail')?.errors?.['required']) {
+                L'email est obligatoire
+              } @else if (paymentForm.get('testEmail')?.errors?.['email']) {
+                Email invalide
+              }
+            </p>
+          }
+        </div>
+
+        <!-- Téléphone -->
+        <div class="cart-modal-field">
+          <label for="testPhone" class="cart-modal-label">
+            Numéro de téléphone <span class="cart-modal-required">*</span>
+          </label>
+          <input
+            type="text"
+            id="testPhone"
+            formControlName="testPhone"
+            class="cart-modal-input"
+            [class.cart-modal-input--error]="paymentForm.get('testPhone')?.invalid && paymentForm.get('testPhone')?.touched"
+            placeholder="97403627"
+          />
+          @if (paymentForm.get('testPhone')?.invalid && paymentForm.get('testPhone')?.touched) {
+            <p class="cart-modal-error">
+              @if (paymentForm.get('testPhone')?.errors?.['required']) {
+                Le numéro de téléphone est obligatoire
+              } @else if (paymentForm.get('testPhone')?.errors?.['pattern']) {
+                Le numéro de téléphone doit contenir uniquement des chiffres
+              }
+            </p>
+          }
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="cart-modal-field">
+          <label for="testPassword" class="cart-modal-label">
+            Mot de passe <span class="cart-modal-required">*</span>
+          </label>
+          <input
+            type="password"
+            id="testPassword"
+            formControlName="testPassword"
+            class="cart-modal-input"
+            [class.cart-modal-input--error]="paymentForm.get('testPassword')?.invalid && paymentForm.get('testPassword')?.touched"
+            placeholder="Miliey@2121"
+          />
+          @if (paymentForm.get('testPassword')?.invalid && paymentForm.get('testPassword')?.touched) {
+            <p class="cart-modal-error">
+              @if (paymentForm.get('testPassword')?.errors?.['required']) {
+                Le mot de passe est obligatoire
+              } @else if (paymentForm.get('testPassword')?.errors?.['minlength']) {
+                Le mot de passe doit contenir au moins 6 caractères
+              }
+            </p>
+          }
+        </div>
+      </div>
+
+      <footer class="cart-modal-footer">
+        <button
+          type="button"
+          class="cart-button cart-button--ghost"
+          (click)="closePaymentModal()"
+          [disabled]="isProcessingPayment()"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          class="cart-button cart-button--primary"
+          [disabled]="paymentForm.invalid || isProcessingPayment() || addresses().length === 0"
+        >
+          @if (isProcessingPayment()) {
+            <span class="cart-promo__spinner"></span>
+            Paiement en cours...
+          } @else {
+            Confirmer le paiement
+          }
+        </button>
+      </footer>
+    </form>
+  </div>
+</div>
+}

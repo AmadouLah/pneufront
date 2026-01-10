@@ -7,6 +7,7 @@ export interface CreatePaymentRequest {
   addressId: number;
   zone: string;
   promoCode?: string | null;
+  cartItems: Record<number, number>; // Map<productId, quantity>
 }
 
 export interface PaymentResponse {

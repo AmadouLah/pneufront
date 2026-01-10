@@ -78,8 +78,8 @@
         />
         @if (subject?.invalid && subject?.touched) {
         <p class="mt-1 text-sm text-red-400">
-          @if (subject?.errors?.['required']) { Le sujet est obligatoire } @else
-          if (subject?.errors?.['minlength']) { Le sujet doit contenir au moins
+          @if (subject?.errors?.['required']) { Le sujet est obligatoire } 
+          @else if (subject?.errors?.['minlength']) { Le sujet doit contenir au moins
           3 caractères } @else if (subject?.errors?.['maxlength']) { Le sujet ne
           doit pas dépasser 200 caractères }
         </p>
